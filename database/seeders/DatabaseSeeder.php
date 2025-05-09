@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $Permission2 = Permission::create(['name' => 'eliminar profesores']);
 
         // Crear rol y asignar permisos
-        // $role = Role::create(['name' => 'admin']);
+        $role = Role::create(['name' => 'admin']);
         // $role->givePermissionTo([$Permission1->name, $name]);
 
         // Asignar rol a un usuario

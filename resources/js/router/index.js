@@ -7,6 +7,7 @@ import Productos from '../views/Productos.vue';
 import Users from '../views/Users.vue';
 import Preguntas from '../views/Preguntas.vue';
 import Usuarios from '../views/Usuarios/Usuarios.vue';
+import Permisos from '../views/Usuarios/rolesPermisos/Permisos.vue';
 
 
 const routes = [
@@ -20,7 +21,8 @@ const routes = [
       { path: 'productos', name: 'productos', component: Productos },
       { path: 'users', name: 'users', component: Users },
       {path: 'preguntas', name: 'preguntas', component: Preguntas},
-      {path: 'usuarios', name:'usuarios', component: Usuarios}
+      {path: 'usuarios', name:'usuarios', component: Usuarios},
+      {path: 'permisos', name:'permisos', component: Permisos}
     ]
   },
   {

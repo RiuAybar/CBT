@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PermisoController;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -45,12 +46,15 @@ Route::get('/users', function (Request $request) {
 
 
 Route::middleware('auth:api')->prefix('/')->group(function () {
-    Route::resource('/productos', ProductoController::class)->except(['create', 'show','edit']);
-    Route::resource('/preguntas', PreguntaController::class)->except(['create', 'show','edit']);
-    Route::resource('/usuarios', UserController::class)->except(['create', 'show','edit'])->parameters([
-        'usuarios'
-        => 
-        'user' 
-    ]);
+
+    Route::resource('Permission', PermisoController::class);
+
+    // Route::resource('/productos', ProductoController::class)->except(['create', 'show','edit']);
+    // Route::resource('/preguntas', PreguntaController::class)->except(['create', 'show','edit']);
+    // Route::resource('/usuarios', UserController::class)->except(['create', 'show','edit'])->parameters([
+    //     'usuarios'
+    //     => 
+    //     'user' 
+    // ]);
     // más rutas aquí
 });
