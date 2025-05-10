@@ -52,6 +52,9 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     Route::resource('Role', RolController::class)->only(['index','store','show','update']);
     Route::get('Role/{Role}/Permiso', [RolController::class, 'Permisos']);
     Route::delete('Role/{Role}/destroy', [RolController::class, 'destroy']);
+    // Route::get('Role/{Role}/addPermisos', [RolController::class, 'addPermisos']);
+    Route::get('/roles/{role}/permisosDisponibles', [RolController::class, 'permisosDisponibles']);
+    Route::post('/roles/{role}/asignarPermiso', [RolController::class, 'asignarPermiso']);
 
     // Route::resource('/productos', ProductoController::class)->except(['create', 'show','edit']);
     // Route::resource('/preguntas', PreguntaController::class)->except(['create', 'show','edit']);

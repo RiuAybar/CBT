@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RolRequest;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolController extends Controller
 {
@@ -90,7 +91,7 @@ class RolController extends Controller
     {
         try {
             DB::beginTransaction();
-           // Elimina el permiso del rol sin borrar el permiso como tal
+            // Elimina el permiso del rol sin borrar el permiso como tal
             $Role->revokePermissionTo($request->Permiso);
             DB::commit();
             return response()->json($Role, 200);
@@ -99,5 +100,39 @@ class RolController extends Controller
             // return response()->json($e->getMessage(),500);
             return response()->json("No se elimino el producto, consulte al administrador", 500);
         }
+    }
+    public function permisosDisponibles(Request $request, Role $Role)
+    {
+        $search = $request->query('search');
+        $data = [];
+        // if($search){
+            // Obtener IDs de permisos ya asignados
+            $permisosAsignados = $Role->permissions()->pluck('id')->toArray();
+    
+            // Evitar permisos ya asignados
+            $query = Permission::whereNotIn('id', $permisosAsignados);
+    
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+            $data = $query->orderBy('id', 'desc')->get(['id', 'name']);
+        // }
+
+        return response()->json(
+            $data,
+            200
+        );
+    }
+
+    // POST /api/roles/{role}/asignar-permiso
+    public function asignarPermiso(Request $request, Role $role)
+    {
+        $request->validate([
+            'permiso_id' => 'required|exists:permissions,id'
+        ]);
+
+        $role->givePermissionTo($request->permiso_id);
+
+        return response()->json(['message' => 'Permiso asignado correctamente'], 200);
     }
 }

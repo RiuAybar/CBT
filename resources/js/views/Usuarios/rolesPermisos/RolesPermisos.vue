@@ -1,16 +1,25 @@
 <template>
     <main class="content">
         <div class="container-fluid p-0">
-            <button @click="crearPermiso()" class="btn btn-primary float-end mt-n1">
-                <i class="align-middle me-2" data-feather="plus-circle"></i>
-                Agregar Permiso
-            </button>
-            <h1 class="h3 mb-3">
-                Rol
-                <strong>
-                    {{ Rol.name }}
-                </strong>
-            </h1>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1 class="h3 mb-3">
+                        Rol
+                        <strong>
+                            {{ Rol.name }}
+                        </strong>
+                    </h1>
+
+                </div>
+                <div class="col-sm-4">
+                    <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
+                        :loading="selectLoading" placeholder="Seleccione un permiso" @search="selectFetchOptions"
+                        @change="handleChange" :reduce="option => option.id" class="form-control mb-3"
+                        no-options="Seleccione una opción" no-results="No se encontraron resultados"
+                        :selectable="option => !option.disabled" />
+
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12 col-lg-12 col-xxl-12 d-flex">
                     <div class="card flex-fill">
@@ -39,7 +48,6 @@
                                 </div>
                             </template>
                         </EasyDataTable>
-
                     </div>
                 </div>
             </div>
@@ -49,10 +57,10 @@
 
 <script>
 
-
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 import api from '../../../services/api';
-
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
@@ -60,6 +68,7 @@ export default {
     name: 'RolesPermisos',
     components: {
         EasyDataTable,
+        vSelect,
     },
     data() {
         return {
@@ -80,6 +89,17 @@ export default {
             },
             busqueda: '',
             errores: {},
+
+            selectSelected: null,
+            selectOptions: [
+                {
+                    id: null,
+                    text: 'Seleccione una opción',
+                    disabled: true
+                }
+            ],
+            selectLoading: false,
+            selectSearchTimeout: null
         }
     },
     watch: {
@@ -190,7 +210,7 @@ export default {
         eliminarPermiso(id, nombre) {
             this.$swal.fire({
                 title: '¿Estás seguro?',
-                text: `¿Deseas eliminar el registro ${nombre}, ${id}?`,
+                text: `¿Deseas eliminar el registro ${nombre}?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, eliminar',
@@ -218,10 +238,59 @@ export default {
                 }
             });
         },
+
+        selectFetchOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoading = true
+                try {
+                    const response = await api.get(`/roles/${this.$route.params.id}/permisosDisponibles`, {
+                        params: { search }
+                    });
+                    // this.selectOptions = response.data.map(item => ({
+                    //     id: item.id,
+                    //     text: item.name
+                    // }))
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptions = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.name
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptions = []
+                } finally {
+                    this.selectLoading = false
+                }
+            }, 300)
+        },
+        async handleChange(permiso) {
+            // Usar directamente el valor bindeado en v-model
+            const permisoId = this.selectSelected;
+            if (!permisoId) return;
+            try {
+                await api.post(`/roles/${this.$route.params.id}/asignarPermiso`, {
+                    permiso_id: permisoId // Usamos el id del permiso seleccionado
+                });
+                this.selectSelected = null; // Limpia el select después de asignar el permiso
+                this.consultarPermisos();
+            } catch (error) {
+                console.error('Error al asignar permiso:', error);
+            }
+        }
+
     },
     mounted() {
         this.consultarPermisos();
         this.consultarRol();
+
     }
 }
 </script>
