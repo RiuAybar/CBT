@@ -19,7 +19,7 @@
 				<li class="sidebar-header">
 					Pages
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive('/permisos') }">
+				<li class="sidebar-item" :class="{ active: isActive(['/permisos', '/roles']) }">
 					<a data-bs-target="#dashboards" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Roles y
 							Permisos</span>
@@ -27,6 +27,9 @@
 					<ul id="dashboards" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 						<li class="sidebar-item" :class="{ active: isActive('/permisos') }">
 							<router-link to="/permisos" class='sidebar-link'>Permisos</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive('/roles') }">
+							<router-link to="/roles" class='sidebar-link'>Roles</router-link>
 						</li>
 						<li class="sidebar-item">
 							<a class='sidebar-link' href='/dashboard-ecommerce'>E-Commerce <span
@@ -62,6 +65,9 @@ export default {
 	},
 	methods: {
 		isActive(path) {
+			if (Array.isArray(path)) {
+				return path.includes(this.$route.path);
+			}
 			return this.$route.path === path;
 		}
 	}

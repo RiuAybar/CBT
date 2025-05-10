@@ -8,6 +8,8 @@ import Users from '../views/Users.vue';
 import Preguntas from '../views/Preguntas.vue';
 import Usuarios from '../views/Usuarios/Usuarios.vue';
 import Permisos from '../views/Usuarios/rolesPermisos/Permisos.vue';
+import Roles from '../views/Usuarios/rolesPermisos/Roles.vue';
+import RolesPermisos from '../views/Usuarios/rolesPermisos/RolesPermisos.vue';
 
 
 const routes = [
@@ -22,7 +24,10 @@ const routes = [
       { path: 'users', name: 'users', component: Users },
       {path: 'preguntas', name: 'preguntas', component: Preguntas},
       {path: 'usuarios', name:'usuarios', component: Usuarios},
-      {path: 'permisos', name:'permisos', component: Permisos}
+      {path: 'permisos', name:'permisos', component: Permisos, meta: { title: 'Permisos' } },
+      {path: 'roles', name:'roles', component: Roles, meta: { title: 'Roles' }},
+      { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
+      
     ]
   },
   {
@@ -40,6 +45,16 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
+  const defaultTitle = 'C B T';
+
+  // Toma el meta.title del último match (el hijo más profundo)
+  const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
+
+  if (nearestWithTitle) {
+    document.title = nearestWithTitle.meta.title;
+  } else {
+    document.title = defaultTitle;
+  }
 
   // 🔒 Rutas protegidas
   if (to.meta.requiresAuth && !token) {

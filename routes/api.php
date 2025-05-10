@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\RolController;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -47,7 +48,10 @@ Route::get('/users', function (Request $request) {
 
 Route::middleware('auth:api')->prefix('/')->group(function () {
 
-    Route::resource('Permission', PermisoController::class);
+    Route::resource('Permission', PermisoController::class)->only(['index','store','update']);
+    Route::resource('Role', RolController::class)->only(['index','store','show','update']);
+    Route::get('Role/{Role}/Permiso', [RolController::class, 'Permisos']);
+    Route::delete('Role/{Role}/destroy', [RolController::class, 'destroy']);
 
     // Route::resource('/productos', ProductoController::class)->except(['create', 'show','edit']);
     // Route::resource('/preguntas', PreguntaController::class)->except(['create', 'show','edit']);

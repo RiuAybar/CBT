@@ -6,8 +6,9 @@
                 Agregar Permiso
             </button>
             <h1 class="h3 mb-3">
+                Rol
                 <strong>
-                    Permisos
+                    {{ Rol.name }}
                 </strong>
             </h1>
             <div class="row">
@@ -16,13 +17,13 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <h5 class="card-title mb-0">
+                                    <h5 class="card-title">
                                         Lista de Permisos
                                     </h5>
                                 </div>
                                 <div class="col-sm-6">
                                     <input v-model="busqueda" placeholder="Buscar en servidor..."
-                                        class="form-control mb-3" />
+                                        class="form-control" />
                                 </div>
                             </div>
                         </div>
@@ -30,11 +31,10 @@
                         <EasyDataTable :headers="headers" :items="Permisos" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre, descripcion, precio, stock }">
+                            <template #item-action="{ id, name }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary"
-                                        @click="editarPermiso(id)">
-                                        Editar
+                                    <button class="btn btn-sm btn-outline-danger" @click="eliminarPermiso(id, name)">
+                                        Eliminar
                                     </button>
                                 </div>
                             </template>
@@ -44,62 +44,36 @@
                 </div>
             </div>
         </div>
-
-        <Modal size="lg" ref="modalPermiso" id="modal-permiso"
-            :title="Permiso.id ? 'Editar Permiso' : 'Agregar Permiso'">
-            <!-- Contenido dinámico: slot principal -->
-            <template #default>
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Permiso</label>
-                        <input v-model="Permiso.name" type="text" class="form-control" id="name"
-                            aria-describedby="Nombre">
-                        <div v-if="errores.name" class="form-text text-danger">
-                            {{ errores.name[0] }}
-                        </div>
-                    </div>
-                </form>
-            </template>
-
-            <!-- Footer dinámico: slot con nombre -->
-            <template #footer>
-                <button v-if="Permiso.id" class="btn btn-success" @click="guardarCambios(Permiso.id)">
-                    <i class="align-middle me-2" data-feather="save"></i>
-                    Guardar Cambios
-                </button>
-                <button v-else class="btn btn-success" @click="agregarPermiso()">
-                    <i class="align-middle me-2" data-feather="save"></i>
-                    Agregar
-                </button>
-            </template>
-        </Modal>
-
     </main>
 </template>
 
 <script>
+
+
+
 import api from '../../../services/api';
-import Modal from '../../../components/Modal.vue';
 
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
-
 export default {
-    name: 'Permisos',
+    name: 'RolesPermisos',
     components: {
         EasyDataTable,
-        Modal
     },
     data() {
         return {
+            cargando: true,
+            Rol: {
+                id: null,
+                name: null
+            },
             headers: [
                 { text: 'Id', value: 'id' },
                 { text: 'Nombre', value: 'name' },
                 { text: 'Acciones', value: 'action' },
             ],
             Permisos: [],
-            cargando: false,
             Permiso: {
                 id: null,
                 name: '',
@@ -118,10 +92,26 @@ export default {
         }
     },
     methods: {
+        async consultarRol() {
+            try {
+                const res = await api.get(`/Role/${this.$route.params.id}`);
+                this.Rol = res.data;
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    this.$swal.fire('Error', '❌ El rol no existe', 'error');
+                    this.$router.replace({ name: 'roles' }); // Redirige a la lista de roles
+                } else {
+                    console.error(error);
+                }
+            } finally {
+                this.cargando = false;
+            }
+        },
+
         async consultarPermisos(filtro = '') {
             this.cargando = true;
             try {
-                const res = await api.get('/Permission', {
+                const res = await api.get(`/Role/${this.$route.params.id}/Permiso`, {
                     params: { search: filtro }
                 });
                 this.Permisos = res.data;
@@ -196,10 +186,42 @@ export default {
                 }
 
             }
-        }
+        },
+        eliminarPermiso(id, nombre) {
+            this.$swal.fire({
+                title: '¿Estás seguro?',
+                text: `¿Deseas eliminar el registro ${nombre}, ${id}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    // 🚨 Petición DELETE a API
+                    try {
+                        await api.delete(`/Role/${this.$route.params.id}/destroy`, {
+                            data: {
+                                Permiso: id
+                            }
+                        });
+                        this.consultarPermisos();
+                        this.$swal.fire('Éxito', `✅ Registro ${nombre} eliminado correctamente`, 'success');
+                        this.errores = {}; // 🔄 Limpia los errores
+                    } catch (error) {
+                        if (error.response && error.response.status === 422) {
+                            this.errores = error.response.data.errors;
+                        } else {
+                            console.error(error);
+                            this.$swal.fire('Error', '❌ No se pudo eliminar el registro', 'error');
+                        }
+                    }
+                }
+            });
+        },
     },
     mounted() {
         this.consultarPermisos();
+        this.consultarRol();
     }
 }
 </script>

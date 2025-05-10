@@ -87,7 +87,6 @@ export default {
     },
     data() {
         return {
-
             producto: {
                 id: null,
                 descripcion: '',

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\PermisoRequest;
 use Spatie\Permission\Models\Permission;
@@ -26,14 +25,6 @@ class PermisoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(PermisoRequest $request)
@@ -47,27 +38,11 @@ class PermisoController extends Controller
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
             // return response()->json($e->getMessage(),500);
-            return response()->json("No se creo el producto, consulte al administrador",500);
+            return response()->json("No se creo el registro, consulte al administrador",500);
 
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
+    
     /**
      * Update the specified resource in storage.
      */
@@ -82,16 +57,8 @@ class PermisoController extends Controller
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
             // return response()->json($e->getMessage(),500);
-            return response()->json("No se creo el producto, consulte al administrador",500);
+            return response()->json("No se creo el registro, consulte al administrador",500);
 
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

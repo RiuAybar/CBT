@@ -1,13 +1,13 @@
 <template>
     <main class="content">
         <div class="container-fluid p-0">
-            <button @click="crearPermiso()" class="btn btn-primary float-end mt-n1">
+            <button @click="crearRol()" class="btn btn-primary float-end mt-n1">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
-                Agregar Permiso
+                Agregar Roles
             </button>
             <h1 class="h3 mb-3">
                 <strong>
-                    Permisos
+                    Roles
                 </strong>
             </h1>
             <div class="row">
@@ -17,7 +17,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h5 class="card-title mb-0">
-                                        Lista de Permisos
+                                        Lista de Roles
                                     </h5>
                                 </div>
                                 <div class="col-sm-6">
@@ -27,15 +27,17 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Permisos" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headers" :items="Roles" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
                             <template #item-action="{ id, nombre, descripcion, precio, stock }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary"
-                                        @click="editarPermiso(id)">
+                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editarRol(id)">
                                         Editar
                                     </button>
+                                    <router-link :to="`/roles/${id}/edit`" class="btn btn-sm btn-outline-warning">
+                                        Agregar Permisos
+                                    </router-link>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -45,14 +47,14 @@
             </div>
         </div>
 
-        <Modal size="lg" ref="modalPermiso" id="modal-permiso"
-            :title="Permiso.id ? 'Editar Permiso' : 'Agregar Permiso'">
+        <Modal size="lg" ref="modalRol" id="modal-rol"
+            :title="Rol.id ? 'Editar Rol' : 'Agregar Rol'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
                 <form>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Permiso</label>
-                        <input v-model="Permiso.name" type="text" class="form-control" id="name"
+                        <label for="name" class="form-label">Rol</label>
+                        <input v-model="Rol.name" type="text" class="form-control" id="name"
                             aria-describedby="Nombre">
                         <div v-if="errores.name" class="form-text text-danger">
                             {{ errores.name[0] }}
@@ -63,11 +65,11 @@
 
             <!-- Footer dinámico: slot con nombre -->
             <template #footer>
-                <button v-if="Permiso.id" class="btn btn-success" @click="guardarCambios(Permiso.id)">
+                <button v-if="Rol.id" class="btn btn-success" @click="guardarCambios(Rol.id)">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Guardar Cambios
                 </button>
-                <button v-else class="btn btn-success" @click="agregarPermiso()">
+                <button v-else class="btn btn-success" @click="agregarRol()">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Agregar
                 </button>
@@ -86,7 +88,7 @@ import EasyDataTable from 'vue3-easy-data-table';
 
 
 export default {
-    name: 'Permisos',
+    name: 'Roles',
     components: {
         EasyDataTable,
         Modal
@@ -98,9 +100,9 @@ export default {
                 { text: 'Nombre', value: 'name' },
                 { text: 'Acciones', value: 'action' },
             ],
-            Permisos: [],
+            Roles: [],
             cargando: false,
-            Permiso: {
+            Rol: {
                 id: null,
                 name: '',
             },
@@ -112,41 +114,41 @@ export default {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
             handler(val) {
-                this.consultarPermisos(val);
+                this.consultarRoles(val);
             },
             immediate: true
         }
     },
     methods: {
-        async consultarPermisos(filtro = '') {
+        async consultarRoles(filtro = '') {
             this.cargando = true;
             try {
-                const res = await api.get('/Permission', {
+                const res = await api.get('/Role', {
                     params: { search: filtro }
                 });
-                this.Permisos = res.data;
+                this.Roles = res.data;
             } catch (error) {
                 console.error('Error al consultar:', error);
             } finally {
                 this.cargando = false;
             }
         },
-        crearPermiso() {
+        crearRol() {
             this.errores = {}; // 🔄 Limpia los errores
-            this.Permiso = {
+            this.Rol = {
                 id: null,
                 name: '',
             };
-            this.$refs.modalPermiso.abrir();
+            this.$refs.modalRol.abrir();
         },
 
-        async agregarPermiso() {
+        async agregarRol() {
             try {
-                await api.post('/Permission', this.Permiso);
-                this.consultarPermisos();
-                this.$refs.modalPermiso.cerrar();
+                await api.post('/Role', this.Rol);
+                this.consultarRoles();
+                this.$refs.modalRol.cerrar();
 
-                this.Permiso = {
+                this.Rol = {
                     id: null,
                     name: ''
                 };
@@ -164,23 +166,23 @@ export default {
             }
         },
 
-        editarPermiso(id) {
+        editarRol(id) {
             this.errores = {}; // 🔄 Limpia los errores
-            const encontrado = this.Permisos.find(p => p.id === id);
+            const encontrado = this.Roles.find(p => p.id === id);
             if (encontrado) {
-                this.Permiso = { ...encontrado };
-                this.$refs.modalPermiso.abrir();
+                this.Rol = { ...encontrado };
+                this.$refs.modalRol.abrir();
             }
         },
 
         async guardarCambios(id) {
             try {
-                await api.put(`/Permission/${id}`, this.Permiso);
+                await api.put(`/Role/${id}`, this.Rol);
 
-                this.consultarPermisos();
-                this.$refs.modalPermiso.cerrar();
+                this.consultarRoles();
+                this.$refs.modalRol.cerrar();
 
-                this.Permiso = {
+                this.Rol = {
                     id: null,
                     name: ''
                 };
@@ -199,7 +201,7 @@ export default {
         }
     },
     mounted() {
-        this.consultarPermisos();
+        this.consultarRoles();
     }
 }
 </script>
