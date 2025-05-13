@@ -1,40 +1,47 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Layout from '../views/Layouts/Layout.vue';
+// import Layouts from '../views/Layouts/Layout.vue';
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
-import Login from '../views/auth/Login.vue';
-import Productos from '../views/Productos.vue';
-import Users from '../views/Users.vue';
-import Preguntas from '../views/Preguntas.vue';
+import Users from '../views/Usuarios/Users.vue';
 import Usuarios from '../views/Usuarios/Usuarios.vue';
 import Permisos from '../views/Usuarios/rolesPermisos/Permisos.vue';
 import Roles from '../views/Usuarios/rolesPermisos/Roles.vue';
 import RolesPermisos from '../views/Usuarios/rolesPermisos/RolesPermisos.vue';
-
+import Login from '../views/auth/Login.vue';
+import RegistrarPassword from '../views/auth/RegistrarPassword.vue';
 
 const routes = [
   {
-    path: '/',
-    component: Layout,
-    meta: { requiresAuth: true },
+    path: '/login',
+    component: () => import('../views/Layouts/auth/Auth.vue'),
+    meta: { guest: true },
     children: [
-      { path: '', name: 'home', component: Home },
-      { path: 'about', name: 'about', component: About },
-      { path: 'productos', name: 'productos', component: Productos },
-      { path: 'users', name: 'users', component: Users },
-      {path: 'preguntas', name: 'preguntas', component: Preguntas},
-      {path: 'usuarios', name:'usuarios', component: Usuarios},
-      {path: 'permisos', name:'permisos', component: Permisos, meta: { title: 'Permisos' } },
-      {path: 'roles', name:'roles', component: Roles, meta: { title: 'Roles' }},
-      { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
-      
-    ]
+      { path: '', name: 'login', component: Login, meta: { title: 'Inicio' }, meta: { guest: true }  },
+      {
+        path: 'registrar/password/:token', // ✅ sin "/"
+        name: 'registrar-password',
+        component: RegistrarPassword,
+        props: route => ({
+          token: route.params.token,
+          email: route.query.email
+        }),
+        meta: { guest: true } 
+      }
+    ],
   },
   {
-    path: '/login',
-    name: 'login',
-    component: Login,
-    meta: { guest: true }
+    path: '/',
+    component: () => import('../views/Layouts/Layout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      { path: '', name: 'home', component: Home, meta: { title: 'Inicio' } },
+      { path: 'about', name: 'about', component: About, meta: { title: 'Sobre' } },
+      { path: 'users', name: 'users', component: Users, meta: { title: 'Usuarios' } },
+      { path: 'usuarios', name: 'usuarios', component: Usuarios, meta: { title: 'Usuarios' } },
+      { path: 'permisos', name: 'permisos', component: Permisos, meta: { title: 'Permisos' } },
+      { path: 'roles', name: 'roles', component: Roles, meta: { title: 'Roles' } },
+      { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
+    ]
   }
 ];
 
@@ -51,20 +58,22 @@ router.beforeEach((to, from, next) => {
   const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
 
   if (nearestWithTitle) {
-    document.title = nearestWithTitle.meta.title;
+    document.title = `${defaultTitle} | ${nearestWithTitle.meta.title}`;
   } else {
     document.title = defaultTitle;
   }
 
   // 🔒 Rutas protegidas
   if (to.meta.requiresAuth && !token) {
+    // console.log(1);
     next({ name: 'login' });
-
     // 🚫 Rutas solo para invitados (login, registro)
   } else if (to.meta.guest && token) {
+    // console.log(2, to.meta.guest , token);
     next({ name: 'home' });
 
   } else {
+    // console.log(3);
     next();
   }
 });

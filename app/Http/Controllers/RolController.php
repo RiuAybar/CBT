@@ -20,7 +20,8 @@ class RolController extends Controller
         $query = Role::query();
 
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%' . $search . '%')
+                ->limit(5);
         }
         return response()->json($query->orderBy('id', 'desc')->get(['id', 'name']), 200);
     }
@@ -76,7 +77,8 @@ class RolController extends Controller
         $query = $Role->permissions(); // usa la relación de Spatie
 
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%' . $search . '%')
+                ->limit(5);
         }
 
         return response()->json(
@@ -113,7 +115,8 @@ class RolController extends Controller
             $query = Permission::whereNotIn('id', $permisosAsignados);
     
             if ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->limit(5);
             }
             $data = $query->orderBy('id', 'desc')->get(['id', 'name']);
         // }

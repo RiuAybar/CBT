@@ -1,8 +1,8 @@
 <template>
-  <main class="d-flex w-100">
+  <!-- <main class="d-flex w-100">
     <div class="container d-flex flex-column">
       <div class="row vh-100">
-        <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
+        <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100"> -->
           <div class="d-table-cell align-middle">
 
             <div class="text-center mt-4">
@@ -19,7 +19,7 @@
                     <div class="mb-3">
                       <label class="form-label">Correo electrónico</label>
                       <input v-model="email" class="form-control form-control-lg" type="email"
-                      placeholder="Introduce tu correo electrónico" />
+                        placeholder="Introduce tu correo electrónico" />
                       <p class="text-danger mt-2" v-if="error">{{ error }}</p>
                     </div>
                     <div class="mb-3">
@@ -41,31 +41,15 @@
                 </div>
               </div>
             </div>
+
           </div>
-        </div>
+        <!-- </div>
       </div>
     </div>
-  </main>
-
-  <!-- <div class="container mt-5" style="max-width: 400px">
-    <h3>Iniciar Sesión</h3>
-    <form @submit.prevent="login">
-      <input v-model="email" class="form-control mb-2" placeholder="Correo" />
-      <input v-model="password" class="form-control mb-2" type="password" placeholder="Contraseña" />
-      <button class="btn btn-primary w-100">Entrar</button>
-      <p class="text-danger mt-2" v-if="error">{{ error }}</p>
-    </form>
-  </div> -->
-
-  <!-- <form @submit.prevent="login">
-      <input v-model="email" placeholder="Correo" class="form-control" />
-      <input type="password" v-model="password" placeholder="Contraseña" class="form-control mt-2" />
-      <button class="btn btn-primary mt-2">Entrar</button>
-      <p v-if="error" class="text-danger">{{ error }}</p>
-    </form> -->
+  </main> -->
 </template>
 
-<script> 
+<script>
 import api, { setAuthToken } from '../../services/api';
 
 export default {
@@ -92,6 +76,17 @@ export default {
         // 🔥 Cargas los datos del usuario
         await this.$store.dispatch('auth/fetchUser');
         this.$router.push({ name: 'home' }); // ✅ Redirección desde methods
+
+        // ✅ Redirigir manualmente SOLO si estamos en login
+        // const redirectPath = localStorage.getItem('redirectPath');
+        // localStorage.removeItem('redirectPath');
+
+        // if (redirectPath) {
+        //   this.$router.replace(redirectPath);
+        // } else {
+        //   this.$router.replace({ name: 'home' });
+        // }
+
       } catch (e) {
         this.error = e.response?.data?.error || 'Error al iniciar sesión';
       }
@@ -100,5 +95,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

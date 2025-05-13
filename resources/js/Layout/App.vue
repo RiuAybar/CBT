@@ -21,14 +21,14 @@
           try {
             const res = await api.get('/user');
             this.$store.dispatch('auth/setUser', res.data);
-            console.log('Usuario autenticado:', res.data);
+            // console.log('Usuario autenticado:', res.data);
           } catch (error) {
             console.warn('Token inválido. Redirigiendo al login.');
             this.$store.dispatch('auth/clearUser');
             this.$router.push({ name: 'login' });
           }
         } else {
-          this.$router.push({ name: 'login' });
+        //   // this.$router.push({ name: 'login' });
         }
       }
     },

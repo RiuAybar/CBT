@@ -24,6 +24,8 @@ export default {
     onMounted(() => {
       nextTick(() => {
         // Dinámicamente importa el script
+        // import('../../asset/css/app.css');
+        import('../../asset/css/light.css');
         import('../../asset/js/app.js');
         // import('../../asset/js/settings.js');
         // import('../../asset/js/Modals_AdminKit.js');

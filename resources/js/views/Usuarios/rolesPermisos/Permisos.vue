@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
 
         <Modal size="lg" ref="modalPermiso" id="modal-permiso"
             :title="Permiso.id ? 'Editar Permiso' : 'Agregar Permiso'">
@@ -89,7 +89,7 @@ export default {
     name: 'Permisos',
     components: {
         EasyDataTable,
-        Modal
+        Modal,
     },
     data() {
         return {

@@ -4,6 +4,7 @@
   
       <input v-model="busqueda" placeholder="Buscar en servidor..." class="form-control mb-3" />
   
+
       <EasyDataTable
         :headers="headers"
         :items="usuarios"

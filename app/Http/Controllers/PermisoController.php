@@ -19,7 +19,8 @@ class PermisoController extends Controller
         $query = Permission::query();
 
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%' . $search . '%')
+            ->limit(5);
         }
         return response()->json($query->orderBy('id', 'desc')->get(['id','name']), 200);
     }
