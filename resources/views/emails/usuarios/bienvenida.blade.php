@@ -867,24 +867,11 @@
                                                                                                                             style="line-height: 200%; text-align: center;">
                                                                                                                             <span
                                                                                                                                 style="font-size: 14px; font-family: Arial, Helvetica, sans-serif; color: #000000; line-height: 200%;">
-                                                                                                                                <p>Has
-                                                                                                                                    sido
-                                                                                                                                    registrado
-                                                                                                                                    exitosamente
-                                                                                                                                    en
-                                                                                                                                    nuestro
-                                                                                                                                    sistema.
-                                                                                                                                </p>
-
-                                                                                                                                <p>Para
-                                                                                                                                    poder
-                                                                                                                                    acceder,
-                                                                                                                                    primero
-                                                                                                                                    necesitas
-                                                                                                                                    configurar
-                                                                                                                                    tu
-                                                                                                                                    contraseña.
-                                                                                                                                </p>
+                                                                                                                                @foreach ($mensaje as $item)
+                                                                                                                                    <p>
+                                                                                                                                        {{ $item }}
+                                                                                                                                    </p>
+                                                                                                                                @endforeach
                                                                                                                             </span>
                                                                                                                         </div>
                                                                                                                     </td>

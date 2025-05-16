@@ -29,13 +29,13 @@
             <EasyDataTable :headers="headers" :items="Usuarios" :loading="cargando" :rows-per-page="5"
               table-class="table table-hover my-0">
               <!-- 🎯 Columna de acciones personalizada -->
-              <template #item-action="{ id, name, email }">
+              <template #item-action="{ id, name, email, estatus }">
                 <div class="btn-group">
                   <button class="btn btn-sm btn-outline-primary me-1" @click="editarUsuario(id)">
                     Editar
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" @click="eliminarUsuario(id, name, email)">
-                    Estatus
+                  <button class="btn btn-sm btn-outline-danger" @click="cambiarEstatus(id, name, email)">
+                    {{ estatusCapitalizado(estatus) }}
                   </button>
                 </div>
               </template>
@@ -64,7 +64,7 @@
               <label class="form-label" for="inputEmail4">Email</label>
               <input v-model="Usuario.email" type="email" class="form-control" id="inputEmail4" placeholder="Email">
               <div v-if="errores.email" class="form-text text-danger">
-                  {{ errores.email[0] }}
+                {{ errores.email[0] }}
               </div>
             </div>
 
@@ -75,7 +75,7 @@
                 <option value="deshabilitado">Deshabilitado</option>
               </select>
               <div v-if="errores.estatus" class="form-text text-danger">
-                  {{ errores.estatus[0] }}
+                {{ errores.estatus[0] }}
               </div>
             </div>
 
@@ -84,7 +84,7 @@
               <input v-model="Usuario.password" type="password" class="form-control" id="password"
                 placeholder="Password">
               <div v-if="errores.password" class="form-text text-danger">
-                  {{ errores.password[0] }}
+                {{ errores.password[0] }}
               </div>
             </div>
 
@@ -163,7 +163,7 @@ export default {
     async consultar(filtro = '') {
       this.cargando = true;
       try {
-        const res = await api.get('/gestion/User', {
+        const res = await api.get('/gestion/user', {
           params: { search: filtro }
         });
         this.Usuarios = res.data;
@@ -188,7 +188,7 @@ export default {
 
     async agregarUsuario() {
       try {
-        await api.post('/gestion/User', this.Usuario);
+        await api.post('/gestion/user', this.Usuario);
         this.consultar();
         this.$refs.modalUsuario.cerrar();
 
@@ -216,6 +216,7 @@ export default {
     },
 
     editarUsuario(id) {
+      console.log(this.Usuarios);
       this.errores = {}; // 🔄 Limpia los errores
       const encontrado = this.Usuarios.find(p => p.id === id);
       if (encontrado) {
@@ -226,7 +227,7 @@ export default {
 
     async guardarCambios(id) {
       try {
-        await api.put(`/Permission/${id}`, this.Usuario);
+        await api.put(`/gestion/user/${id}`, this.Usuario);
 
         this.consultar();
         this.$refs.modalUsuario.cerrar();
@@ -239,8 +240,8 @@ export default {
           password: '',
           password_confirmation: '',
         };
-        this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
         this.errores = {}; // 🔄 Limpia los errores
+        this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
       } catch (error) {
 
         if (error.response && error.response.status === 422) {
@@ -250,6 +251,19 @@ export default {
           this.$swal.fire('Error', '❌ No se pudo agregar el registro', 'error');
         }
 
+      }
+    },
+    estatusCapitalizado(Estatus) {
+      return Estatus.charAt(0).toUpperCase() + Estatus.slice(1);
+    },
+    async cambiarEstatus(id) {
+      try {
+        await api.put(`/gestion/user/${id}/Estatus`,{});
+        this.consultar();
+        this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
+      } catch (error) {
+        console.error(error);
+        this.$swal.fire('Error', '❌ No se pudo agregar el registro', 'error');
       }
     }
   },

@@ -41,7 +41,9 @@
                 </div>
               </div>
             </div>
-
+            <div class="text-center mb-3">
+              <router-link to="/restablecer/contrasena">¿Has olvidado tu contraseña?</router-link>
+						</div>
           </div>
         <!-- </div>
       </div>

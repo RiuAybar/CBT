@@ -1,21 +1,21 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RestablecerContraseñaController;
-use App\Http\Controllers\PermisoController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\RestablecerContraseñaController;
 
-use Illuminate\Support\Facades\Route;
 
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
-
 Route::post('/password/reset',[RestablecerContraseñaController::class, 'restablecer']);
+
+Route::post('/sendResetLink',[ForgotPasswordController::class,'sendResetLink']);
 
 Route::middleware('auth:api')->prefix('/')->group(function () {
 
@@ -28,7 +28,8 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     Route::post('/roles/{role}/asignarPermiso', [RolController::class, 'asignarPermiso']);
 
     Route::prefix('/gestion')->group(function () {
-        Route::resource('User',UsuarioController::class);
+        Route::resource('user',UsuarioController::class);
+        Route::put('user/{User}/Estatus',[UsuarioController::class,'Estatus']);
     });
     // Route::resource('/usuarios', UserController::class)->except(['create', 'show','edit'])->parameters([
     //     'usuarios'

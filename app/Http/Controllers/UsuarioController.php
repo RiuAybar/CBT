@@ -26,7 +26,7 @@ class UsuarioController extends Controller
                 ->orWhere('email', 'like', '%' . $search . '%')
                 ->limit(5);
         }
-        return response()->json($query->orderBy('id', 'desc')->get(['id', 'name', 'email']), 200);
+        return response()->json($query->orderBy('id', 'desc')->get(['id', 'name', 'email', 'estatus']), 200);
     }
 
     /**
@@ -55,15 +55,25 @@ class UsuarioController extends Controller
             $user = User::create($data);
 
             $token = Password::createToken($user);
-
-            Mail::to($user->email)->send(new BienvenidaCrearPassword($user, $token));
+            $mensaje = [
+                'Has sido registrado exitosamente en nuestro sistema.',
+                'Para poder acceder, primero necesitas configurar tu contraseña.'
+            ];
+            Mail::to($user->email)->send(
+                new BienvenidaCrearPassword(
+                    $user,
+                    $token,
+                    'Crear contraseña',
+                    $mensaje
+                )
+            );
 
             DB::commit();
             return response()->json(['message' => 'Usuario creado correctamente'], 201);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
-            return response()->json($e->getMessage(),500);
+            return response()->json($e->getMessage(), 500);
             return response()->json("No se creo el registro, consulte al administrador", 500);
         }
     }
@@ -87,16 +97,43 @@ class UsuarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UsuarioRequest $request, Int $user)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->validated();
+            // Encriptar contraseña si viene
+            if (!empty($data['password'])) {
+                $data['password'] = bcrypt($data['password']);
+            }
+            $User = User::findOrFail($user);
+            $User->update($data);
+            DB::commit();
+            return response()->json(['message' => 'Usuario creado correctamente'], 201);
+        } catch (\Exception $e) {
+            //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
+            DB::rollBack();
+            // return response()->json($e->getMessage(), 500);
+            return response()->json("No se modifico el registro, consulte al administrador", 500);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Actualizar Estatus del usuario
      */
-    public function destroy(string $id)
+    public function Estatus(User $User)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $nuevoEstatus = $User->estatus === 'habilitado' ? 'deshabilitado' : 'habilitado';
+            $User->update([ 'estatus' => $nuevoEstatus ]);
+            DB::commit();
+            return response()->json(['message' => 'Estatus modificado correctamente'], 201);
+        } catch (\Exception $e) {
+            //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
+            DB::rollBack();
+            // return response()->json($e->getMessage(), 500);
+            return response()->json(['error' => 'No se actualizó el registro, consulte al administrador', 'detalle' => $e->getMessage()], 500);
+        }
     }
 }

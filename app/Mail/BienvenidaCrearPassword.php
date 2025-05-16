@@ -13,16 +13,17 @@ class BienvenidaCrearPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $token;
+    public $token, $subject, $user, $mensaje;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($user, $token)
+    public function __construct($user, $token, $subject, $mensaje)
     {
         $this->user = $user;
         $this->token = $token;
+        $this->subject = $subject;
+        $this->mensaje = $mensaje;
     }
 
     /**
@@ -31,7 +32,7 @@ class BienvenidaCrearPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Bienvenida Crear Password',
+            subject: $this->subject,
         );
     }
 
@@ -44,26 +45,7 @@ class BienvenidaCrearPassword extends Mailable
             ->with([
                 'user' => $this->user,
                 'url' => $url,
+                'mensaje' => $this->mensaje,
             ]);
     }
-
-    /**
-     * Get the message content definition.
-     */
-    // public function content(): Content
-    // {
-    //     return new Content(
-    //         markdown: 'emails.usuarios.bienvenida',
-    //     );
-    // }
-
-    // /**
-    //  * Get the attachments for the message.
-    //  *
-    //  * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-    //  */
-    // public function attachments(): array
-    // {
-    //     return [];
-    // }
 }

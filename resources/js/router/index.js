@@ -9,6 +9,7 @@ import Roles from '../views/Usuarios/rolesPermisos/Roles.vue';
 import RolesPermisos from '../views/Usuarios/rolesPermisos/RolesPermisos.vue';
 import Login from '../views/auth/Login.vue';
 import RegistrarPassword from '../views/auth/RegistrarPassword.vue';
+import RestablecerPassword from '../views/auth/RestablecerPassword.vue';
 
 const routes = [
   {
@@ -17,6 +18,7 @@ const routes = [
     meta: { guest: true },
     children: [
       { path: '', name: 'login', component: Login, meta: { title: 'Inicio' }, meta: { guest: true }  },
+      { path: '/restablecer/contrasena', name: 'restablecerContraseña', component: RestablecerPassword, meta: { title: 'Restablecer Contraseña' }, meta: { guest: true }  },
       {
         path: 'registrar/password/:token', // ✅ sin "/"
         name: 'registrar-password',
