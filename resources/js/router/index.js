@@ -11,6 +11,12 @@ import Login from '../views/auth/Login.vue';
 import RegistrarPassword from '../views/auth/RegistrarPassword.vue';
 import RestablecerPassword from '../views/auth/RestablecerPassword.vue';
 
+import Grados from '../views/Logistica/Grados/Grados.vue';
+import Grupos from '../views/Logistica/Grados/Grupos.vue';
+import Materias from '../views/Logistica/Grados/Materias.vue';
+import ConfiguracionUsuarios from '../views/Usuarios/Configuracion/ConfiguracionUsuarios.vue';
+// import Lista from '../views/Listas/Lista.vue';
+
 const routes = [
   {
     path: '/login',
@@ -43,6 +49,11 @@ const routes = [
       { path: 'permisos', name: 'permisos', component: Permisos, meta: { title: 'Permisos' } },
       { path: 'roles', name: 'roles', component: Roles, meta: { title: 'Roles' } },
       { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
+      // { path: 'lista', name: 'lista', component: Lista, meta: { title: 'Lista de asistencia.' } },
+      { path: 'grados', name: 'grados', component: Grados, meta: { title: 'Lista de Grados.' } },
+      { path: 'grupos', name: 'grupos', component: Grupos, meta: { title: 'Lista de grupos.' } },
+      { path: 'materias', name: 'materias', component: Materias, meta: { title: 'Lista de materias.' } },
+      { path: 'perfil', name: 'perfil', component: ConfiguracionUsuarios, meta: { title: 'Configuración de mi perfil.' } },
     ]
   }
 ];

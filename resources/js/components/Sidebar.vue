@@ -37,7 +37,7 @@
 					</ul>
 				</li>
 
-				<li class="sidebar-item" :class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
+				<li class="sidebar-item" :class="{ active: isActive(['/users']) }">
 					<a data-bs-target="#dashboardsUser" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-person-circle me-2"></i>
 						<span class="align-middle">
@@ -48,12 +48,51 @@
 						<li class="sidebar-item" :class="{ active: isActive('/users') }">
 							<router-link to="/users" class='sidebar-link'>Usuarios</router-link>
 						</li>
-						<li class="sidebar-item" :class="{ active: isActive(['/roles',`/roles/${this.$route.params.id}/edit`]) }">
+						<!-- <li class="sidebar-item" :class="{ active: isActive(['/roles',`/roles/${this.$route.params.id}/edit`]) }">
 							<router-link to="/roles" class='sidebar-link'>Roles</router-link>
-						</li>
+						</li> -->
 					</ul>
 				</li>
 
+				<li class="sidebar-item" :class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
+					<!-- <a data-bs-target="#dashboardsLista" data-bs-toggle="collapse" class="sidebar-link collapsed">
+						<i class="bi bi-person-circle me-2"></i>
+						<span class="align-middle">
+							Listas
+						</span>
+					</a>
+					<ul id="dashboardsLista" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+						<li class="sidebar-item" :class="{ active: isActive('/lista') }">
+							<router-link to="/lista" class='sidebar-link'>Lista</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/roles',`/roles/${this.$route.params.id}/edit`]) }">
+							<router-link to="/roles" class='sidebar-link'>Roles</router-link>
+						</li>
+					</ul> -->
+				</li>
+
+				<li class="sidebar-header">
+					
+				</li>
+				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias']) }">
+					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
+						<i class="bi bi-gear-fill me-2"></i>
+						<span class="align-middle">
+							Configuraciones
+						</span>
+					</a>
+					<ul id="componentes" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+						<li class="sidebar-item" :class="{ active: isActive('/grados') }">
+							<router-link to="/grados" class='sidebar-link'>Grados</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/grupos']) }">
+							<router-link to="/grupos" class='sidebar-link'>Grupos</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/materias']) }">
+							<router-link to="/materias" class='sidebar-link'>Materias</router-link>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 	</nav>

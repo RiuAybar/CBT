@@ -7,15 +7,17 @@ use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\RestablecerContraseñaController;
-
-
+use App\Http\Controllers\GradoController;
+use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\ListaController;
+use App\Http\Controllers\MateriaController;
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
-Route::post('/password/reset',[RestablecerContraseñaController::class, 'restablecer']);
+Route::post('/password/reset', [RestablecerContraseñaController::class, 'restablecer']);
 
-Route::post('/sendResetLink',[ForgotPasswordController::class,'sendResetLink']);
+Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']);
 
 Route::middleware('auth:api')->prefix('/')->group(function () {
 
@@ -28,9 +30,19 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     Route::post('/roles/{role}/asignarPermiso', [RolController::class, 'asignarPermiso']);
 
     Route::prefix('/gestion')->group(function () {
-        Route::resource('user',UsuarioController::class);
-        Route::put('user/{User}/Estatus',[UsuarioController::class,'Estatus']);
+        Route::resource('user', UsuarioController::class);
+        Route::put('user/{User}/Estatus', [UsuarioController::class, 'Estatus']);
     });
+    Route::prefix('/Estudiuante')->group(function () {
+        Route::resource('Lista', ListaController::class);
+    });
+
+    Route::prefix('/Logistica')->group(function () {
+        Route::resource('Grado', GradoController::class)->only(['index', 'store', 'update']);
+        Route::resource('Grupo', GrupoController::class)->only(['index', 'store', 'update']);
+        Route::resource('Materia', MateriaController::class)->only(['index', 'store', 'update'])->parameters(['Materia'=>'Materia']);
+    });
+
     // Route::resource('/usuarios', UserController::class)->except(['create', 'show','edit'])->parameters([
     //     'usuarios'
     //     => 

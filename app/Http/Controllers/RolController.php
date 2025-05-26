@@ -107,19 +107,19 @@ class RolController extends Controller
     {
         $search = $request->query('search');
         $data = [];
-        // if($search){
+        if ($search) {
             // Obtener IDs de permisos ya asignados
             $permisosAsignados = $Role->permissions()->pluck('id')->toArray();
-    
+
             // Evitar permisos ya asignados
             $query = Permission::whereNotIn('id', $permisosAsignados);
-    
+
             if ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->limit(5);
             }
             $data = $query->orderBy('id', 'desc')->get(['id', 'name']);
-        // }
+        }
 
         return response()->json(
             $data,
@@ -130,12 +130,18 @@ class RolController extends Controller
     // POST /api/roles/{role}/asignar-permiso
     public function asignarPermiso(Request $request, Role $role)
     {
-        $request->validate([
-            'permiso_id' => 'required|exists:permissions,id'
-        ]);
-
-        $role->givePermissionTo($request->permiso_id);
-
-        return response()->json(['message' => 'Permiso asignado correctamente'], 200);
+        try {
+            DB::beginTransaction();
+            $request->validate([
+                'permiso_id' => 'required|exists:permissions,id'
+            ]);
+            $role->givePermissionTo($request->permiso_id);
+            DB::commit();
+            return response()->json(['message' => 'Permiso asignado correctamente'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // return response()->json($e->getMessage(),500);
+            return response()->json("No se agrego el permiso, consulte al administrador", 500);
+        }
     }
 }
