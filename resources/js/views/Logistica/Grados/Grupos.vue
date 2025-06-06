@@ -1,5 +1,5 @@
 <template>
-    <main class="content">
+    <div>
         <div class="container-fluid p-0">
             <button @click="crear()" class="btn btn-primary float-end mt-n1">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
@@ -73,7 +73,7 @@
             </template>
         </Modal>
 
-    </main>
+    </div>
 </template>
 
 <script>

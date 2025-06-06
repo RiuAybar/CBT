@@ -3,9 +3,12 @@
     <Sidebar />
     <div class="main">
       <Navbar />
-      <main>
+      <main class="content">
         <router-view />
       </main>
+      <Footer />
+
+      
     </div>
   </div>
 </template>
@@ -15,10 +18,13 @@ import { onMounted, nextTick } from 'vue';
 import Navbar from '../../components/Navbar.vue';
 import Sidebar from '../../components/Sidebar.vue';
 
+import Footer from '../../components/Footer.vue';
+
 export default {
   components: {
     Navbar,
     Sidebar,
+    Footer,
   },
   setup() {
     onMounted(() => {

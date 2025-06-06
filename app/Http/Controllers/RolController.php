@@ -144,4 +144,22 @@ class RolController extends Controller
             return response()->json("No se agrego el permiso, consulte al administrador", 500);
         }
     }
+
+    public function buscarRoles(Request $request)
+    {
+        $search = $request->query('search');
+        $data = [];
+        if ($search) {
+            $query = Role::query();
+            $data = $query->where('name', 'like', '%' . $search . '%')
+                ->limit(5)
+                ->orderBy('id', 'desc')
+                ->get(['id', 'name']);
+        }
+
+        return response()->json(
+            $data,
+            200
+        );
+    }
 }

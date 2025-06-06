@@ -24,9 +24,24 @@ class UsuarioController extends Controller
         if ($search) {
             $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('estatus', 'like', '%' . $search . '%')
+                ->orWhere('telefono', 'like', '%' . $search . '%')
+                ->orWhere('domicilio', 'like', '%' . $search . '%')
+                ->orWhere('localidadColonia', 'like', '%' . $search . '%')
+                ->orWhereHas('roles', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                })
                 ->limit(5);
         }
-        return response()->json($query->orderBy('id', 'desc')->get(['id', 'name', 'email', 'estatus']), 200);
+        return response()->json($query->orderBy('id', 'desc')->get([
+            'id',
+            'name',
+            'email',
+            'estatus',
+            'telefono',
+            'domicilio',
+            'localidadColonia'
+        ]), 200);
     }
 
     /**
@@ -44,15 +59,16 @@ class UsuarioController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $data = $request->validated();
-
             // Encriptar contraseña si viene
             if (!empty($data['password'])) {
                 $data['password'] = bcrypt($data['password']);
             }
-
+            // Crear usuario
             $user = User::create($data);
+
+            // Asignar rol
+            $user->roles()->sync([$data['RolId']]);
 
             $token = Password::createToken($user);
             $mensaje = [
@@ -108,8 +124,10 @@ class UsuarioController extends Controller
             }
             $User = User::findOrFail($user);
             $User->update($data);
+            // Reemplazar todos los roles con el nuevo rol enviado
+            $User->roles()->sync([$data['RolId']]);
             DB::commit();
-            return response()->json(['message' => 'Usuario creado correctamente'], 201);
+            return response()->json(['message' => 'Usuario actualizado correctamente.'], 201);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
@@ -126,7 +144,7 @@ class UsuarioController extends Controller
         try {
             DB::beginTransaction();
             $nuevoEstatus = $User->estatus === 'habilitado' ? 'deshabilitado' : 'habilitado';
-            $User->update([ 'estatus' => $nuevoEstatus ]);
+            $User->update(['estatus' => $nuevoEstatus]);
             DB::commit();
             return response()->json(['message' => 'Estatus modificado correctamente'], 201);
         } catch (\Exception $e) {
@@ -136,4 +154,6 @@ class UsuarioController extends Controller
             return response()->json(['error' => 'No se actualizó el registro, consulte al administrador', 'detalle' => $e->getMessage()], 500);
         }
     }
+
+    
 }

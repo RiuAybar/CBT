@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('estatus',14)->default('habilitado');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('telefono', 20)->nullable();
+            $table->string('domicilio', 100)->nullable();
+            $table->string('localidadColonia', 200)->nullable();
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();

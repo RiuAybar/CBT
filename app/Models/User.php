@@ -14,6 +14,8 @@ class User extends Authenticatable implements JWTSubject
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
 
+    // protected $dateFormat = 'Y-m-d\TH:i:s.v';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,9 +24,15 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'password',
         'estatus',
+        'telefono',
+        'domicilio',
+        'localidadColonia',
+        'password',
     ];
+
+    protected $appends = ['rol', 'RolId'];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -34,6 +42,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'roles',
     ];
 
     /**
@@ -62,5 +71,20 @@ class User extends Authenticatable implements JWTSubject
     public function estudiante()
     {
         return $this->hasOne(Estudiante::class);
+    }
+
+    public function image()
+    {
+        return $this->morphOne(\App\Models\Image::class, 'imageable');
+    }
+
+    public function getRolAttribute()
+    {
+        $rol = $this->roles->first()?->name;
+        return $rol ? ucfirst(strtolower($rol)) : null;
+    }
+    public function getRolIdAttribute()
+    {
+        return $this->roles->first()?->id ?? null;
     }
 }

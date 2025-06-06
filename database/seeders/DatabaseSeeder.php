@@ -2,14 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\Grado;
 use App\Models\Grupo;
-use App\Models\Estudiante;
-use App\Models\Asistencia;
+use App\Models\Image;
 use App\Models\Materia;
-use App\Models\User;
+use App\Models\Asistencia;
+use App\Models\Carrera;
+use App\Models\Estudiante;
+use App\Models\Semestre;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use App\Models\RegistroHorasDocencia;
 use Spatie\Permission\Models\Permission;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -38,15 +42,30 @@ class DatabaseSeeder extends Seeder
         // Asignar rol a un usuario
         // $user = User::find(1);
         $user->assignRole('admin');
+        //imagen
+        // $user->image()->save(Image::factory()->create());
 
+
+        Carrera::factory()->count(10)->create();
 
         // estudiantes 
 
         // Crear el rol de estudiante si no existe
         $roleEstudiante = Role::firstOrCreate(['name' => 'estudiante']);
 
+        $roleOrientador = Role::firstOrCreate(['name' => 'orientador']);
+
+        // Genera meses y horas aleatorios
+        $this->call([
+            RegistroHorasDocenciaSeeder::class,
+        ]);
+        // RegistroHorasDocencia::factory()->count(6)->create();
+
         // Crear 6 grados (1° a 6°)
         Grado::factory()->count(6)->create();
+
+        // Crear 6 semestre (1° a 6°)
+        Semestre::factory()->count(6)->create();
 
         // Crear 3 grupos (A, B, C)
         Grupo::factory()->count(3)->create();
@@ -59,6 +78,8 @@ class DatabaseSeeder extends Seeder
             ->create()
             ->each(function ($user) use ($roleEstudiante) {
                 $user->assignRole($roleEstudiante); // asignar rol
+
+                // $user->image()->save(Image::factory()->create());
 
                 $estudiante = Estudiante::factory()->create([
                     'user_id' => $user->id,

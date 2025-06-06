@@ -74,7 +74,7 @@
 				<li class="sidebar-header">
 					
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias']) }">
+				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias','/semestres','/carreras']) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
@@ -90,6 +90,15 @@
 						</li>
 						<li class="sidebar-item" :class="{ active: isActive(['/materias']) }">
 							<router-link to="/materias" class='sidebar-link'>Materias</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/semestres']) }">
+							<router-link to="/semestres" class='sidebar-link'>Semestres</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/carreras']) }">
+							<router-link to="/carreras" class='sidebar-link'>Carreras</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/horasdocente']) }">
+							<router-link to="/horasdocente" class='sidebar-link'>Registro Horas Docente</router-link>
 						</li>
 					</ul>
 				</li>

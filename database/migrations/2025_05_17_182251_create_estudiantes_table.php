@@ -15,7 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('grado_id')->constrained()->onDelete('restrict');
+             // Primero define la columna grado_id
+            // $table->unsignedBigInteger('grado_id');
+            // $table->foreign('grado_id')->references('id')->on('grados');
+
             $table->foreignId('grupo_id')->constrained()->onDelete('restrict');
+            // grupo_id con clave foránea sin onDelete restrict
+            // $table->unsignedBigInteger('grupo_id');
+            // $table->foreign('grupo_id')->references('id')->on('grupos');
+
             $table->integer('listaNumero')->nullable(); // Número en lista
             $table->timestamps();
         });

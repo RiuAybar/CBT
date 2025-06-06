@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Grado;
+use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\GradoRequest;
+use App\Http\Requests\CarreraRequest;
 
-class GradoController extends Controller
+class CarreraController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class GradoController extends Controller
     {
         $search = $request->query('search');
 
-        $query = Grado::query();
+        $query = Carrera::query();
 
         if ($search) {
             $query->where('nombre', 'like', '%' . $search . '%')
@@ -36,13 +36,13 @@ class GradoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(GradoRequest $request)
+    public function store(CarreraRequest $request)
     {
         try {
             DB::beginTransaction();
-            $Grado = Grado::create($request->validated());
+            $Carrera = Carrera::create($request->validated());
             DB::commit();
-            return response()->json($Grado, 201);
+            return response()->json($Carrera, 201);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
@@ -54,7 +54,7 @@ class GradoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Carrera $carrera)
     {
         //
     }
@@ -62,7 +62,7 @@ class GradoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Carrera $carrera)
     {
         //
     }
@@ -70,13 +70,13 @@ class GradoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(GradoRequest $request, Grado $Grado)
+    public function update(CarreraRequest $request, Carrera $Carrera)
     {
         try {
             DB::beginTransaction();
-            $Grado->update($request->validated());
+            $Carrera->update($request->validated());
             DB::commit();
-            return response()->json($Grado, 200);
+            return response()->json($Carrera, 200);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
@@ -88,7 +88,7 @@ class GradoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Carrera $carrera)
     {
         //
     }

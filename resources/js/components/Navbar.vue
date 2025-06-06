@@ -283,18 +283,14 @@
                     </a>
 
                     <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-
-                        <span class="text-dark">{{ getUser?.name }}</span>
+                        <img :src="getUser?.avatar_url || `/storage/avatars/Def/avatar.jpg`" class="avatar img-fluid rounded me-1" :alt="getUser?.name" />
+                        <span class="text-dark">{{ getUser?.user?.name || getUser?.name }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <router-link class="dropdown-item" to="/perfil">
                             <i class="align-middle me-1" data-feather="user"></i>
                             Perfil
                         </router-link>
-                        <!-- <a class="dropdown-item" href="pages-profile.html">
-                            <i class="align-middle me-1" data-feather="user"></i>
-                            Profile
-                        </a> -->
                         <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i>
                             Analytics</a>
                         <div class="dropdown-divider"></div>
@@ -320,8 +316,19 @@ export default {
     name: 'Navbar',
     data() {
         return {
-            isCollapsed: localStorage.getItem('isCollapsed') === 'true'
+            isCollapsed: localStorage.getItem('isCollapsed') === 'true',
+            user: {},
         };
+    },
+    watch: {
+        getUser: {
+            handler(newVal) {
+                if (newVal) {
+                    this.user = { ...newVal };
+                }
+            },
+            immediate: true,
+        }
     },
     methods: {
         async logout() {
@@ -334,6 +341,7 @@ export default {
         collapseMenu() {
             this.toggleCollapsed();
         }
+        
     },
     computed: {
         ...mapGetters('auth', ['isAuthenticated', 'getUser']),

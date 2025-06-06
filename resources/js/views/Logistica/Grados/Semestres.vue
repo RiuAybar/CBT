@@ -3,11 +3,11 @@
         <div class="container-fluid p-0">
             <button @click="crear()" class="btn btn-primary float-end mt-n1">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
-                Agregar Grados
+                Agregar Semestre
             </button>
             <h1 class="h3 mb-3">
                 <strong>
-                    Grados
+                    Semestres
                 </strong>
             </h1>
             <div class="row">
@@ -17,7 +17,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h5 class="card-title mb-0">
-                                        Lista de Grados
+                                        Lista de Semestres
                                     </h5>
                                 </div>
                                 <div class="col-sm-6">
@@ -27,7 +27,7 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Grados" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headers" :items="Semestres" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
                             <template #item-action="{ id, nombre }">
@@ -44,14 +44,14 @@
             </div>
         </div>
 
-        <Modal size="lg" ref="modalGrados" id="modal-Grado"
-            :title="Grado.id ? 'Editar Grado' : 'Agregar Grado'">
+        <Modal size="lg" ref="modalSemestre" id="modal-semestre"
+            :title="Semestre.id ? 'Editar Semestre' : 'Agregar Semestre'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
                 <form>
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Grado</label>
-                        <input v-model="Grado.nombre" type="text" class="form-control" id="nombre"
+                        <label for="nombre" class="form-label">Semestre</label>
+                        <input v-model="Semestre.nombre" type="text" class="form-control" id="nombre"
                             aria-describedby="Nombre">
                         <div v-if="errores.nombre" class="form-text text-danger">
                             {{ errores.nombre[0] }}
@@ -62,7 +62,7 @@
 
             <!-- Footer dinámico: slot con nombre -->
             <template #footer>
-                <button v-if="Grado.id" class="btn btn-success" @click="guardarCambios(Grado.id)">
+                <button v-if="Semestre.id" class="btn btn-success" @click="guardarCambios(Semestre.id)">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Guardar Cambios
                 </button>
@@ -85,7 +85,7 @@ import EasyDataTable from 'vue3-easy-data-table';
 
 
 export default {
-    name: 'Grados',
+    name: 'Semestres',
     components: {
         EasyDataTable,
         Modal
@@ -97,9 +97,9 @@ export default {
                 { text: 'Nombre', value: 'nombre' },
                 { text: 'Acciones', value: 'action' },
             ],
-            Grados: [],
+            Semestres: [],
             cargando: false,
-            Grado: {
+            Semestre: {
                 id: null,
                 nombre: '',
             },
@@ -120,10 +120,10 @@ export default {
         async consultar(filtro = '') {
             this.cargando = true;
             try {
-                const res = await api.get('/Logistica/Grado', {
+                const res = await api.get('/Logistica/Semestre', {
                     params: { search: filtro }
                 });
-                this.Grados = res.data;
+                this.Semestres = res.data;
             } catch (error) {
                 console.error('Error al consultar:', error);
             } finally {
@@ -132,20 +132,20 @@ export default {
         },
         crear() {
             this.errores = {}; // 🔄 Limpia los errores
-            this.Grado = {
+            this.Semestre = {
                 id: null,
                 nombre: '',
             };
-            this.$refs.modalGrados.abrir();
+            this.$refs.modalSemestre.abrir();
         },
 
         async agregar() {
             try {
-                await api.post('/Logistica/Grado', this.Grado);
+                await api.post('/Logistica/Semestre', this.Semestre);
                 this.consultar();
-                this.$refs.modalGrados.cerrar();
+                this.$refs.modalSemestre.cerrar();
 
-                this.Grado = {
+                this.Semestre = {
                     id: null,
                     nombre: ''
                 };
@@ -164,23 +164,23 @@ export default {
         },
 
         editar(id) {
-            console.log(id, this.Grados);
+            console.log(id, this.Semestres);
             this.errores = {}; // 🔄 Limpia los errores
-            const encontrado = this.Grados.find(p => p.id === id);
+            const encontrado = this.Semestres.find(p => p.id === id);
             if (encontrado) {
-                this.Grado = { ...encontrado };
-                this.$refs.modalGrados.abrir();
+                this.Semestre = { ...encontrado };
+                this.$refs.modalSemestre.abrir();
             }
         },
 
         async guardarCambios(id) {
             try {
-                await api.put(`/Logistica/Grado/${id}`, this.Grado);
+                await api.put(`/Logistica/Semestre/${id}`, this.Semestre);
 
                 this.consultar();
-                this.$refs.modalGrados.cerrar();
+                this.$refs.modalSemestre.cerrar();
 
-                this.Grado = {
+                this.Semestre = {
                     id: null,
                     nombre: ''
                 };

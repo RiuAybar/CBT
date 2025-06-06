@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsuarioRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,57 +22,44 @@ class UsuarioRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('user');
-        $id = is_object($id) ? $id->id : $id;
         return [
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($id),
+                'max:255',
+                // validar que el email sea único excepto para el usuario actual
+                Rule::unique('users')->ignore($this->user()->id),
             ],
 
-            'RolId' => 'required|integer|exists:roles,id',
             'telefono' => 'required|string|max:10|regex:/^[0-9]+$/',
             'domicilio' => 'required|string|max:100',
             'localidadColonia' => 'required|string|max:100',
 
-            'estatus' => 'required|in:habilitado,deshabilitado',
-            'password' => $id
-                ? 'nullable|string|min:8|confirmed'
-                : 'nullable|string|min:8|confirmed',
+            'password_hold' => ['required'],
+            'password' => ['nullable', 'min:6', 'confirmed'],
         ];
     }
+
     public function messages(): array
     {
         return [
-            'name.required' => 'El campo es obligatorio.',
-            'name.max' => 'Excede el número máximo de caracteres.',
-
-            'email.required' => 'El correo es obligatorio.',
-            'email.email' => 'Debe ser un correo válido.',
-            'email.unique' => 'El correo ya está en uso.',
+            'name.required' => 'El nombre es obligatorio.',
+            'name.max' => 'Excede el número maximo de caracteres.',
+            'email.required' => 'El email es obligatorio.',
+            'email.unique' => 'El correo electrónico ya está en uso por otro usuario.',
 
             'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.max' => 'El teléfono no debe tener más de 10 caracteres.',
             'telefono.regex' => 'El teléfono solo debe contener números.',
-
-            'RolId.required' => 'El rol es obligatorio.',
-            'RolId.integer' => 'El rol debe ser un número válido.',
-            'RolId.exists' => 'El rol seleccionado no existe.',
 
             'domicilio.required' => 'El domicilio es obligatorio.',
             'domicilio.max' => 'El domicilio no debe exceder los 100 caracteres.',
 
             'localidadColonia.required' => 'La colonia/localidad es obligatoria.',
             'localidadColonia.max' => 'La colonia/localidad no debe exceder los 100 caracteres.',
-
-            'estatus.required' => 'El estatus es obligatorio.',
-            'estatus.in' => 'El estatus debe ser Habilitado o Deshabilitado.',
-
-            // 'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'El campo de contraseña debe tener al menos 8 caracteres.',
-            'password.confirmed' => 'La confirmación de contraseña no coincide.',
+            'password_hold.required' => 'La contraseña es obligatorio.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ];
     }
 }

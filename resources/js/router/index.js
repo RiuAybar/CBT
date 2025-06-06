@@ -14,8 +14,14 @@ import RestablecerPassword from '../views/auth/RestablecerPassword.vue';
 import Grados from '../views/Logistica/Grados/Grados.vue';
 import Grupos from '../views/Logistica/Grados/Grupos.vue';
 import Materias from '../views/Logistica/Grados/Materias.vue';
+import Semestres from '../views/Logistica/Grados/Semestres.vue';
+import Carreras from '../views/Logistica/Grados/Carreras.vue';
+import HorasDocente from '../views/Logistica/Grados/HorasDocente.vue';
+
 import ConfiguracionUsuarios from '../views/Usuarios/Configuracion/ConfiguracionUsuarios.vue';
 // import Lista from '../views/Listas/Lista.vue';
+
+import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
 
 const routes = [
   {
@@ -52,8 +58,14 @@ const routes = [
       // { path: 'lista', name: 'lista', component: Lista, meta: { title: 'Lista de asistencia.' } },
       { path: 'grados', name: 'grados', component: Grados, meta: { title: 'Lista de Grados.' } },
       { path: 'grupos', name: 'grupos', component: Grupos, meta: { title: 'Lista de grupos.' } },
+      { path: 'semestres', name: 'semestres', component: Semestres, meta: { title: 'Lista de semestres.' } },
       { path: 'materias', name: 'materias', component: Materias, meta: { title: 'Lista de materias.' } },
+      
+      { path: 'carreras', name: 'carreras', component: Carreras, meta: { title: 'Lista de carreras.' } },
+      { path: 'horasdocente', name: 'horasdocente', component: HorasDocente, meta: { title: 'Registro de meses y horas.' } },
+
       { path: 'perfil', name: 'perfil', component: ConfiguracionUsuarios, meta: { title: 'Configuración de mi perfil.' } },
+      { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.' } },
     ]
   }
 ];

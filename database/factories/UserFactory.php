@@ -30,6 +30,10 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'estatus' => 'habilitado',
             'remember_token' => Str::random(10),
+            'telefono' => fake()->phoneNumber(), // genera números tipo "+1 (555) 123-4567"
+            'domicilio' => fake()->streetAddress(), // calle con número
+            'localidadColonia' => fake()->city(), // nombre de colonia o localidad
+            'remember_token' => Str::random(10),
         ];
     }
 
@@ -38,7 +42,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

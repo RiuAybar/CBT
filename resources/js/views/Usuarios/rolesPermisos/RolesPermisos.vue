@@ -1,5 +1,5 @@
 <template>
-    <main class="content">
+    <div>
         <div class="container-fluid p-0">
             <div class="row">
                 <div class="col-sm-8">
@@ -17,7 +17,6 @@
                         @change="handleChange" :reduce="option => option.id" class="form-control mb-3"
                         no-options="Seleccione una opción" no-results="No se encontraron resultados"
                         :selectable="option => !option.disabled" />
-
                 </div>
             </div>
             <div class="row">
@@ -52,7 +51,7 @@
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 </template>
 
 <script>
