@@ -6,11 +6,11 @@
       <main class="content">
         <router-view />
       </main>
-      <Footer />
-
+      
       
     </div>
   </div>
+  <Footer />
 </template>
 
 <script>

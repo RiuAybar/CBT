@@ -6,12 +6,17 @@ use App\Models\User;
 use App\Models\Grado;
 use App\Models\Grupo;
 use App\Models\Image;
-use App\Models\Materia;
-use App\Models\Asistencia;
 use App\Models\Carrera;
-use App\Models\Estudiante;
+use App\Models\Materia;
+use App\Models\Parcial;
 use App\Models\Semestre;
+use App\Models\Asistencia;
+use App\Models\Estudiante;
+use App\Models\Evaluacion;
+use App\Models\Seguimiento;
+use App\Models\NotasPorAspecto;
 use Illuminate\Database\Seeder;
+use App\Models\EscalaEvaluativa;
 use Spatie\Permission\Models\Role;
 use App\Models\RegistroHorasDocencia;
 use Spatie\Permission\Models\Permission;
@@ -40,35 +45,45 @@ class DatabaseSeeder extends Seeder
         $role->givePermissionTo([$Permission1, $Permission2]);
 
         // Asignar rol a un usuario
-        // $user = User::find(1);
         $user->assignRole('admin');
+
         //imagen
         // $user->image()->save(Image::factory()->create());
-
 
         Carrera::factory()->count(10)->create();
 
         // estudiantes 
-
         // Crear el rol de estudiante si no existe
         $roleEstudiante = Role::firstOrCreate(['name' => 'estudiante']);
 
         $roleOrientador = Role::firstOrCreate(['name' => 'orientador']);
-
-        // Genera meses y horas aleatorios
-        $this->call([
-            RegistroHorasDocenciaSeeder::class,
+        //Profesor
+        Role::firstOrCreate(['name' => 'profesor']);
+        $Profesor = User::create([
+            'name' => 'Juan Pérez',
+            'email' => 'juan@correo.com',
+            'password' => bcrypt('secret'),
         ]);
-        // RegistroHorasDocencia::factory()->count(6)->create();
 
+        $Profesor->assignRole('profesor');
+
+        // RegistroHorasDocencia::factory()->count(6)->create();
+        
+        Grado::factory()->count(3)->create();
         // Crear 6 grados (1° a 6°)
-        Grado::factory()->count(6)->create();
+        $grados = Grado::all();
+
+        // Crear 3 grupos (1 A, 2 B, 3 C)
+        foreach ($grados as $grado) {
+            Grupo::factory()->count(2)->create([
+                'grado_id' => $grado->id, // ejemplo: 1A y 1B, etc.
+            ]);
+        }
 
         // Crear 6 semestre (1° a 6°)
         Semestre::factory()->count(6)->create();
 
-        // Crear 3 grupos (A, B, C)
-        Grupo::factory()->count(3)->create();
+        Parcial::factory()->count(3)->create();
 
         Materia::factory()->count(3)->create();
 
@@ -100,5 +115,23 @@ class DatabaseSeeder extends Seeder
                     }
                 }
             });
+        $escalas = [
+            ['nombre' => 'Examen', 'abreviatura' => 'Exa'],
+            ['nombre' => 'Actividad', 'abreviatura' => 'Act'],
+            ['nombre' => 'Trabajo en Clase', 'abreviatura' => 'T.C.'],
+            ['nombre' => 'Trabajo en Equipo', 'abreviatura' => 'T.E.'],
+        ];
+        foreach ($escalas as $escala) {
+            EscalaEvaluativa::create($escala);
+        }
+
+        // Asegúrate de tener profesores y materias creadas
+        Seguimiento::factory()->count(10)->create();
+
+        Evaluacion::factory()->count(10)->create();
+
+        EscalaEvaluativa::factory()->count(4)->create();
+
+        NotasPorAspecto::factory()->count(20)->create();
     }
 }

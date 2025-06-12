@@ -2,7 +2,7 @@
     <div>
         <div class="container-fluid p-0">
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     <h1 class="h3 mb-3">
                         Rol
                         <strong>
@@ -11,11 +11,17 @@
                     </h1>
 
                 </div>
+                <div class="col-sm-2">
+                    <router-link to="/roles" class="btn btn-danger mt-2">
+                        <i class="bi bi-arrow-return-left"></i>
+                        Regresar
+                    </router-link>
+                </div>
                 <div class="col-sm-4">
                     <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
                         :loading="selectLoading" placeholder="Seleccione un permiso" @search="selectFetchOptions"
                         @change="handleChange" :reduce="option => option.id" class="form-control mb-3"
-                        no-options="Seleccione una opción" no-results="No se encontraron resultados"
+                        no-options="Permisos" no-results="No se encontraron resultados"
                         :selectable="option => !option.disabled" />
                 </div>
             </div>
@@ -63,6 +69,9 @@ import api from '../../../services/api';
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
+import debounce from 'lodash/debounce';
+
+
 export default {
     name: 'RolesPermisos',
     components: {
@@ -93,7 +102,7 @@ export default {
             selectOptions: [
                 {
                     id: null,
-                    text: 'Seleccione una opción',
+                    text: 'Permisos',
                     disabled: true
                 }
             ],
@@ -104,9 +113,9 @@ export default {
     watch: {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
-            handler(val) {
+            handler: debounce(function (val) {
                 this.consultarPermisos(val);
-            },
+            }, 300),
             immediate: true
         }
     },
@@ -254,7 +263,7 @@ export default {
                     this.selectOptions = [
                         {
                             id: null,
-                            text: 'Seleccione una opción',
+                            text: 'Permisos',
                             disabled: true
                         },
                         ...response.data.map(item => ({

@@ -5,7 +5,8 @@ const store = createStore({
   state() {
     return {
       contador: 0,
-      isCollapsed: false
+      isCollapsed: false,
+      selectedYear: localStorage.getItem('selectedYear') || new Date().getFullYear()
     };
   },
   mutations: {
@@ -20,6 +21,10 @@ const store = createStore({
     },
     TOGGLE_COLLAPSED(state) {
       state.isCollapsed = !state.isCollapsed;
+    },
+    SET_SELECTED_YEAR(state, year) {
+      state.selectedYear = year;
+      localStorage.setItem('selectedYear', year); // persistir en localStorage
     }
   },
   actions: {
@@ -33,11 +38,15 @@ const store = createStore({
     },
     toggleCollapsed({ commit }) {
       commit('TOGGLE_COLLAPSED');
+    },
+    setSelectedYear({ commit }, year) {
+      commit('SET_SELECTED_YEAR', year);
     }
   },
   getters: {
     dobleContador: (state) => state.contador * 2,
-    isCollapsed: state => state.isCollapsed
+    isCollapsed: state => state.isCollapsed,
+    selectedYear: (state) => state.selectedYear
   },
   modules: {
     auth

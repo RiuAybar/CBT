@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Semestre;
+use App\Models\Parcial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\SemestreRequest;
+use App\Http\Requests\ParcialRequest;
 
-class SemestreController extends Controller
+class ParcialController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class SemestreController extends Controller
     {
         $search = $request->query('search');
 
-        $query = Semestre::query();
+        $query = Parcial::query();
 
         if ($search) {
             $query->where('nombre', 'like', '%' . $search . '%')
@@ -36,13 +36,13 @@ class SemestreController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SemestreRequest $request)
+    public function store(ParcialRequest $request)
     {
         try {
             DB::beginTransaction();
-            $Semestre = Semestre::create($request->validated());
+            $Parcial = Parcial::create($request->validated());
             DB::commit();
-            return response()->json($Semestre, 201);
+            return response()->json($Parcial, 201);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
@@ -54,7 +54,7 @@ class SemestreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Semestre $semestre)
+    public function show(Parcial $parcial)
     {
         //
     }
@@ -62,7 +62,7 @@ class SemestreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Semestre $semestre)
+    public function edit(Parcial $parcial)
     {
         //
     }
@@ -70,13 +70,13 @@ class SemestreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(SemestreRequest $request, Semestre $Semestre)
+    public function update(ParcialRequest $request, Parcial $Parcial)
     {
         try {
             DB::beginTransaction();
-            $Semestre->update($request->validated());
+            $Parcial->update($request->validated());
             DB::commit();
-            return response()->json($Semestre, 200);
+            return response()->json($Parcial, 200);
         } catch (\Exception $e) {
             //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
             DB::rollBack();
@@ -88,7 +88,7 @@ class SemestreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Semestre $semestre)
+    public function destroy(Parcial $parcial)
     {
         //
     }

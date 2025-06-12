@@ -72,9 +72,9 @@
 				</li>
 
 				<li class="sidebar-header">
-					
+					conf
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias','/semestres','/carreras']) }">
+				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias','/semestres','/carreras','parciales']) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
@@ -85,9 +85,9 @@
 						<li class="sidebar-item" :class="{ active: isActive('/grados') }">
 							<router-link to="/grados" class='sidebar-link'>Grados</router-link>
 						</li>
-						<li class="sidebar-item" :class="{ active: isActive(['/grupos']) }">
+						<!-- <li class="sidebar-item" :class="{ active: isActive(['/grupos']) }">
 							<router-link to="/grupos" class='sidebar-link'>Grupos</router-link>
-						</li>
+						</li> -->
 						<li class="sidebar-item" :class="{ active: isActive(['/materias']) }">
 							<router-link to="/materias" class='sidebar-link'>Materias</router-link>
 						</li>
@@ -99,6 +99,28 @@
 						</li>
 						<li class="sidebar-item" :class="{ active: isActive(['/horasdocente']) }">
 							<router-link to="/horasdocente" class='sidebar-link'>Registro Horas Docente</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/parciales']) }">
+							<router-link to="/parciales" class='sidebar-link'>Parciales</router-link>
+						</li>
+					</ul>
+				</li>
+				<li class="sidebar-header">
+					Seg
+				</li>
+				<li class="sidebar-item" :class="{ active: isActive(['/seguimiento', '/grupos', '/materias','/semestres','/carreras','parciales']) }">
+					<a data-bs-target="#Seguimiento" data-bs-toggle="collapse" class="sidebar-link collapsed">
+						<i class="bi bi-file-earmark-medical me-2"></i>
+						<span class="align-middle">
+							Seguimiento
+						</span>
+					</a>
+					<ul id="Seguimiento" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+						<li class="sidebar-item" :class="{ active: isActive('/seguimiento') }">
+							<router-link to="/seguimiento" class='sidebar-link'>Seguimiento Parciales</router-link>
+						</li>
+						<li class="sidebar-item" :class="{ active: isActive(['/materias']) }">
+							<router-link to="/materias" class='sidebar-link'>Materias</router-link>
 						</li>
 					</ul>
 				</li>

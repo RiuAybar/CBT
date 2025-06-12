@@ -54,9 +54,9 @@ class GradoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Grado $Grado)
     {
-        //
+        return response()->json($Grado->only(['id', 'nombre']), 200);
     }
 
     /**

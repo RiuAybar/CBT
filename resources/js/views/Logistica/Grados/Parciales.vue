@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crearPermiso()" class="btn btn-primary float-end mt-n1">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
-                Agregar Permiso
+                Agregar Parcial
             </button>
             <h1 class="h3 mb-3">
                 <strong>
-                    Permisos
+                    Parcieles
                 </strong>
             </h1>
             <div class="row">
@@ -17,7 +17,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h5 class="card-title mb-0">
-                                        Lista de Permisos
+                                        Lista de parciales
                                     </h5>
                                 </div>
                                 <div class="col-sm-6">
@@ -27,13 +27,12 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Permisos" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headers" :items="Parciales" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre, descripcion, precio, stock }">
+                            <template #item-action="{ id, nombre }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary"
-                                        @click="editarPermiso(id)">
+                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
                                     </button>
                                 </div>
@@ -43,19 +42,19 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
-        <Modal size="lg" ref="modalPermiso" id="modal-permiso"
-            :title="Permiso.id ? 'Editar Permiso' : 'Agregar Permiso'">
+        <Modal size="lg" ref="modalParcial" id="modal-parcial"
+            :title="Parcial.id ? 'Editar Parcial' : 'Agregar Parcial'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
                 <form>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Permiso</label>
-                        <input v-model="Permiso.name" type="text" class="form-control" id="name"
+                        <label for="nombre" class="form-label">Parcial</label>
+                        <input v-model="Parcial.nombre" type="text" class="form-control" id="nombre"
                             aria-describedby="Nombre">
-                        <div v-if="errores.name" class="form-text text-danger">
-                            {{ errores.name[0] }}
+                        <div v-if="errores.nombre" class="form-text text-danger">
+                            {{ errores.nombre[0] }}
                         </div>
                     </div>
                 </form>
@@ -63,11 +62,11 @@
 
             <!-- Footer dinámico: slot con nombre -->
             <template #footer>
-                <button v-if="Permiso.id" class="btn btn-success" @click="guardarCambios(Permiso.id)">
+                <button v-if="Parcial.id" class="btn btn-success" @click="guardarCambios(Parcial.id)">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Guardar Cambios
                 </button>
-                <button v-else class="btn btn-success" @click="agregarPermiso()">
+                <button v-else class="btn btn-success" @click="agregar()">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Agregar
                 </button>
@@ -87,23 +86,23 @@ import EasyDataTable from 'vue3-easy-data-table';
 import debounce from 'lodash/debounce';
 
 export default {
-    name: 'Permisos',
+    name: 'Parceiales',
     components: {
         EasyDataTable,
-        Modal,
+        Modal
     },
     data() {
         return {
             headers: [
                 { text: 'Id', value: 'id' },
-                { text: 'Nombre', value: 'name' },
+                { text: 'Nombre', value: 'nombre' },
                 { text: 'Acciones', value: 'action' },
             ],
-            Permisos: [],
+            Parciales: [],
             cargando: false,
-            Permiso: {
+            Parcial: {
                 id: null,
-                name: '',
+                nombre: '',
             },
             busqueda: '',
             errores: {},
@@ -113,43 +112,43 @@ export default {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
             handler: debounce(function (val) {
-                this.consultarPermisos(val);
-            }, 300),
+                this.consultar(val);
+            },300),
             immediate: true
         }
     },
     methods: {
-        async consultarPermisos(filtro = '') {
+        async consultar(filtro = '') {
             this.cargando = true;
             try {
-                const res = await api.get('/Permission', {
+                const res = await api.get('/Logistica/Parcial', {
                     params: { search: filtro }
                 });
-                this.Permisos = res.data;
+                this.Parciales = res.data;
             } catch (error) {
                 console.error('Error al consultar:', error);
             } finally {
                 this.cargando = false;
             }
         },
-        crearPermiso() {
+        crear() {
             this.errores = {}; // 🔄 Limpia los errores
-            this.Permiso = {
+            this.Parcial = {
                 id: null,
-                name: '',
+                nombre: '',
             };
-            this.$refs.modalPermiso.abrir();
+            this.$refs.modalParcial.abrir();
         },
 
-        async agregarPermiso() {
+        async agregar() {
             try {
-                await api.post('/Permission', this.Permiso);
-                this.consultarPermisos();
-                this.$refs.modalPermiso.cerrar();
+                await api.post('/Logistica/Parcial', this.Parcial);
+                this.consultar();
+                this.$refs.modalParcial.cerrar();
 
-                this.Permiso = {
+                this.Parcial = {
                     id: null,
-                    name: ''
+                    nombre: ''
                 };
                 this.errores = {}; // 🔄 Limpia los errores
                 this.$swal.fire('Éxito', '✅ Registro agregado correctamente', 'success');
@@ -165,25 +164,25 @@ export default {
             }
         },
 
-        editarPermiso(id) {
+        editar(id) {
             this.errores = {}; // 🔄 Limpia los errores
-            const encontrado = this.Permisos.find(p => p.id === id);
+            const encontrado = this.Parciales.find(p => p.id === id);
             if (encontrado) {
-                this.Permiso = { ...encontrado };
-                this.$refs.modalPermiso.abrir();
+                this.Parcial = { ...encontrado };
+                this.$refs.modalParcial.abrir();
             }
         },
 
         async guardarCambios(id) {
             try {
-                await api.put(`/Permission/${id}`, this.Permiso);
+                await api.put(`/Logistica/Parcial/${id}`, this.Parcial);
 
-                this.consultarPermisos();
-                this.$refs.modalPermiso.cerrar();
+                this.consultar();
+                this.$refs.modalParcial.cerrar();
 
-                this.Permiso = {
+                this.Parcial = {
                     id: null,
-                    name: ''
+                    nombre: ''
                 };
                 this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
                 this.errores = {}; // 🔄 Limpia los errores
@@ -200,7 +199,7 @@ export default {
         }
     },
     mounted() {
-        this.consultarPermisos();
+        this.consultar();
     }
 }
 </script>

@@ -16,9 +16,25 @@ class MateriaFactory extends Factory
      */
     public function definition(): array
     {
-        static $letra = 'A';
+        $materias = [
+            'Matemáticas',
+            'Lengua y Literatura',
+            'Ciencias Naturales',
+            'Ciencias Sociales',
+            'Inglés',
+            'Educación Física',
+            'Arte',
+            'Informática',
+            'Filosofía',
+            'Biología',
+            'Química',
+            'Física',
+            'Historia',
+            'Geografía',
+            'Educación Cívica',
+        ];
         return [
-            'nombre' => $letra++,
+            'nombre' => $this->faker->unique()->randomElement($materias),
         ];
     }
 }

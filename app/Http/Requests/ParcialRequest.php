@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GrupoRequest extends FormRequest
+class ParcialRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,31 +23,23 @@ class GrupoRequest extends FormRequest
     public function rules(): array
     {
         // Id que estamos actualizando (si existe)
-        $Id = $this->route('Grupo') ?? null;
+        $Id = $this->route('Semestre') ?? null;
         return [
             'nombre' => [
                 'required',
                 'string',
                 'max:100',
                 // Validación única para creación o actualización
-                Rule::unique('Grupos')->ignore($Id),
-            ],
-            'grado_id' => [
-                'required',
-                'integer',
-                'exists:Grados,id'
+                Rule::unique('parciales')->ignore($Id),
             ]
         ];
     }
     public function messages(): array
     {
         return [
-            'nombre.required' => 'El grupo es obligatorio.',
+            'nombre.required' => 'El parcial es obligatorio.',
             'nombre.max' => 'Excede el número maximo de caracteres.',
-            'nombre.unique' => 'El grupo ya está registrado.',
-            'Grado_id.required' => 'El grado es obligatorio.',
-            'Grado_id.integer' => 'El grado debe ser un número entero.',
-            'Grado_id.exists' => 'El grado seleccionado no es válido.',
+            'nombre.unique' => 'El parcial ya está registrado.',
         ];
     }
 }

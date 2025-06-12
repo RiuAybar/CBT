@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1">
-                <i class="align-middle me-2" data-feather="plus-circle"></i>
+            <button @click="crear()" class="btn btn-primary float-end mt-n1 me-1">
+                <i class="bi bi-plus-circle"></i>
                 Agregar Grados
             </button>
             <h1 class="h3 mb-3">
@@ -35,6 +35,9 @@
                                     <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
                                     </button>
+                                    <router-link :to="`/grupos/${id}/edit`" class="btn btn-sm btn-outline-warning">
+                                        Agregar Grupos
+                                    </router-link>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -83,6 +86,7 @@ import Modal from '../../../components/Modal.vue';
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
+import debounce from 'lodash/debounce';
 
 export default {
     name: 'Grados',
@@ -110,9 +114,9 @@ export default {
     watch: {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
-            handler(val) {
+            handler: debounce(function (val) {
                 this.consultar(val);
-            },
+            },300),
             immediate: true
         }
     },

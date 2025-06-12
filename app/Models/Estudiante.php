@@ -18,7 +18,7 @@ class Estudiante extends Model
     protected $fillable = [
         'user_id',
         'grado_id',
-        'grupo_id',
+        // 'grupo_id',
         'listaNumero',
     ];
 

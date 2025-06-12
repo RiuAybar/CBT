@@ -12,7 +12,7 @@ class GrupoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, $Grado_id)
     {
         $search = $request->query('search');
 
@@ -22,7 +22,7 @@ class GrupoController extends Controller
             $query->where('nombre', 'like', '%' . $search . '%')
                 ->limit(5);
         }
-        return response()->json($query->orderBy('id', 'desc')->get(['id', 'nombre']), 200);
+        return response()->json($query->where('Grado_id', $Grado_id)->orderBy('id', 'desc')->get(['id', 'nombre']), 200);
     }
 
     /**
@@ -54,7 +54,7 @@ class GrupoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $Grupo)
     {
         //
     }

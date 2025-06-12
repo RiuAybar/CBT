@@ -108,6 +108,8 @@ import 'vue-select/dist/vue-select.css';
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
+import debounce from 'lodash/debounce';
+
 
 export default {
     name: 'HorasDocente',
@@ -153,9 +155,9 @@ export default {
     watch: {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
-            handler(val) {
+            handler: debounce(function (val) {
                 this.consultar(val);
-            },
+            },300),
             immediate: true
         }
     },

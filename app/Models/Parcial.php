@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Grado extends Model
+class Parcial extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    protected $table = 'parciales';
+    /** @use HasFactory<\Database\Factories\ParcialFactory> */
     use HasFactory;
 
     /**
@@ -18,9 +19,4 @@ class Grado extends Model
     protected $fillable = [
         'nombre',
     ];
-
-    public function Grupos()
-    {
-        return $this->hasMany(Grupo::class);
-    }
 }

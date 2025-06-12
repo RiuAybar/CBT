@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Grado extends Model
+class EscalaEvaluativa extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    protected $table = 'escalas_evaluativas';
+    /** @use HasFactory<\Database\Factories\EscalaEvaluativaFactory> */
     use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -17,10 +17,6 @@ class Grado extends Model
      */
     protected $fillable = [
         'nombre',
+        'abreviatura',
     ];
-
-    public function Grupos()
-    {
-        return $this->hasMany(Grupo::class);
-    }
 }

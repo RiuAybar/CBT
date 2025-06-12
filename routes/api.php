@@ -2,18 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\PermisoController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\RestablecerContraseñaController;
-use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\GradoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\ListaController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\MateriaController;
-use App\Http\Controllers\RegistroHorasDocenciaController;
+use App\Http\Controllers\ParcialController;
 use App\Http\Controllers\SemestreController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\RegistroHorasDocenciaController;
+use App\Http\Controllers\Auth\RestablecerContraseñaController;
+use App\Http\Controllers\SeguimientoController;
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/refresh', [LoginController::class, 'refresh']);
@@ -42,14 +44,25 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     });
 
     Route::prefix('/Logistica')->group(function () {
-        Route::resource('Grado', GradoController::class)->only(['index', 'store', 'update']);
-        Route::resource('Grupo', GrupoController::class)->only(['index', 'store', 'update']);
+        Route::resource('Grado', GradoController::class)->only(['index', 'show', 'store', 'update']);
+
+        Route::resource('Grupo', GrupoController::class)->only(['store', 'update']);
+        Route::get('Grupo/{Grado_id}/index', [GrupoController::class, 'index']);
+        // Route::get('Grupo/{Grado_id}/store', [GrupoController::class, 'store']);
+        
         Route::resource('Semestre', SemestreController::class)->only(['index', 'store', 'update']);
         Route::resource('Carrera', CarreraController::class)->only(['index', 'store', 'update']);
         Route::resource('RegistroHorasDocencia', RegistroHorasDocenciaController::class)->only(['index', 'store', 'update','show'])
-            ->parameters(['RegistroHorasDocencia'=>'RegistroHorasDocencia']);;
+        ->parameters(['RegistroHorasDocencia'=>'RegistroHorasDocencia']);;
         Route::resource('Materia', MateriaController::class)->only(['index', 'store', 'update'])->parameters(['Materia'=>'Materia']);
+        Route::resource('Parcial', ParcialController::class)->only(['index', 'store', 'update']);
     });
+    
+    Route::prefix('/Registro')->group(function () {
+        Route::resource('Seguimiento', SeguimientoController::class)->only(['index', 'store', 'update']);
+
+    });
+
     Route::prefix('/Actualizar')->group(function () {
         Route::post('/User', [LoginController::class, 'Perfil']);
         Route::post('/UserImagen', [LoginController::class, 'Imagen']);

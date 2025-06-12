@@ -63,6 +63,8 @@ import api from '../../services/api';
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 import Modal from '../../components/Modal.vue';
+import debounce from 'lodash/debounce';
+
 
 export default {
     name: 'Usuarios',
@@ -95,9 +97,9 @@ export default {
     },
     watch: {
         busqueda: {
-            handler(val) {
+            handler: debounce(function (val) {
                 this.obtenerUsuarios(val);
-            },
+            }, 300),
             immediate: true
         }
     },

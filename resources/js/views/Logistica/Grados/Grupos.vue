@@ -1,13 +1,17 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1">
-                <i class="align-middle me-2" data-feather="plus-circle"></i>
+            <button v-if="Grado?.id" @click="crear()" class="btn btn-primary float-end mt-n1 mb-1">
+                <i class="bi bi-plus-circle"></i>
                 Agregar Grupos
             </button>
+            <router-link v-if="Grado?.id" to="/grados" class="btn btn-danger float-end mt-n1 me-1">
+                <i class="bi bi-arrow-return-left"></i>
+                Regresar
+            </router-link>
             <h1 class="h3 mb-3">
                 <strong>
-                    Grupos
+                    {{ Grado?.nombre ? `Grupos de: ${Grado.nombre}` : '' }}
                 </strong>
             </h1>
             <div class="row">
@@ -44,8 +48,7 @@
             </div>
         </div>
 
-        <Modal size="lg" ref="modalGrupos" id="modal-Grupo"
-            :title="Grupo.id ? 'Editar Grupo' : 'Agregar Grupo'">
+        <Modal size="lg" ref="modalGrupos" id="modal-Grupo" :title="Grupo.id ? 'Editar Grupo' : 'Agregar Grupo'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
                 <form>
@@ -83,6 +86,7 @@ import Modal from '../../../components/Modal.vue';
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
 
+import debounce from 'lodash/debounce';
 
 export default {
     name: 'Grupos',
@@ -105,22 +109,41 @@ export default {
             },
             busqueda: '',
             errores: {},
+            Grado: {
+                id: null,
+                nombre: null
+            },
         }
     },
     watch: {
-        // 👀 Observa cada cambio en la búsqueda
         busqueda: {
-            handler(val) {
+            handler: debounce(function (val) {
+                // 👀 Observa cada cambio en la búsqueda
                 this.consultar(val);
-            },
+            }, 300),
             immediate: true
         }
     },
     methods: {
+        async consultarMov() {
+            try {
+                const res = await api.get(`/Logistica/Grado/${this.$route.params.id}`);
+                this.Grado = res.data;
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    this.$swal.fire('Error', '❌ El grado no existe', 'error');
+                    this.$router.replace({ name: 'grados' }); // Redirige a la lista de roles
+                } else {
+                    console.error(error);
+                }
+            } finally {
+                this.cargando = false;
+            }
+        },
         async consultar(filtro = '') {
             this.cargando = true;
             try {
-                const res = await api.get('/Logistica/Grupo', {
+                const res = await api.get(`/Logistica/Grupo/${this.$route.params.id}/index`, {
                     params: { search: filtro }
                 });
                 this.Grupos = res.data;
@@ -141,7 +164,8 @@ export default {
 
         async agregar() {
             try {
-                await api.post('/Logistica/Grupo', this.Grupo);
+                this.Grupo.grado_id = this.$route.params.id;
+                await api.post(`/Logistica/Grupo`, this.Grupo);
                 this.consultar();
                 this.$refs.modalGrupos.cerrar();
 
@@ -164,7 +188,6 @@ export default {
         },
 
         editar(id) {
-            console.log(id, this.Grupos);
             this.errores = {}; // 🔄 Limpia los errores
             const encontrado = this.Grupos.find(p => p.id === id);
             if (encontrado) {
@@ -175,8 +198,8 @@ export default {
 
         async guardarCambios(id) {
             try {
+                this.Grupo.grado_id = this.$route.params.id;
                 await api.put(`/Logistica/Grupo/${id}`, this.Grupo);
-
                 this.consultar();
                 this.$refs.modalGrupos.cerrar();
 
@@ -200,6 +223,7 @@ export default {
     },
     mounted() {
         this.consultar();
+        this.consultarMov();
     }
 }
 </script>

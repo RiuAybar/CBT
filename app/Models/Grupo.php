@@ -17,5 +17,6 @@ class Grupo extends Model
      */
     protected $fillable = [
         'nombre',
+        'grado_id',
     ];
 }

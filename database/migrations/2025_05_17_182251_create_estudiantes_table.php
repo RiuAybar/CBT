@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('estudiantes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('grado_id')->constrained()->onDelete('restrict');
+            // $table->foreignId('grado_id')->constrained()->onDelete('restrict');
              // Primero define la columna grado_id
             // $table->unsignedBigInteger('grado_id');
             // $table->foreign('grado_id')->references('id')->on('grados');
@@ -25,6 +25,7 @@ return new class extends Migration
             // $table->foreign('grupo_id')->references('id')->on('grupos');
 
             $table->integer('listaNumero')->nullable(); // Número en lista
+            // $table->foreignId('grupo_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

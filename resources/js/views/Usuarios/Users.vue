@@ -161,6 +161,8 @@ import EasyDataTable from 'vue3-easy-data-table';
 
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import debounce from 'lodash/debounce';
+
 
 export default {
   name: 'Users',
@@ -218,9 +220,9 @@ export default {
   watch: {
     // 👀 Observa cada cambio en la búsqueda
     busqueda: {
-      handler(val) {
+      handler: debounce(function (val) {
         this.consultar(val);
-      },
+      },300),
       immediate: true
     }
   },
