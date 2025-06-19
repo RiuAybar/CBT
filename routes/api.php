@@ -24,7 +24,7 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/password/reset', [RestablecerContraseñaController::class, 'restablecer']);
 Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']);
 
-Route::middleware('auth:api')->prefix('/')->group(function () {
+// Route::middleware('auth:api')->prefix('/')->group(function () {
 
     // Rutas permisos Usuarios
     Route::resource('Permission', PermisoController::class)->only(['index', 'store', 'update']);
@@ -40,6 +40,18 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::get('/roles', [RolController::class, 'buscarRoles']);
     });
     Route::prefix('/Estudiuante')->group(function () {
+        Route::get('Lista/{lista_id}/User', [ListaController::class, 'UserDisponibles']);
+        Route::get('Lista/{Seguimiento_id}/Seguimiento', [ListaController::class, 'Seguimiento']);
+        Route::post('Lista/{Seguimiento}/asignarUsuario', [ListaController::class, 'asignarUsuario']);
+        Route::get('Lista/{Seguimiento}/Parciales', [ListaController::class, 'buscarParciales']);
+        Route::get('Lista/{Seguimiento}/Escalas', [ListaController::class, 'buscarEscalas']);
+        Route::post('Lista/{Seguimiento}/asignarEscala', [ListaController::class, 'asignarEscala']);
+
+        Route::get('Lista/{Seguimiento}/EscalasAsignadas', [ListaController::class, 'buscarEscalasAsignadas']);
+
+
+        Route::get('/Lista/{seguimiento}/evaluacion', [ListaController::class, 'evaluacion']);
+
         Route::resource('Lista', ListaController::class);
     });
 
@@ -60,6 +72,11 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     
     Route::prefix('/Registro')->group(function () {
         Route::resource('Seguimiento', SeguimientoController::class)->only(['index', 'store', 'update']);
+        Route::get('Seguimiento/Profesor',[SeguimientoController::class,'seguimientoProfesor']);
+        Route::get('Seguimiento/Materia',[SeguimientoController::class,'seguimientoMateria']);
+        Route::get('Seguimiento/Semestre',[SeguimientoController::class,'seguimientoSemestre']);
+        Route::get('Seguimiento/Grupo',[SeguimientoController::class,'seguimientoGrupo']);
+        Route::get('Seguimiento/Carrera',[SeguimientoController::class,'seguimientoCarrera']);
 
     });
 
@@ -73,4 +90,4 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     //     'user' 
     // ]);
     // más rutas aquí
-});
+// });

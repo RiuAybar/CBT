@@ -18,4 +18,10 @@ class Lista extends Model
         'seguimiento_id',
         'alumno_id',
     ];
+
+    public function alumnos()
+    {
+        return $this->hasMany(User::class, 'alumno_id');
+    }
+
 }

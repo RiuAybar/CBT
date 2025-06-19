@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use PhpParser\Node\Expr\FuncCall;
 
 class Grupo extends Model
 {
@@ -19,4 +20,9 @@ class Grupo extends Model
         'nombre',
         'grado_id',
     ];
+
+    public function grados()
+    {
+        return $this->hasMany(Grado::class, 'grado_id');
+    }
 }

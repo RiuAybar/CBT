@@ -19,4 +19,11 @@ class EscalaEvaluativa extends Model
         'nombre',
         'abreviatura',
     ];
+
+    public function materiasYParciales()
+    {
+        return $this->belongsToMany(Materia::class, 'materia_parcial_escala')
+            ->withPivot('parcial_id')
+            ->withTimestamps();
+    }
 }

@@ -27,4 +27,12 @@ class Seguimiento extends Model
     {
         return $this->belongsTo(Materia::class);
     }
+    public function Grupos()
+    {
+        return $this->belongsTo(Grupo::class);
+    }
+    public function Lista()
+    {
+        return $this->hasMany(Lista::class, 'seguimiento_id');
+    }
 }

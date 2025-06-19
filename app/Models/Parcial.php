@@ -19,4 +19,11 @@ class Parcial extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function escalasPorMateria()
+    {
+        return $this->belongsToMany(EscalaEvaluativa::class, 'materia_parcial_escala')
+            ->withPivot('materia_id')
+            ->withTimestamps();
+    }
 }

@@ -37,11 +37,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('$Super001'),
         ]);
         // Crear permisos
-        $Permission1 = Permission::create(['name' => 'ver profesores']);
-        $Permission2 = Permission::create(['name' => 'eliminar profesores']);
+        $Permission1 = Permission::create(['name' => 'ver profesores', 'guard_name' => 'api']);
+        $Permission2 = Permission::create(['name' => 'eliminar profesores', 'guard_name' => 'api']);
 
         // Crear rol y asignar permisos
-        $role = Role::create(['name' => 'admin']);
+        $role = Role::create(['name' => 'admin', 'guard_name' => 'api']);
         $role->givePermissionTo([$Permission1, $Permission2]);
 
         // Asignar rol a un usuario
@@ -54,11 +54,11 @@ class DatabaseSeeder extends Seeder
 
         // estudiantes 
         // Crear el rol de estudiante si no existe
-        $roleEstudiante = Role::firstOrCreate(['name' => 'estudiante']);
+        $roleEstudiante = Role::firstOrCreate(['name' => 'estudiante', 'guard_name' => 'api']);
 
-        $roleOrientador = Role::firstOrCreate(['name' => 'orientador']);
+        $roleOrientador = Role::firstOrCreate(['name' => 'orientador', 'guard_name' => 'api']);
         //Profesor
-        Role::firstOrCreate(['name' => 'profesor']);
+        Role::firstOrCreate(['name' => 'profesor', 'guard_name' => 'api']);
         $Profesor = User::create([
             'name' => 'Juan Pérez',
             'email' => 'juan@correo.com',
@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
         $Profesor->assignRole('profesor');
 
         // RegistroHorasDocencia::factory()->count(6)->create();
-        
+
         Grado::factory()->count(3)->create();
         // Crear 6 grados (1° a 6°)
         $grados = Grado::all();
@@ -86,6 +86,9 @@ class DatabaseSeeder extends Seeder
         Parcial::factory()->count(3)->create();
 
         Materia::factory()->count(3)->create();
+
+
+
 
         // Crear 30 usuarios y estudiantes
         User::factory()
@@ -130,8 +133,23 @@ class DatabaseSeeder extends Seeder
 
         Evaluacion::factory()->count(10)->create();
 
-        EscalaEvaluativa::factory()->count(4)->create();
+        // EscalaEvaluativa::factory()->count(4)->create();
 
-        NotasPorAspecto::factory()->count(20)->create();
+        $materias = Materia::all();
+        $parciales = Parcial::all();
+        $escalas = EscalaEvaluativa::all();
+        // dd($escalas);
+
+        foreach ($materias as $materia) {
+            foreach ($parciales as $parcial) {
+                // Asignar 2-4 escalas aleatorias a cada materia+parcial
+                $materia->escalasPorParcial()->attach(
+                    $escalas->random(rand(2, 4))->pluck('id')->toArray(),
+                    ['parcial_id' => $parcial->id]
+                );
+            }
+        }
+
+        // NotasPorAspecto::factory()->count(20)->create();
     }
 }

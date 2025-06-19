@@ -9,7 +9,7 @@ class Materia extends Model
 {
     /** @use HasFactory<\Database\Factories\MateriaFactory> */
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -18,4 +18,11 @@ class Materia extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function escalasPorParcial()
+    {
+        return $this->belongsToMany(EscalaEvaluativa::class, 'materia_parcial_escala')
+            ->withPivot('parcial_id')
+            ->withTimestamps();
+    }
 }

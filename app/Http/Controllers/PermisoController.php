@@ -33,7 +33,7 @@ class PermisoController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->validated();
-            $data['guard_name'] = 'web';
+            $data['guard_name'] = 'api';
             $permission = Permission::create($data);
             DB::commit();
             return response()->json($permission, 201);

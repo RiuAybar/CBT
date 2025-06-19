@@ -23,7 +23,7 @@ import Parciales from '../views/Logistica/Grados/Parciales.vue';
 import Seguimiento from '../views/Logistica/Seguimiento/Seguimiento.vue';
 
 import ConfiguracionUsuarios from '../views/Usuarios/Configuracion/ConfiguracionUsuarios.vue';
-// import Lista from '../views/Listas/Lista.vue';
+import Lista from '../views/Logistica/Listas/Lista.vue';
 
 import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
 
@@ -59,9 +59,11 @@ const routes = [
       { path: 'permisos', name: 'permisos', component: Permisos, meta: { title: 'Permisos' } },
       { path: 'roles', name: 'roles', component: Roles, meta: { title: 'Roles' } },
       { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
-      // { path: 'lista', name: 'lista', component: Lista, meta: { title: 'Lista de asistencia.' } },
       { path: 'grados', name: 'grados', component: Grados, meta: { title: 'Lista de Grados.' } },
       { path: 'grupos/:id/edit', name: 'grupos', component: Grupos, meta: { title: 'Lista de grupos.' } },
+
+      { path: 'lista/:id/edit', name: 'lista', component: Lista, meta: { title: 'Lista de lista.' } },
+
       { path: 'semestres', name: 'semestres', component: Semestres, meta: { title: 'Lista de semestres.' } },
       { path: 'materias', name: 'materias', component: Materias, meta: { title: 'Lista de materias.' } },
       

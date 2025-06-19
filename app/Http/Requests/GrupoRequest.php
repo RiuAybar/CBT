@@ -29,13 +29,16 @@ class GrupoRequest extends FormRequest
                 'required',
                 'string',
                 'max:100',
-                // Validación única para creación o actualización
-                Rule::unique('Grupos')->ignore($Id),
+                Rule::unique('grupos')
+                    ->where(function ($query) {
+                        return $query->where('grado_id', $this->grado_id);
+                    })
+                    ->ignore($Id),
             ],
             'grado_id' => [
                 'required',
                 'integer',
-                'exists:Grados,id'
+                'exists:grados,id'
             ]
         ];
     }
@@ -44,7 +47,7 @@ class GrupoRequest extends FormRequest
         return [
             'nombre.required' => 'El grupo es obligatorio.',
             'nombre.max' => 'Excede el número maximo de caracteres.',
-            'nombre.unique' => 'El grupo ya está registrado.',
+            'nombre.unique' => 'Ya existe un grupo con ese nombre en el grado seleccionado.',
             'Grado_id.required' => 'El grado es obligatorio.',
             'Grado_id.integer' => 'El grado debe ser un número entero.',
             'Grado_id.exists' => 'El grado seleccionado no es válido.',

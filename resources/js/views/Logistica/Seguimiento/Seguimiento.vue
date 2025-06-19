@@ -21,7 +21,7 @@
                                     </h5>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input v-model="busqueda" placeholder="Buscar en servidor..."
+                                    <input name="busqueda" v-model="busqueda" placeholder="Buscar en servidor..."
                                         class="form-control mb-3" />
                                 </div>
                             </div>
@@ -35,6 +35,9 @@
                                     <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
                                     </button>
+                                    <router-link :to="`lista/${id}/edit`" class="btn btn-sm btn-outline-secondary me-1">
+                                        ver lista
+                                    </router-link>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -51,46 +54,58 @@
                 <form>
                     <div class="row">
                         <div class="mb-3 col-sm-4">
-                            <label for="Profesor" class="form-label">Profesor</label>
-                            <v-select v-model="selectProfesor" :options="selectOptionsProfesor" label="text"
-                                :filterable="false" :loading="selectLoading" placeholder="Seleccione un profesor"
-                                @search="selectProfesorOptions" :reduce="option => option"
-                                no-options="Seleccione una opción" no-results="No se encontraron resultados"
-                                :selectable="option => !option.disabled" />
-                            <!-- <div v-if="errores.rol" class="form-text text-danger">
-                                {{ errores.rol[0] }}
-                            </div> -->
-                        </div>
-                        <div class="mb-3 col-sm-4">
-                            <label for="nombre" class="form-label">Seguimiento</label>
-                            <input v-model="Seguimiento.nombre" type="text" class="form-control" id="nombre"
-                                aria-describedby="Nombre">
-                            <div v-if="errores.nombre" class="form-text text-danger">
-                                {{ errores.nombre[0] }}
+                            <label for="profesor_id" class="form-label">Profesor</label>
+                            <v-select input-id="profesor_id" v-model="selectProfesor" :options="selectOptionsProfesor"
+                                label="text" :filterable="false" :loading="selectLoading"
+                                placeholder="Seleccione un profesor" @search="selectProfesorOptions"
+                                :reduce="option => option" no-options="Seleccione una opción"
+                                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                            <div v-if="errores.profesor_id" class="form-text text-danger">
+                                {{ errores.profesor_id[0] }}
                             </div>
                         </div>
                         <div class="mb-3 col-sm-4">
-                            <label for="nombre" class="form-label">Seguimiento</label>
-                            <input v-model="Seguimiento.nombre" type="text" class="form-control" id="nombre"
-                                aria-describedby="Nombre">
-                            <div v-if="errores.nombre" class="form-text text-danger">
-                                {{ errores.nombre[0] }}
+                            <label for="materia_id" class="form-label">Materia</label>
+                            <v-select input-id="materia_id" v-model="selectMateria" :options="selectOptionsMateria"
+                                label="text" :filterable="false" :loading="selectLoadingMateria"
+                                placeholder="Seleccione un profesor" @search="selectMateriaOptions"
+                                :reduce="option => option" no-options="Seleccione una opción"
+                                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                            <div v-if="errores.materia_id" class="form-text text-danger">
+                                {{ errores.materia_id[0] }}
                             </div>
                         </div>
                         <div class="mb-3 col-sm-4">
-                            <label for="nombre" class="form-label">Seguimiento</label>
-                            <input v-model="Seguimiento.nombre" type="text" class="form-control" id="nombre"
-                                aria-describedby="Nombre">
-                            <div v-if="errores.nombre" class="form-text text-danger">
-                                {{ errores.nombre[0] }}
+                            <label for="semestre_id" class="form-label">Semestre</label>
+                            <v-select input-id="semestre_id" v-model="selectSemestre" :options="selectOptionsSemestre"
+                                label="text" :filterable="false" :loading="selectLoadingSemestre"
+                                placeholder="Seleccione un profesor" @search="selectSemestreOptions"
+                                :reduce="option => option" no-options="Seleccione una opción"
+                                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                            <div v-if="errores.semestre_id" class="form-text text-danger">
+                                {{ errores.semestre_id[0] }}
                             </div>
                         </div>
                         <div class="mb-3 col-sm-4">
-                            <label for="nombre" class="form-label">Seguimiento</label>
-                            <input v-model="Seguimiento.nombre" type="text" class="form-control" id="nombre"
-                                aria-describedby="Nombre">
-                            <div v-if="errores.nombre" class="form-text text-danger">
-                                {{ errores.nombre[0] }}
+                            <label for="grupo_id" class="form-label">Grado/Grupo</label>
+                            <v-select input-id="grupo_id" v-model="selectGrupo" :options="selectOptionsGrupo"
+                                label="text" :filterable="false" :loading="selectLoadingGrupo"
+                                placeholder="Seleccione un profesor" @search="selectGrupoOptions"
+                                :reduce="option => option" no-options="Seleccione una opción"
+                                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                            <div v-if="errores.grupo_id" class="form-text text-danger">
+                                {{ errores.grupo_id[0] }}
+                            </div>
+                        </div>
+                        <div class="mb-3 col-sm-4">
+                            <label for="carrera_id" class="form-label">Carrera</label>
+                            <v-select input-id="carrera_id" v-model="selectCarrera" :options="selectOptionsCarrera"
+                                label="text" :filterable="false" :loading="selectLoadingCarrera"
+                                placeholder="Seleccione un profesor" @search="selectCarreraOptions"
+                                :reduce="option => option" no-options="Seleccione una opción"
+                                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                            <div v-if="errores.carrera_id" class="form-text text-danger">
+                                {{ errores.carrera_id[0] }}
                             </div>
                         </div>
                         <div class="mb-3 col-sm-4">
@@ -148,7 +163,7 @@ export default {
                 { text: 'Profesores', value: 'profesores' },
                 { text: 'Materias', value: 'materias' },
                 { text: 'Semestres', value: 'semestres' },
-                { text: 'Grupos', value: 'grupos' },
+                { text: 'Grados/Grupos', value: 'grupos' },
                 { text: 'Carreras', value: 'carreras' },
                 { text: 'Año', value: 'ano' },
                 { text: 'Acciones', value: 'action' },
@@ -157,18 +172,35 @@ export default {
             cargando: false,
             Seguimiento: {
                 id: null,
-                ano: '',
+                materia_id: null,
+                semestre_id: null,
+                grupo_id: null,
+                carrera_id: null,
+                profesor_id: null,
+                ano: null,
             },
             busqueda: '',
             errores: {},
 
             selectProfesor: null,
-            selectOptionsProfesor: [{
-                id: null,
-                text: 'Seleccione una opción',
-                disabled: true
-            }],
+            selectOptionsProfesor: [],
             selectLoading: false,
+
+            selectMateria: null,
+            selectOptionsMateria: [],
+            selectLoadingMateria: false,
+
+            selectSemestre: null,
+            selectOptionsSemestre: [],
+            selectLoadingSemestre: false,
+
+            selectGrupo: null,
+            selectOptionsGrupo: [],
+            selectLoadingGrupo: false,
+
+            selectCarrera: null,
+            selectOptionsCarrera: [],
+            selectLoadingCarrera: false,
         }
     },
     watch: {
@@ -205,22 +237,27 @@ export default {
         },
         crear() {
             this.errores = {}; // 🔄 Limpia los errores
-            this.Seguimiento = {
-                id: null,
-                nombre: '',
-            };
+            this.Seguimiento = this.selectOptionNull();
+            this.selectMateria = null;
+            this.selectSemestre = null;
+            this.selectGrupo = null;
+            this.selectCarrera = null;
+            this.selectProfesor = null;
+            this.Seguimiento.ano = this.selectedYear;
             this.$refs.modalSeguimiento.abrir();
         },
         async agregar() {
             try {
-                await api.post('/Logistica/Semestre', this.Seguimiento);
+                this.Seguimiento.materia_id = this.selectMateria?.id;
+                this.Seguimiento.semestre_id = this.selectSemestre?.id;
+                this.Seguimiento.grupo_id = this.selectGrupo?.id;
+                this.Seguimiento.carrera_id = this.selectCarrera?.id;
+                this.Seguimiento.profesor_id = this.selectProfesor?.id;
+                await api.post('/Registro/Seguimiento', this.Seguimiento);
                 this.consultar();
                 this.$refs.modalSeguimiento.cerrar();
 
-                this.Seguimiento = {
-                    id: null,
-                    nombre: ''
-                };
+                this.Seguimiento = this.selectOptionNull();
                 this.errores = {}; // 🔄 Limpia los errores
                 this.$swal.fire('Éxito', '✅ Registro agregado correctamente', 'success');
             } catch (error) {
@@ -237,22 +274,45 @@ export default {
         editar(id) {
             this.errores = {}; // 🔄 Limpia los errores
             const encontrado = this.Seguimientos.find(p => p.id === id);
+            console.log(encontrado);
             if (encontrado) {
                 this.Seguimiento = { ...encontrado };
+                this.selectMateria = {
+                    id: this.Seguimiento.materia_id,
+                    text: this.Seguimiento.materias
+                };
+                this.selectSemestre = {
+                    id: this.Seguimiento.semestre_id,
+                    text: this.Seguimiento.semestres
+                };
+                this.selectGrupo = {
+                    id: this.Seguimiento.grupo_id,
+                    text: this.Seguimiento.grupos
+                };
+                this.selectCarrera = {
+                    id: this.Seguimiento.carrera_id,
+                    text: this.Seguimiento.carreras
+                };
+                this.selectProfesor = {
+                    id: this.Seguimiento.profesor_id,
+                    text: this.Seguimiento.profesores
+                };
                 this.$refs.modalSeguimiento.abrir();
             }
         },
         async guardarCambios(id) {
             try {
-                await api.put(`/Logistica/Semestre/${id}`, this.Seguimiento);
+                this.Seguimiento.materia_id = this.selectMateria.id;
+                this.Seguimiento.semestre_id = this.selectSemestre.id;
+                this.Seguimiento.grupo_id = this.selectGrupo.id;
+                this.Seguimiento.carrera_id = this.selectCarrera.id;
+                this.Seguimiento.profesor_id = this.selectProfesor.id;
+                await api.put(`/Registro/Seguimiento/${id}`, this.Seguimiento);
 
                 this.consultar();
                 this.$refs.modalSeguimiento.cerrar();
 
-                this.Seguimiento = {
-                    id: null,
-                    nombre: ''
-                };
+                this.Seguimiento = this.selectOptionNull();
                 this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
                 this.errores = {}; // 🔄 Limpia los errores
             } catch (error) {
@@ -284,8 +344,17 @@ export default {
         selectOptionNull() {
             return {
                 id: null,
-                text: 'Seleccione una opción',
-                disabled: true
+                carrera_id: null,
+                carreras: null,
+                grupo_id: null,
+                grupos: null,
+                materia_id: null,
+                materias: null,
+                profesor_id: null,
+                profesores: null,
+                semestre_id: null,
+                semestres: null,
+                ano: null,
             };
         },
         selectProfesorOptions(search) {
@@ -293,11 +362,11 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoading = true;
                 try {
-                    const response = await api.get(`/gestion/roles`, {
+                    const response = await api.get(`/Registro/Seguimiento/Profesor`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
-                    this.selectOptions = [
+                    this.selectOptionsProfesor = [
                         {
                             id: null,
                             text: 'Seleccione una opción',
@@ -310,18 +379,142 @@ export default {
                     ];
                 } catch (error) {
                     console.error('Error al cargar opciones:', error)
-                    this.selectOptions = []
+                    this.selectOptionsProfesor = [];
                 } finally {
                     this.selectLoading = false
+                }
+            }, 300)
+        },
+        // selectMateriaOptions
+        selectMateriaOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingMateria = true;
+                try {
+                    const response = await api.get(`/Registro/Seguimiento/Materia`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsMateria = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.nombre
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsMateria = [];
+                } finally {
+                    this.selectLoadingMateria = false
+                }
+            }, 300)
+        },
+        // selectSemestreOptions
+        selectSemestreOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingSemestre = true;
+                try {
+                    const response = await api.get(`/Registro/Seguimiento/Semestre`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsSemestre = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.nombre
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsSemestre = [];
+                } finally {
+                    this.selectLoadingSemestre = false
+                }
+            }, 300)
+        },
+
+        // selectGrupoOptions
+        selectGrupoOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingGrupo = true;
+                try {
+                    const response = await api.get(`/Registro/Seguimiento/Grupo`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsGrupo = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.nombre
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsGrupo = [];
+                } finally {
+                    this.selectLoadingGrupo = false
+                }
+            }, 300)
+        },
+
+        // selectCarreraOptions
+        selectCarreraOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingCarrera = true;
+                try {
+                    const response = await api.get(`/Registro/Seguimiento/Carrera`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsCarrera = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.nombre
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsCarrera = [];
+                } finally {
+                    this.selectLoadingCarrera = false
                 }
             }, 300)
         },
     },
     mounted() {
         this.consultar();
-        // this.selectOptionsProfesor = [this.selectOptionNull()];
     }
 }
 </script>
 
-<style></style>
+<style>
+.vs__selected {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>

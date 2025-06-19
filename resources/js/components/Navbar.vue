@@ -6,7 +6,7 @@
 
         <form class="d-none d-sm-inline-block">
             <div class="input-group input-group-navbar">
-                <input type="text" class="form-control" placeholder="Search…" aria-label="Search">
+                <input name="Search" type="text" class="form-control" placeholder="Search…" aria-label="Search">
                 <button class="btn" type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -98,7 +98,7 @@
         <div class="navbar-collapse collapse">
             <ul class="navbar-nav navbar-align">
                 <li class="nav-item dropdown">
-                    <v-select :options="years" :modelValue="selectedYear" @update:modelValue="changeYear" label="Año"
+                    <v-select name="año" input-id="año" :options="years" :modelValue="selectedYear" @update:modelValue="changeYear" label="Año"
                         placeholder="Selecciona un año" />
                 </li>
                 <li class="nav-item dropdown">
@@ -189,7 +189,8 @@ export default {
             return years;
         },
         changeYear(year) {
-            this.setSelectedYear(year);
+            const validYear = typeof year === 'number' && !isNaN(year) ? year : new Date().getFullYear();
+            this.setSelectedYear(validYear);
         }
     },
     computed: {
