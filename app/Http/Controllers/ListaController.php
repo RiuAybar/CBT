@@ -7,7 +7,9 @@ use App\Models\Lista;
 use App\Models\Estudiante;
 use App\Models\Asistencia;
 use App\Models\EscalaEvaluativa;
+use App\Models\Evaluacion;
 use App\Models\MateriaParcialEscala;
+use App\Models\NotasPorAspecto;
 use App\Models\Parcial;
 use App\Models\Seguimiento;
 use App\Models\Semestre;
@@ -144,10 +146,7 @@ class ListaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(string $id) {}
     public function Seguimiento(int $seguimiento_id)
     {
         $Parcial = Parcial::first(['id as id', 'nombre as text']);
@@ -191,9 +190,9 @@ class ListaController extends Controller
         }
 
         // Obtener IDs de alumnos ya asignados
-        $usuariosAsignados = Seguimiento::where('id', $seguimiento_id)
-            // ->first()?->lista?
-            ->pluck('alumno_id')->toArray() ?? [];
+        $usuariosAsignados = Seguimiento::find($seguimiento_id)?->Lista()
+            ->pluck('alumno_id')
+            ->toArray() ?? [];
 
         // Buscar estudiantes no asignados que coincidan con el texto
         $data = User::role('estudiante')
@@ -293,7 +292,7 @@ class ListaController extends Controller
         }
         $data = $query->orderBy('ee.id', 'desc')
             ->distinct()
-            ->select('ee.id', 'ee.nombre', 'ee.abreviatura')
+            ->select('ee.id', 'materia_parcial_escala.id as materiaParcialEscalaId', 'ee.nombre', 'ee.abreviatura')
             ->limit(5)
             ->get();
 
@@ -347,8 +346,7 @@ class ListaController extends Controller
             ->get();
 
         // 3. Obtener todas las evaluaciones de este parcial
-        $evaluaciones = DB::table('evaluaciones')
-            ->where('parcial_id', $parcial_id)
+        $evaluaciones = Evaluacion::where('parcial_id', $parcial_id)
             ->whereIn('lista_id', $listas->pluck('lista_id'))
             ->get()
             ->keyBy('lista_id');
@@ -382,6 +380,20 @@ class ListaController extends Controller
             $notasPorEvaluacion[$evaluacionId]['puntajes'][$abreviatura] = $nota->puntaje_obtenido;
         }
 
+        // Si hay parámetro de búsqueda, filtra los alumnos
+        if ($request->filled('busqueda')) {
+            $busqueda = strtolower($request->busqueda);
+
+            $listas = $listas->filter(function ($item) use ($busqueda) {
+                return str_contains(strtolower($item->alumno), $busqueda);
+            });
+
+            // Importante: volver a indexar si se usa ->pluck() después
+            $listas = $listas->values();
+        }
+
+        // Obtener todas las abreviaturas de las escalas
+        $abreviaturas = $escalas->pluck('abreviatura');
         // 6. Armar la respuesta
         $alumnos = [];
 
@@ -389,14 +401,23 @@ class ListaController extends Controller
             $evaluacion = $evaluaciones->get($lista->lista_id);
             $notasEval = $evaluacion ? $notasPorEvaluacion[$evaluacion->id] ?? [] : [];
 
+            // Inicializar con todas las escalas
+            $cantidadesCompletas = [];
+            $puntajesCompletas = [];
+
+            foreach ($abreviaturas as $abrev) {
+                $cantidadesCompletas[$abrev] = $notasEval['cantidades'][$abrev] ?? null;
+                $puntajesCompletas[$abrev] = $notasEval['puntajes'][$abrev] ?? null;
+            }
+
             $alumnos[] = [
                 'lista_id' => $lista->lista_id,
                 'nombre' => $lista->alumno,
                 'faltas' => $evaluacion->faltas ?? null,
                 'suma' => $evaluacion->suma ?? null,
                 'calificacion' => $evaluacion->calificacion_parcial ?? null,
-                'cantidades' => (object)($notasEval['cantidades'] ?? []),
-                'puntajes' => (object)($notasEval['puntajes'] ?? []),
+                'cantidades' => (object)$cantidadesCompletas,
+                'puntajes' => (object)$puntajesCompletas,
             ];
         }
 
@@ -404,5 +425,70 @@ class ListaController extends Controller
             'escalas' => $escalas->values(),
             'alumnos' => $alumnos,
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function EliminarEscala(MateriaParcialEscala $MateriaParcialEscala)
+    {
+        try {
+            DB::beginTransaction();
+            $MateriaParcialEscala->delete();
+            DB::commit();
+            return response()->json('Exito', 204);
+        } catch (\Exception $e) {
+            //throw $th;
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function guardarNotasPorAspecto(Request $request, int $id)
+    {
+        try {
+            DB::beginTransaction();
+            $parcialId = $request->input('parcial_id');
+            $listaId = $request->input('lista_id');
+            $items = $request->input('items');
+            $name = $request->input('name');
+            $value = $request->input('value');
+            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial']) ? $name : null;
+
+            $evaluacion = Evaluacion::firstOrCreate([
+                'lista_id' => $listaId,
+                'parcial_id' => $parcialId,
+            ]);
+            if ($columnasDef) {
+                $evaluacion->update([
+                    $columnasDef => $value,
+                ]);
+            }
+
+            foreach ($items as $item) {
+                // $listaId = $item['lista_id'];
+
+
+                $escala = EscalaEvaluativa::where('abreviatura', $item['escala_abreviatura'])->first();
+                if ($escala) {
+                    NotasPorAspecto::updateOrCreate(
+                        [
+                            'evaluacion_id' => $evaluacion->id,
+                            'escala_evaluativa_id' => $escala->id,
+                        ],
+                        [
+                            'cantidad_obtenida' => (float)$item['cantidad_obtenida'],
+                            'puntaje_obtenido' => (float)$item['puntaje_obtenido'],
+                        ]
+                    );
+                }
+            }
+            DB::commit();
+            return response()->json('Exito', 204);
+        } catch (\Exception $e) {
+            //throw $th;
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
+        }
     }
 }

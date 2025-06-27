@@ -18,6 +18,15 @@ import App from './Layout/App.vue';
 import router from './router';
 import store from './store';
 
+
+
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+// import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
+
+// ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
 const app = createApp(App);
 
 // ✅ Define SweetAlert como propiedad global

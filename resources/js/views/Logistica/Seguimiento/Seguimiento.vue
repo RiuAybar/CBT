@@ -38,6 +38,9 @@
                                     <router-link :to="`lista/${id}/edit`" class="btn btn-sm btn-outline-secondary me-1">
                                         ver lista
                                     </router-link>
+                                    <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)">
+                                        F1
+                                    </button>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -133,12 +136,208 @@
             </template>
         </Modal>
 
+        <div class="container" ref="pdfContent"
+            style="visibility: hidden; position: absolute; left: -9999px; width: 210mm;">
+            <div class="text-center mb-3">
+                <h5 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h5>
+                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
+                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
+                <h4 class="mt-3"><strong>REGISTRO DE FALTAS DE ASISTENCIA, CALIFICACIONES Y PROMEDIO POR
+                        ASIGNATURA</strong>
+                </h4>
+            </div>
+
+            <!-- Información general -->
+            <table class="table table-bordered table-sm mb-3">
+                <tbody>
+                    <tr>
+                        <td><strong>GENERAL DE EDUCACIÓN MEDIA SUPERIOR</strong></td>
+                        <td><strong>MESES</strong></td>
+                        <td><strong>No. DE HORAS IMPARTIDAS</strong></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="6"><strong>DE BACHILLERATO TECNOLÓGICO</strong><br><strong>CBT, AMANALCO DE
+                                BECERRA</strong></td>
+                        <td>FEBRERO</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>MARZO</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>ABRIL</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>MAYO</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>JUNIO</td>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <td>JULIO</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>TOTAL DE HORAS SEMESTRALES</strong></td>
+                        <td><strong>116</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Estadísticas del plantel -->
+            <table class="table table-bordered table-sm mb-3">
+                <tbody>
+                    <tr>
+                        <td><strong>DOMICILIO CONOCIDO S/N</strong></td>
+                        <td><strong>EL POTRERO</strong></td>
+                        <td><strong>No. DE ALUMNOS INSCRITOS</strong></td>
+                        <td colspan="3">{{ estadisticas.total_inscritos }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AMANALCO</strong></td>
+                        <td><strong>7228353322</strong></td>
+                        <td><strong>BAJAS DURANTE EL AÑO</strong></td>
+                        <td colspan="3">{{ estadisticas.bajas }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LÓPEZ SANTANA SEBASTIAN</strong></td>
+                        <td><strong>7228353322</strong></td>
+                        <td><strong>EXISTENCIA AL FINAL DEL AÑO</strong></td>
+                        <td colspan="3">{{ estadisticas.existencia_final }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SAN LUCAS, ArmandoOMEx</strong></td>
+                        <td><strong>San Lucas 2da secc.</strong></td>
+                        <td><strong>No. DE APROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.aprobados }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>No. REPROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.reprobados }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>% DE ALUMNOS APROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.porcentaje_aprobados }}%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>% DE ALUMNOS REPROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.porcentaje_reprobados }}%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>SUMA DE CALIFICACIONES</strong></td>
+                        <td colspan="3">{{ estadisticas.suma_calificaciones }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>PROMEDIO DE CALIFICACIONES</strong></td>
+                        <td colspan="3">{{ estadisticas.promedio_general }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Tabla de alumnos -->
+            <h6 class="text-center mb-2"><strong>SUBMÓDULO II: DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES</strong></h6>
+            <table class="table table-bordered table-sm mb-4">
+                <thead>
+                    <tr>
+                        <th rowspan="2">No. DE LISTA</th>
+                        <th rowspan="2">NOMBRE DEL ALUMNO (A)</th>
+                        <th :colspan="parciales.length">FALTAS DE ASISTENCIA</th>
+                        <th rowspan="2">TOT. DE FALTAS</th>
+                        <th rowspan="2">% DE INASISTENCIA</th>
+                        <th :colspan="parciales.length">EVALUACIONES</th>
+                        <th rowspan="2">PROMEDIO</th>
+                        <th rowspan="2">OBSERVACIONES</th>
+                    </tr>
+                    <tr>
+                        <th v-for="(parcial, i) in parciales.length">
+                            {{ `${i + 1}a` }}
+                        </th>
+                        <th v-for="(parcial, index) in parciales.length">
+                            {{ `${index + 1}a` }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="alumno in alumnos" :key="alumno.No_DE_LISTA">
+                        <td>{{ alumno.No_DE_LISTA }}</td>
+                        <td>{{ alumno.NOMBRE_DEL_ALUMNO }}</td>
+                        <td v-for="(parcial, index) in parciales">
+                            {{ alumno[`faltas_${parcial}`] || '' }}
+                        </td>
+                        <!-- <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td> -->
+                        <td>{{ alumno.TOT_DE_FALTAS }}</td>
+                        <td>{{ alumno.PORC_INASISTENCIA }}%</td>
+                        <td v-for="(parcial, index) in parciales">
+                            {{ alumno[`eval_${parcial}`] || '' }}
+                        </td>
+                        <td>{{ alumno.PROMEDIO || '' }}</td>
+                        <td>{{ alumno.OBSERVACIONES || '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Firmas -->
+            <div class="firmas-container mt-5">
+                <div class="text-center mb-3">
+                    <p>El Potrero, Amanalco, México {{ new Date().toLocaleDateString('es-MX') }}</p>
+                </div>
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <p class="mb-0"><strong>LÓPEZ SANTANA SEBASTIAN</strong></p>
+                        <p class="mt-0">DOCENTE</p>
+                    </div>
+                    <div class="col text-center">
+                        <p class="mb-0"><strong>REVISÓ</strong></p>
+                        <p class="mb-0"><strong>AMOREA GUADALUPE HERNÁNDEZ HERNÁNDEZ</strong></p>
+                        <p class="mt-0">ORIENTADOR</p>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <p class="mb-0"><strong>AUTORIZÓ</strong></p>
+                        <p class="mb-0"><strong>MAÑA DEL CARMEN ASSENETH VELÁZQUEZ LÓPEZ</strong></p>
+                        <p class="mt-0">SUBDIRECTORA ESCOLAR</p>
+                    </div>
+                    <div class="col text-center">
+                        <p class="mb-0"><strong>GADIEL RECILLAS MIRANDA</strong></p>
+                        <p class="mt-0">DIRECTOR ESCOLAR</p>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col text-center">
+                        <p class="mb-0"><strong>VALIDACIÓN PARA CAPTURA EN SISTEMA</strong></p>
+                        <p class="mb-0"><strong>LUIS GONZÁLEZ CALIXTO</strong></p>
+                        <p class="mt-0">SECRETARIO ESCOLAR</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script>
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
+
+import html2pdf from 'html2pdf.js';
 
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
@@ -201,6 +400,11 @@ export default {
             selectCarrera: null,
             selectOptionsCarrera: [],
             selectLoadingCarrera: false,
+            //pdf
+            alumnos: [],
+            parciales: [],
+            estadisticas: {},
+            seguimientoId: 1
         }
     },
     watch: {
@@ -216,7 +420,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['selectedYear']) // trae selectedYear del store
+        ...mapGetters(['selectedYear']), // trae selectedYear del store
     },
     methods: {
         async consultar(filtro = '') {
@@ -443,7 +647,6 @@ export default {
                 }
             }, 300)
         },
-
         // selectGrupoOptions
         selectGrupoOptions(search) {
             clearTimeout(this.selectSearchTimeout)
@@ -473,7 +676,6 @@ export default {
                 }
             }, 300)
         },
-
         // selectCarreraOptions
         selectCarreraOptions(search) {
             clearTimeout(this.selectSearchTimeout)
@@ -503,6 +705,44 @@ export default {
                 }
             }, 300)
         },
+        parcialesObjeto(parciales) {
+            if (!Array.isArray(parciales)) return {};
+            return parciales.map(item => {
+                // Reemplaza espacios por "_" y asegura el formato correcto
+                return typeof item === 'string'
+                    ? item.replace(/\s+/g, '_')
+                    : item;
+            });
+        },
+        async formato1(id) {
+            try {
+                const response = await axios.get(`/api/Registro/Seguimiento/${id}/formato1`);
+                this.alumnos = response.data.alumnos;
+                this.estadisticas = response.data.estadisticas;
+                this.parciales = this.parcialesObjeto(response.data.parciales);
+
+                const element = this.$refs.pdfContent;
+                element.style.visibility = 'visible';
+                element.style.position = 'static';
+                element.style.left = '0';
+
+                const options = {
+                    margin: 0.5,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                await html2pdf().set(options).from(element).save();
+
+                element.style.visibility = 'hidden';
+                element.style.position = 'absolute';
+                element.style.left = '-9999px';
+            } catch (error) {
+                console.error('Error al generar Formato 1:', error);
+            }
+        }
+
     },
     mounted() {
         this.consultar();
@@ -516,5 +756,49 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.reporte-container {
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.2;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+}
+
+.table th,
+.table td {
+    border: 1px solid #000;
+    padding: 3px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.firmas-container {
+    margin-top: 30px;
+}
+
+.firmas-container p {
+    margin-bottom: 5px;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.mb-0 {
+    margin-bottom: 0;
 }
 </style>

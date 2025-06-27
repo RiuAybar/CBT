@@ -10,4 +10,7 @@ export default defineConfig({
         }),
         vue(),
     ],
+    optimizeDeps: {
+        include: ['ag-grid-vue3', 'ag-grid-community']
+    }
 });

@@ -46,12 +46,12 @@ Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']
         Route::get('Lista/{Seguimiento}/Parciales', [ListaController::class, 'buscarParciales']);
         Route::get('Lista/{Seguimiento}/Escalas', [ListaController::class, 'buscarEscalas']);
         Route::post('Lista/{Seguimiento}/asignarEscala', [ListaController::class, 'asignarEscala']);
-
         Route::get('Lista/{Seguimiento}/EscalasAsignadas', [ListaController::class, 'buscarEscalasAsignadas']);
-
-
         Route::get('/Lista/{seguimiento}/evaluacion', [ListaController::class, 'evaluacion']);
-
+        
+        Route::delete('/Lista/{MateriaParcialEscala}/EliminarEscala', [ListaController::class, 'EliminarEscala']);
+        // NotasPorAspecto
+        Route::post('/Lista/{MateriaParcialEscala}/NotasPorAspecto', [ListaController::class, 'guardarNotasPorAspecto']);
         Route::resource('Lista', ListaController::class);
     });
 
@@ -77,7 +77,8 @@ Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']
         Route::get('Seguimiento/Semestre',[SeguimientoController::class,'seguimientoSemestre']);
         Route::get('Seguimiento/Grupo',[SeguimientoController::class,'seguimientoGrupo']);
         Route::get('Seguimiento/Carrera',[SeguimientoController::class,'seguimientoCarrera']);
-
+                // formato1
+        Route::get('/Seguimiento/{Seguimiento}/formato1', [SeguimientoController::class, 'formato1']);
     });
 
     Route::prefix('/Actualizar')->group(function () {
