@@ -1,21 +1,22 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\GradoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\ListaController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\CarreraController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\ParcialController;
+use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\RegistroHorasDocenciaController;
 use App\Http\Controllers\Auth\RestablecerContraseñaController;
-use App\Http\Controllers\SeguimientoController;
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/refresh', [LoginController::class, 'refresh']);
@@ -92,3 +93,12 @@ Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']
     // ]);
     // más rutas aquí
 // });
+
+Route::get('createUser', function(){
+    $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'estatus' => 'habilitado',
+            'password' => bcrypt('$Super001'),
+        ]);
+});
