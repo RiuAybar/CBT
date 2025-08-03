@@ -45,13 +45,13 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-		<link class="js-stylesheet" href="{{ asset('css/light.css') }}" rel="stylesheet"></link>
+		<link class="js-stylesheet" href="{{ secure_asset('css/light.css') }}" rel="stylesheet"></link>
 
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
         <div id="app"></div>
-		<script src="{{ asset('js/app.js') }}"></script>
+		<script src="{{ secure_asset('js/app.js') }}"></script>
     </body>
 </html>
