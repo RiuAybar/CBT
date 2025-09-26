@@ -10,7 +10,6 @@ const mutations = {
   },
   CLEAR_USER(state) {
     state.user = null;
-    localStorage.removeItem('token'); // Puedes mover esto al action si lo prefieres
   }
 };
 
@@ -19,6 +18,7 @@ const actions = {
     commit('SET_USER', user);
   },
   clearUser({ commit }) {
+    localStorage.removeItem('token');
     commit('CLEAR_USER');
   },
   async fetchUser({ commit }) {

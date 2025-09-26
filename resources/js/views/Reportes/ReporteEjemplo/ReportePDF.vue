@@ -1,8 +1,13 @@
 <template>
   <div class="container mt-4">
     <h2 class="mb-4">Generador de Registro Escolar</h2>
-    <button class="btn btn-primary mb-4" @click="generarPDF">Generar PDF</button>
-
+    <button class="btn btn-primary mb-4" @click="generarPDF" :disabled="loading">
+      <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ loading ? 'Generando...' : 'Generar PDF' }}
+    </button>
+    <div v-if="error" class="alert alert-danger">
+      {{ error }}
+    </div>
     <!-- Contenedor principal para el PDF -->
     <div ref="pdfContent" class="pdf-container container">
       <!-- Primera página -->
@@ -19,104 +24,108 @@
         <!-- Primera sección con tablas -->
         <div class="form-section">
           <table class="form-table">
-            <tr>
-              <td class="label-cell">1/ DIRECCIÓN</td>
-              <td class="wide-cell">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</td>
-              <td class="empty-cell">33/</td>
-              <td class="empty-cell">34/</td>
-            </tr>
-            <tr>
-              <td class="label-cell">2/ DEPARTAMENTO</td>
-              <td class="wide-cell">DE BACHILLERATO TECNOLÓGICO</td>
-              <td class="data-cell">MESES</td>
-              <td class="data-cell">No. DE HORAS IMPARTIDAS</td>
-            </tr>
-            <tr>
-              <td class="label-cell">3/ NOMBRE DE LA ESCUELA</td>
-              <td class="wide-cell">CBT, AMANALCO DE BECERRA</td>
-              <td class="data-cell">FEBRERO</td>
-              <td class="data-cell">20</td>
-            </tr>
-            <tr>
-              <td class="label-cell">4/ TURNO</td>
-              <td class="wide-cell">DISCONTINUO</td>
-              <td class="data-cell">MARZO</td>
-              <td class="data-cell">24</td>
-            </tr>
-            <tr>
-              <td class="label-cell">5/ NIVEL</td>
-              <td class="wide-cell">MEDIO SUPERIOR TÉCNICO</td>
-              <td class="data-cell">ABRIL</td>
-              <td class="data-cell">15</td>
-            </tr>
-            <tr>
-              <td class="label-cell">8/ CLAVE CENTRO DE TRABAJO</td>
-              <td class="wide-cell">15ECT0112M</td>
-              <td class="data-cell">MAYO</td>
-              <td class="data-cell">24</td>
-            </tr>
-            <tr>
-              <td class="label-cell">9/ No. DE C.RE.S.E.</td>
-              <td class="wide-cell">NA</td>
-              <td class="data-cell">JUNIO</td>
-              <td class="data-cell">21</td>
-            </tr>
-            <tr>
-              <td class="label-cell">10/ ZONA ESCOLAR</td>
-              <td class="wide-cell">BT009</td>
-              <td class="data-cell">JULIO</td>
-              <td class="data-cell">12</td>
-            </tr>
-            <tr>
-              <td colspan="2" class="right-align">TOTAL DE HORAS SEMESTRALES</td>
-              <td colspan="2" class="data-cell">116</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td class="label-cell">1/ DIRECCIÓN</td>
+                <td class="wide-cell">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</td>
+                <td class="empty-cell">33/</td>
+                <td class="empty-cell">34/</td>
+              </tr>
+              <tr>
+                <td class="label-cell">2/ DEPARTAMENTO</td>
+                <td class="wide-cell">DE BACHILLERATO TECNOLÓGICO</td>
+                <td class="data-cell">MESES</td>
+                <td class="data-cell">No. DE HORAS IMPARTIDAS</td>
+              </tr>
+              <tr>
+                <td class="label-cell">3/ NOMBRE DE LA ESCUELA</td>
+                <td class="wide-cell">{{ headerData.escuela || 'CBT, AMANALCO DE BECERRA' }}</td>
+                <td class="data-cell">FEBRERO</td>
+                <td class="data-cell">20</td>
+              </tr>
+              <tr>
+                <td class="label-cell">4/ TURNO</td>
+                <td class="wide-cell">DISCONTINUO</td>
+                <td class="data-cell">MARZO</td>
+                <td class="data-cell">24</td>
+              </tr>
+              <tr>
+                <td class="label-cell">5/ NIVEL</td>
+                <td class="wide-cell">{{ headerData.nivel || 'MEDIO SUPERIOR TÉCNICO' }}</td>
+                <td class="data-cell">ABRIL</td>
+                <td class="data-cell">15</td>
+              </tr>
+              <tr>
+                <td class="label-cell">8/ CLAVE CENTRO DE TRABAJO</td>
+                <td class="wide-cell">15ECT0112M</td>
+                <td class="data-cell">MAYO</td>
+                <td class="data-cell">24</td>
+              </tr>
+              <tr>
+                <td class="label-cell">9/ No. DE C.RE.S.E.</td>
+                <td class="wide-cell">NA</td>
+                <td class="data-cell">JUNIO</td>
+                <td class="data-cell">21</td>
+              </tr>
+              <tr>
+                <td class="label-cell">10/ ZONA ESCOLAR</td>
+                <td class="wide-cell">BT009</td>
+                <td class="data-cell">JULIO</td>
+                <td class="data-cell">12</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="right-align">TOTAL DE HORAS SEMESTRALES</td>
+                <td colspan="2" class="data-cell">116</td>
+              </tr>
+            </tbody>
           </table>
 
           <!-- Segunda tabla -->
           <table class="form-table">
-            <tr>
-              <td class="label-cell">11/ DOMICILIO</td>
-              <td class="wide-cell">DOMICILIO CONOCIDO S/N</td>
-              <td class="label-cell">12/ LOCALIDAD O COLONIA</td>
-              <td class="wide-cell">EL POTRERO</td>
-            </tr>
-            <tr>
-              <td class="label-cell">13/ MUNICIPIO</td>
-              <td class="wide-cell">AMANALCO</td>
-              <td class="label-cell">14/ TELÉFONO</td>
-              <td class="wide-cell">7228353322</td>
-            </tr>
-            <tr>
-              <td class="label-cell">15/ CICLO ESCOLAR</td>
-              <td class="wide-cell">2024-2025</td>
-              <td class="label-cell">16/ NOMBRE DEL PROFESOR</td>
-              <td class="wide-cell">LÓPEZ SANTANA SEBASTIAN</td>
-            </tr>
-            <tr>
-              <td class="label-cell">17/ TELÉFONO</td>
-              <td class="wide-cell">7228353322</td>
-              <td class="label-cell">18/ DOMICILIO</td>
-              <td class="wide-cell">San Lucas, Amanalco;Méx</td>
-            </tr>
-            <tr>
-              <td class="label-cell">19/ LOCALIDAD O COLONIA</td>
-              <td class="wide-cell">San Lucas 2da secc.</td>
-              <td class="label-cell">20/ ASIGNATURA</td>
-              <td class="wide-cell">SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES</td>
-            </tr>
-            <tr>
-              <td class="label-cell">21/ CURSO</td>
-              <td class="wide-cell">ORDINARIO</td>
-              <td class="label-cell">22/ GRUPO</td>
-              <td class="wide-cell">2 1</td>
-            </tr>
-            <tr>
-              <td class="label-cell">23/ BACHILLERATO O CARRERA</td>
-              <td class="wide-cell">TÉCNICO EN INFORMÁTICA</td>
-              <td class="label-cell">24/ SEMESTRE</td>
-              <td class="wide-cell">2</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td class="label-cell">11/ DOMICILIO</td>
+                <td class="wide-cell">DOMICILIO CONOCIDO S/N</td>
+                <td class="label-cell">12/ LOCALIDAD O COLONIA</td>
+                <td class="wide-cell">EL POTRERO</td>
+              </tr>
+              <tr>
+                <td class="label-cell">13/ MUNICIPIO</td>
+                <td class="wide-cell">AMANALCO</td>
+                <td class="label-cell">14/ TELÉFONO</td>
+                <td class="wide-cell">7228353322</td>
+              </tr>
+              <tr>
+                <td class="label-cell">15/ CICLO ESCOLAR</td>
+                <td class="wide-cell">{{ headerData.año || '2024-2025' }}</td>
+                <td class="label-cell">16/ NOMBRE DEL PROFESOR</td>
+                <td class="wide-cell">{{ headerData.profesor || '' }}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">17/ TELÉFONO</td>
+                <td class="wide-cell">7228353322</td>
+                <td class="label-cell">18/ DOMICILIO</td>
+                <td class="wide-cell">{{ headerData.profesor_domicilio || 'San Lucas, Amanalco;Méx' }}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">19/ LOCALIDAD O COLONIA</td>
+                <td class="wide-cell">San Lucas 2da secc.</td>
+                <td class="label-cell">20/ ASIGNATURA</td>
+                <td class="wide-cell">{{ headerData.materia || '' }}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">21/ CURSO</td>
+                <td class="wide-cell">ORDINARIO</td>
+                <td class="label-cell">22/ GRUPO</td>
+                <td class="wide-cell">{{ headerData.grupo || '' }}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">23/ BACHILLERATO O CARRERA</td>
+                <td class="wide-cell">TÉCNICO EN INFORMÁTICA</td>
+                <td class="label-cell">24/ SEMESTRE</td>
+                <td class="wide-cell">2</td>
+              </tr>
+            </tbody>
           </table>
 
           <!-- Sección de horario y estadísticas -->
@@ -124,96 +133,100 @@
             <div class="schedule-section">
               <span class="section-label">36/ HORARIO</span>
               <table class="schedule-table">
-                <tr>
-                  <td>LUNES</td>
-                  <td></td>
-                  <td>JUEVES</td>
-                </tr>
-                <tr>
-                  <td>MARTES</td>
-                  <td>7:30-9:10,12:00-12:50</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>MIERCOLES</td>
-                  <td></td>
-                  <td>VIERNES</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>12:00-14:30</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>LUNES</td>
+                    <td></td>
+                    <td>JUEVES</td>
+                  </tr>
+                  <tr>
+                    <td>MARTES</td>
+                    <td>7:30-9:10,12:00-12:50</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>MIERCOLES</td>
+                    <td></td>
+                    <td>VIERNES</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td>12:00-14:30</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
 
             <div class="stats-section">
               <span class="section-label">35/ DATOS ESTADÍSTICOS</span>
               <table class="stats-table">
-                <tr>
-                  <td></td>
-                  <td>HOMBRES</td>
-                  <td>MUJERES</td>
-                  <td>TOTAL</td>
-                </tr>
-                <tr>
-                  <td>No. DE ALUMNOS INSCRITOS</td>
-                  <td>10</td>
-                  <td>13</td>
-                  <td>23</td>
-                </tr>
-                <tr>
-                  <td>BAJAS DURANTE EL AÑO</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td>EXISTENCIA AL FINAL DEL AÑO</td>
-                  <td>10</td>
-                  <td>13</td>
-                  <td>23</td>
-                </tr>
-                <tr>
-                  <td>No. DE APROBADOS</td>
-                  <td>4</td>
-                  <td>6</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>No. REPROBADOS</td>
-                  <td>1</td>
-                  <td>0</td>
-                  <td>1</td>
-                </tr>
-                <tr>
-                  <td>% DE ALUMNOS APROBADOS</td>
-                  <td>40.00</td>
-                  <td>46.15</td>
-                  <td>43.08</td>
-                </tr>
-                <tr>
-                  <td>% DE ALUMNOS REPROBADOS</td>
-                  <td>60.00</td>
-                  <td>53.85</td>
-                  <td>56.92</td>
-                </tr>
-                <tr>
-                  <td>SUMA DE CALIFICACIONES</td>
-                  <td>35</td>
-                  <td>52</td>
-                  <td>87</td>
-                </tr>
-                <tr>
-                  <td>PROMEDIO DE CALIFICACIONES</td>
-                  <td>3.50</td>
-                  <td>4.00</td>
-                  <td>3.78</td>
-                </tr>
-                <tr>
-                  <td>METAS INSTITUCIONALES LOGRADAS</td>
-                  <td colspan="3">NO</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td>HOMBRES</td>
+                    <td>MUJERES</td>
+                    <td>TOTAL</td>
+                  </tr>
+                  <tr>
+                    <td>No. DE ALUMNOS INSCRITOS</td>
+                    <td>10</td>
+                    <td>13</td>
+                    <td>23</td>
+                  </tr>
+                  <tr>
+                    <td>BAJAS DURANTE EL AÑO</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>EXISTENCIA AL FINAL DEL AÑO</td>
+                    <td>10</td>
+                    <td>13</td>
+                    <td>23</td>
+                  </tr>
+                  <tr>
+                    <td>No. DE APROBADOS</td>
+                    <td>4</td>
+                    <td>6</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <td>No. REPROBADOS</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>% DE ALUMNOS APROBADOS</td>
+                    <td>40.00</td>
+                    <td>46.15</td>
+                    <td>43.08</td>
+                  </tr>
+                  <tr>
+                    <td>% DE ALUMNOS REPROBADOS</td>
+                    <td>60.00</td>
+                    <td>53.85</td>
+                    <td>56.92</td>
+                  </tr>
+                  <tr>
+                    <td>SUMA DE CALIFICACIONES</td>
+                    <td>35</td>
+                    <td>52</td>
+                    <td>87</td>
+                  </tr>
+                  <tr>
+                    <td>PROMEDIO DE CALIFICACIONES</td>
+                    <td>3.50</td>
+                    <td>4.00</td>
+                    <td>3.78</td>
+                  </tr>
+                  <tr>
+                    <td>METAS INSTITUCIONALES LOGRADAS</td>
+                    <td colspan="3">NO</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -249,67 +262,71 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="student in students" :key="student.id">
-              <td>{{ student.id }}</td>
-              <td>{{ student.gender }}</td>
-              <td class="student-name">{{ student.name }}</td>
-              <td>{{ student.absence1 || '' }}</td>
-              <td>{{ student.absence2 || '' }}</td>
-              <td>{{ student.absence3 || '' }}</td>
-              <td>{{ student.totalAbsences }}</td>
-              <td>{{ student.absencePercentage.toFixed(1) }}</td>
-              <td>{{ student.eval1 || '' }}</td>
-              <td>{{ student.eval2 || '' }}</td>
-              <td>{{ student.eval3 || '' }}</td>
-              <td>{{ student.totalScore }}</td>
-              <td>{{ student.average.toFixed(1) }}</td>
-              <td>{{ student.observations || '' }}</td>
+          <tbody v-if="students.length">
+            <tr v-for="student in students" :key="student.No_DE_LISTA">
+              <td>{{ student.No_DE_LISTA }}</td>
+              <td>{{ student.SEXO }}</td>
+              <td class="student-name">{{ student.NOMBRE_DEL_ALUMNO }}</td>
+              <td>{{ student.faltas_1a || '' }}</td>
+              <td>{{ student.faltas_2a || '' }}</td>
+              <td>{{ student.faltas_3a || '' }}</td>
+              <td>{{ student.TOT_DE_FALTAS }}</td>
+              <td>{{ student.PORC_INASISTENCIA }}</td>
+              <td>{{ student.eval_1er_Parcial || '' }}</td>
+              <td>{{ student.eval_2do_Parcial || '' }}</td>
+              <td>{{ student.eval_3er_Parcial || '' }}</td>
+              <td>{{ student.SUMA_1a + student.SUMA_2a + student.SUMA_3a }}</td>
+              <td>{{ student.PROMEDIO }}</td>
+              <td>{{ student.OBSERVACIONES || '' }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="14">Cargando datos de estudiantes...</td>
             </tr>
           </tbody>
         </table>
         <!-- Segunda página con firmas -->
         <div>
           <div class="date-line">
-              <span>El Potrero, Amanalco, México</span>
-              <span class="right">jueves, 26 de junio de 2025</span>
+            <span>El Potrero, Amanalco, México a {{ currentDate }}</span>
+          </div>
+
+          <div class="signatures-title">FIRMAS</div>
+
+          <div class="signatures-container">
+            <div class="signature-box left">
+              <p>LÓPEZ SANTANA SEBASTIAN</p>
+              <p>DOCENTE</p>
             </div>
-  
-            <div class="signatures-title">FIRMAS</div>
-  
-            <div class="signatures-container">
-              <div class="signature-box left">
-                <p>LÓPEZ SANTANA SEBASTIAN</p>
-                <p>DOCENTE</p>
-              </div>
-  
-              <div class="signature-box right">
-                <p>ANDREA GUADALUPE HERNÁNDEZ HERNÁNDEZ</p>
-                <p>ORIENTADOR</p>
-              </div>
+
+            <div class="signature-box right">
+              <p>ANDREA GUADALUPE HERNÁNDEZ HERNÁNDEZ</p>
+              <p>ORIENTADOR</p>
             </div>
-  
-            <div class="revisor-line">REVISÓ</div>
-  
-            <div class="signatures-container">
-              <div class="signature-box left">
-                <p>MARÍA DEL CARMEN ASSENETH VELÁZQUEZ LÓPEZ</p>
-                <p>SUBDIRECTORA ESCOLAR</p>
-              </div>
-  
-              <div class="signature-box right">
-                <p>GADIEL RECILLAS MIRANDA</p>
-                <p>DIRECTOR ESCOLAR</p>
-              </div>
+          </div>
+
+          <div class="revisor-line">REVISÓ</div>
+
+          <div class="signatures-container">
+            <div class="signature-box left">
+              <p>MARÍA DEL CARMEN ASSENETH VELÁZQUEZ LÓPEZ</p>
+              <p>SUBDIRECTORA ESCOLAR</p>
             </div>
-  
-            <div class="validation-section">
-              <div class="validation-title">VALIDACIÓN PARA CAPTURA EN SISTEMA</div>
-              <div class="signature-box center">
-                <p>LUIS GONZÁLEZ CALIXTO</p>
-                <p>SECRETARIO ESCOLAR</p>
-              </div>
+
+            <div class="signature-box right">
+              <p>GADIEL RECILLAS MIRANDA</p>
+              <p>DIRECTOR ESCOLAR</p>
             </div>
+          </div>
+
+          <div class="validation-section">
+            <div class="validation-title">VALIDACIÓN PARA CAPTURA EN SISTEMA</div>
+            <div class="signature-box center">
+              <p>LUIS GONZÁLEZ CALIXTO</p>
+              <p>SECRETARIO ESCOLAR</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -319,22 +336,58 @@
 </template>
 
 <script>
-import html2pdf from 'html2pdf.js';
+import html2pdf from 'html2pdf.js'
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/services/api' // Asegúrate que la ruta a tu cliente api es correcta
 
 export default {
   name: 'RegistroEscolarPDF',
-  data() {
-    return {
-      students: [
-        { id: 1, gender: 'M', name: 'ARRIAGA ARRIAGA CHRISTOPHER', absence1: 0, absence2: '', absence3: '', totalAbsences: 0, absencePercentage: 0.0, eval1: 8, eval2: 8.0, eval3: 8.0, totalScore: 24, average: 8.0, observations: 'E. EXTR.' },
-        { id: 2, gender: 'M', name: 'ALVAREZ COLIN LUIS ENRIQUE', absence1: 5, absence2: '', absence3: '', totalAbsences: 5, absencePercentage: 4.3, eval1: 5, eval2: 5.0, eval3: 5.0, totalScore: 15, average: 5.0, observations: '' },
-        // ... completar con todos los estudiantes
-      ],
-    };
-  },
-  methods: {
-    generarPDF() {
-      const element = this.$refs.pdfContent
+  setup() {
+    const route = useRoute()
+    const pdfContent = ref(null)
+    const students = ref([])
+    const headerData = ref({})
+    const loading = ref(false)
+    const error = ref(null)
+    const seguimientoId = ref(route.params.id) // Asume que el id viene de la ruta /reporte/:id
+
+    const fetchData = async () => {
+      if (!seguimientoId.value) {
+        error.value = "No se ha proporcionado un ID de seguimiento."
+        return
+      }
+      loading.value = true
+      error.value = null
+      try {
+        // Petición para los datos del encabezado
+        const headerResponse = await api.get(`/listas/seguimiento/${seguimientoId.value}`)
+        headerData.value = headerResponse.data.Seguimiento
+
+        // Petición para los datos de los estudiantes (formato1)
+        const studentsResponse = await api.get(`/seguimientos/formato1/${seguimientoId.value}`)
+        students.value = studentsResponse.data
+      } catch (err) {
+        console.error("Error al obtener los datos del reporte:", err)
+        error.value = "No se pudieron cargar los datos del reporte. Verifique la consola para más detalles."
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const currentDate = computed(() => {
+      return new Date().toLocaleDateString('es-MX', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    })
+
+    const generarPDF = () => {
+      if (loading.value || error.value) return;
+
+      loading.value = true
+      const element = pdfContent.value
       const options = {
         margin: [5, 5, 5, 5],
         filename: 'registro_oficial_faltas.pdf',
@@ -357,9 +410,26 @@ export default {
         }
       }
 
-      html2pdf().from(element).set(options).save()
+      html2pdf().from(element).set(options).save().then(() => {
+        loading.value = false
+      }).catch(err => {
+        console.error("Error al generar el PDF:", err)
+        error.value = "Ocurrió un error al generar el PDF."
+        loading.value = false
+      })
     }
 
+    onMounted(fetchData)
+
+    return {
+      pdfContent,
+      students,
+      headerData,
+      loading,
+      error,
+      currentDate,
+      generarPDF,
+    }
   }
 };
 </script>
@@ -373,6 +443,7 @@ body {
   font-size: 7.5pt;
   line-height: 1.1;
 }
+
 .pdf-page {
   page-break-after: always;
   height: 281mm;
@@ -509,7 +580,8 @@ body {
   margin-top: 2mm;
 }
 
-.students-table th, .students-table td {
+.students-table th,
+.students-table td {
   border: 1px solid black;
   padding: 0.7mm;
   text-align: center;
@@ -616,11 +688,11 @@ body {
   .generate-btn {
     display: none;
   }
-  
+
   body {
     background-color: white;
   }
-  
+
   .pdf-container {
     box-shadow: none;
     padding: 0;

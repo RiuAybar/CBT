@@ -107,12 +107,12 @@
                             class="avatar img-fluid rounded me-1" :alt="getUser?.name" />
                     </a>
 
-                    <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" @click.prevent="toggleUserDropdown">
                         <img :src="getUser?.avatar_url || `/storage/avatars/Def/avatar.jpg`"
                             class="avatar img-fluid rounded me-1" :alt="getUser?.name" />
                         <span class="text-dark">{{ getUser?.user?.name || getUser?.name }}</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end">
+                    <div class="dropdown-menu dropdown-menu-end" :class="{ 'show': isUserDropdownOpen }">
                         <router-link class="dropdown-item" to="/perfil">
                             <i class="align-middle me-1" data-feather="user"></i>
                             Perfil
@@ -151,7 +151,8 @@ export default {
         return {
             isCollapsed: localStorage.getItem('isCollapsed') === 'true',
             user: {},
-            years: []
+            years: [],
+            isUserDropdownOpen: false,
         };
     },
     watch: {
@@ -180,6 +181,9 @@ export default {
         ...mapActions(['toggleCollapsed', 'setSelectedYear']),
         collapseMenu() {
             this.toggleCollapsed();
+        },
+        toggleUserDropdown() {
+            this.isUserDropdownOpen = !this.isUserDropdownOpen;
         },
         generateSurroundingYears(centerYear) {
             const years = [];
