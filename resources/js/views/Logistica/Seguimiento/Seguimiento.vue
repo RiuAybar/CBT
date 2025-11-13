@@ -54,7 +54,6 @@
             :title="Seguimiento.id ? 'Editar Seguimiento' : 'Agregar Seguimiento'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="row">
                         <div class="mb-3 col-sm-4">
                             <label for="profesor_id" class="form-label">Profesor</label>
@@ -120,7 +119,6 @@
                             </div>
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->

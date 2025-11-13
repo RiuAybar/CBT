@@ -127,7 +127,6 @@
     <Modal size="lg" ref="modalLista" id="modal-lista" :title="'Escala Evaluativa.'">
       <!-- Contenido dinámico: slot principal -->
       <template #default>
-        <form>
           <div class="row">
             <div class="mb-3 col-sm-4">
               <label for="ano" class="form-label">Escala Evaluativa</label>
@@ -156,7 +155,6 @@
               </template>
             </EasyDataTable>
           </div>
-        </form>
       </template>
     </Modal>
 

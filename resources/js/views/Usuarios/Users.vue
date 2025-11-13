@@ -49,7 +49,6 @@
     <Modal size="lg" ref="modalUsuario" id="modal-usuario" :title="Usuario.id ? 'Editar Usuario' : 'Registrar Usuario'">
       <!-- Contenido dinámico: slot principal -->
       <template #default>
-        <form>
           <div class="row">
 
             <div class="mb-3">
@@ -133,7 +132,6 @@
             </div>
 
           </div>
-        </form>
       </template>
 
       <!-- Footer dinámico: slot con nombre -->

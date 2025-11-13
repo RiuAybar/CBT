@@ -51,7 +51,6 @@
             :title="Rol.id ? 'Editar Rol' : 'Agregar Rol'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="mb-3">
                         <label for="name" class="form-label">Rol</label>
                         <input v-model="Rol.name" type="text" class="form-control" id="name"
@@ -60,7 +59,6 @@
                             {{ errores.name[0] }}
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->

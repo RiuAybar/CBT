@@ -48,7 +48,6 @@
             :title="Carrera.id ? 'Editar Carrera' : 'Agregar Carrera'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Carrera</label>
                         <input v-model="Carrera.nombre" type="text" class="form-control" id="nombre"
@@ -57,7 +56,6 @@
                             {{ errores.nombre[0] }}
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->

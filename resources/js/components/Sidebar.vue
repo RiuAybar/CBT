@@ -12,7 +12,8 @@
 				<li class="sidebar-header">
 					Pages
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
+				<li class="sidebar-item" v-if="getUser?.role?.permissions?.some(p => ['ver roles', 'ver permisos'].includes(p))"
+					:class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
 					<a data-bs-target="#dashboards" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-person-gear me-2"></i>
 						<span class="align-middle">
@@ -20,10 +21,11 @@
 						</span>
 					</a>
 					<ul id="dashboards" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-						<li class="sidebar-item" :class="{ active: isActive('/permisos') }">
+						<li class="sidebar-item" :class="{ active: isActive('/permisos') }" v-if="getUser?.role?.permissions?.includes('ver permisos')">
 							<router-link to="/permisos" class='sidebar-link'>Permisos</router-link>
 						</li>
-						<li class="sidebar-item" :class="{ active: isActive(['/roles',`/roles/${this.$route.params.id}/edit`]) }">
+						<li class="sidebar-item"
+							:class="{ active: isActive(['/roles', `/roles/${this.$route.params.id}/edit`]) }" v-if="getUser?.role?.permissions?.includes('ver roles')">
 							<router-link to="/roles" class='sidebar-link'>Roles</router-link>
 						</li>
 						<!-- <li class="sidebar-item">
@@ -54,7 +56,8 @@
 					</ul>
 				</li>
 
-				<li class="sidebar-item" :class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
+				<li class="sidebar-item"
+					:class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
 					<!-- <a data-bs-target="#dashboardsLista" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-person-circle me-2"></i>
 						<span class="align-middle">
@@ -74,7 +77,8 @@
 				<li class="sidebar-header">
 					conf
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive(['/grados', '/grupos', '/materias','/semestres','/carreras','parciales']) }">
+				<li class="sidebar-item"
+					:class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', 'parciales']) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
@@ -108,7 +112,8 @@
 				<li class="sidebar-header">
 					Seg
 				</li>
-				<li class="sidebar-item" :class="{ active: isActive(['/seguimiento', '/grupos', '/materias','/semestres','/carreras','parciales']) }">
+				<li class="sidebar-item"
+					:class="{ active: isActive(['/seguimiento', '/grupos', '/materias', '/semestres', '/carreras', 'parciales']) }">
 					<a data-bs-target="#Seguimiento" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-file-earmark-medical me-2"></i>
 						<span class="align-middle">
@@ -143,7 +148,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['isCollapsed'])
+		...mapGetters('auth', ['isCollapsed', 'isAuthenticated', 'getUser'])
 	},
 	methods: {
 		isActive(path) {
@@ -154,7 +159,5 @@ export default {
 		}
 	}
 }
-
 </script>
-
 <style></style>

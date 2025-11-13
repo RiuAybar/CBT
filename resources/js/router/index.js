@@ -10,21 +10,16 @@ import RolesPermisos from '../views/Usuarios/rolesPermisos/RolesPermisos.vue';
 import Login from '../views/auth/Login.vue';
 import RegistrarPassword from '../views/auth/RegistrarPassword.vue';
 import RestablecerPassword from '../views/auth/RestablecerPassword.vue';
-
 import Grados from '../views/Logistica/Grados/Grados.vue';
 import Grupos from '../views/Logistica/Grados/Grupos.vue';
 import Materias from '../views/Logistica/Grados/Materias.vue';
 import Semestres from '../views/Logistica/Grados/Semestres.vue';
 import Carreras from '../views/Logistica/Grados/Carreras.vue';
 import HorasDocente from '../views/Logistica/Grados/HorasDocente.vue';
-
 import Parciales from '../views/Logistica/Grados/Parciales.vue';
-
 import Seguimiento from '../views/Logistica/Seguimiento/Seguimiento.vue';
-
 import ConfiguracionUsuarios from '../views/Usuarios/Configuracion/ConfiguracionUsuarios.vue';
 import Lista from '../views/Logistica/Listas/Lista.vue';
-
 import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
 
 const routes = [
@@ -61,17 +56,13 @@ const routes = [
       { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos' } },
       { path: 'grados', name: 'grados', component: Grados, meta: { title: 'Lista de Grados.' } },
       { path: 'grupos/:id/edit', name: 'grupos', component: Grupos, meta: { title: 'Lista de grupos.' } },
-
       { path: 'lista/:id/edit', name: 'lista', component: Lista, meta: { title: 'Lista de lista.' } },
-
       { path: 'semestres', name: 'semestres', component: Semestres, meta: { title: 'Lista de semestres.' } },
       { path: 'materias', name: 'materias', component: Materias, meta: { title: 'Lista de materias.' } },
-      
       { path: 'carreras', name: 'carreras', component: Carreras, meta: { title: 'Lista de carreras.' } },
       { path: 'horasdocente', name: 'horasdocente', component: HorasDocente, meta: { title: 'Registro de meses y horas.' } },
       { path: 'parciales', name: 'parciales', component: Parciales, meta: { title: 'Lista de parciales.' } },
       { path: 'seguimiento', name: 'seguimiento', component: Seguimiento, meta: { title: 'Lista de seguimiento.' } },
-
       { path: 'perfil', name: 'perfil', component: ConfiguracionUsuarios, meta: { title: 'Configuración de mi perfil.' } },
       { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.' } },
     ]

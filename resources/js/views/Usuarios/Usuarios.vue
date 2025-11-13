@@ -25,7 +25,6 @@
 
             <Modal ref="modalComponente" id="mostrarUsuarios" title="Mostrar usuarios">
                 <template #default>
-                    <form>
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
                             <input v-model="usuario.name" type="text" id="name" class="form-control"
@@ -42,7 +41,6 @@
                                 {{ errores.email[0] }}
                             </div>
                         </div>
-                    </form>
                 </template>
 
                 <template #footer>

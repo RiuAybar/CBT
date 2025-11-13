@@ -6,8 +6,6 @@
       <main class="content">
         <router-view />
       </main>
-      
-      
     </div>
   </div>
   <Footer />

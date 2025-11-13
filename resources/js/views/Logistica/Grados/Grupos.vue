@@ -51,7 +51,6 @@
         <Modal size="lg" ref="modalGrupos" id="modal-Grupo" :title="Grupo.id ? 'Editar Grupo' : 'Agregar Grupo'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Grupo</label>
                         <input v-model="Grupo.nombre" type="text" class="form-control" id="nombre"
@@ -60,7 +59,6 @@
                             {{ errores.nombre[0] }}
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->

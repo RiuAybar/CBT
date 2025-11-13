@@ -48,7 +48,6 @@
             :title="MesHora.id ? 'Editar mes y hora' : 'Agregar mes y hora'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="row">
                         <div class="mb-3 col-sm-4">
                             <label for="mes" class="form-label">Mes</label>
@@ -79,7 +78,6 @@
                             </div>
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->

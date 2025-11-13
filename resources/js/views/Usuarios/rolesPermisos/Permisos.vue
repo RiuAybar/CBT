@@ -49,7 +49,6 @@
             :title="Permiso.id ? 'Editar Permiso' : 'Agregar Permiso'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                <form>
                     <div class="mb-3">
                         <label for="name" class="form-label">Permiso</label>
                         <input v-model="Permiso.name" type="text" class="form-control" id="name"
@@ -58,7 +57,6 @@
                             {{ errores.name[0] }}
                         </div>
                     </div>
-                </form>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->
