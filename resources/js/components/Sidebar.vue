@@ -78,7 +78,7 @@
 					conf
 				</li>
 				<li class="sidebar-item"
-					:class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', 'parciales']) }">
+					:class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', '/parciales']) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
@@ -113,7 +113,7 @@
 					Seg
 				</li>
 				<li class="sidebar-item"
-					:class="{ active: isActive(['/seguimiento', '/grupos', '/materias', '/semestres', '/carreras', 'parciales']) }">
+					:class="{ active: isActive(['/seguimiento', '/grupos', '/materias', '/semestres', '/carreras', '/parciales']) }">
 					<a data-bs-target="#Seguimiento" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-file-earmark-medical me-2"></i>
 						<span class="align-middle">

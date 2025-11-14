@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-3">
           <h1 class="h3 mb-3">
-            Lita
+            Lista
             <strong>
             </strong>
           </h1>
