@@ -149,9 +149,15 @@ class RolController extends Controller
     {
         $search = $request->query('search');
         $data = [];
+        // dd(auth('api')->user()->can('Puede agregar estudiantes') );
         if ($search) {
             $query = Role::query();
             $data = $query->where('name', 'like', '%' . $search . '%')
+                // ->where(function ($query) use ($dato) {
+                //     if ($dato) {
+                //         $query->where('campo', 'LIKE', "%$dato%");
+                //     }
+                // })
                 ->limit(5)
                 ->orderBy('id', 'desc')
                 ->get(['id', 'name']);

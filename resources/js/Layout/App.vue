@@ -20,7 +20,13 @@ export default {
 
         try {
           const res = await api.get('/user');
-          this.$store.dispatch('auth/setUser', res.data);
+          const payload = {
+            ...res.data.user,
+            avatar_url: res.data.avatar_url,
+            role: res.data.role?.name || null,
+            permissions: res.data.role?.permissions || []
+          };
+          this.$store.dispatch('auth/setUser', payload);
           // console.log('Usuario autenticado:', res.data);
         } catch (error) {
           console.warn('Token inválido. Redirigiendo al login.');

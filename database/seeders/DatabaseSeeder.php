@@ -209,6 +209,19 @@ class DatabaseSeeder extends Seeder
             [
                 ['name' => 'ver calificaciones', 'guard_name' => 'api'],
                 ['name' => 'actualizar calificaciones', 'guard_name' => 'api'],
+                ['name' => 'ver usuarios', 'guard_name' => 'api'],
+                ['name' => 'ver grados', 'guard_name' => 'api'],
+                ['name' => 'ver grupos', 'guard_name' => 'api'],
+                ['name' => 'ver listas', 'guard_name' => 'api'],
+                ['name' => 'ver semestres', 'guard_name' => 'api'],
+                ['name' => 'ver materias', 'guard_name' => 'api'],
+                ['name' => 'ver carreras', 'guard_name' => 'api'],
+                ['name' => 'ver horas docente', 'guard_name' => 'api'],
+                ['name' => 'ver parciales', 'guard_name' => 'api'],
+                ['name' => 'ver seguimiento', 'guard_name' => 'api'],
+                ['name' => 'ver f1', 'guard_name' => 'api'],
+
+                ['name' => 'Puede agregar estudiantes', 'guard_name' => 'api'],
             ]
         );
     }
@@ -219,6 +232,8 @@ class DatabaseSeeder extends Seeder
             [
                 ['name' => 'ver permisos', 'guard_name' => 'api'],
                 ['name' => 'ver roles', 'guard_name' => 'api'],
+                ['name' => 'ver permisos asignados a roles', 'guard_name' => 'api'],                
+                
                 ['name' => 'eliminar profesores', 'guard_name' => 'api'],
                 ['name' => 'ver calificaciones', 'guard_name' => 'api'],
             ],
