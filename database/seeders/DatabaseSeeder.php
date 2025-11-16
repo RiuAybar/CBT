@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
             ->each(function ($user) use ($rolProfesores) {
                 $user->assignRole($rolProfesores); // asignar rol
             });
-            //Crear 3 orientadores
+        //Crear 3 orientadores
         User::factory()
             ->count(3)
             ->create()
@@ -182,7 +182,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'orientador', 'guard_name' => 'api'],
             ['name' => 'profesor', 'guard_name' => 'api'],
             ['name' => 'estudiante', 'guard_name' => 'api'],
-            
+
         ];
     }
 
@@ -207,22 +207,36 @@ class DatabaseSeeder extends Seeder
     {
         return $this->mergePermissions(
             [
-                ['name' => 'ver calificaciones', 'guard_name' => 'api'],
-                ['name' => 'actualizar calificaciones', 'guard_name' => 'api'],
+                // http://localhost:8000/users
                 ['name' => 'ver usuarios', 'guard_name' => 'api'],
+                // http://localhost:8000/grupos/1/edit
                 ['name' => 'ver grados', 'guard_name' => 'api'],
+                // http://localhost:8000/grados
                 ['name' => 'ver grupos', 'guard_name' => 'api'],
+                // http://localhost:8000/lista/1/edit
                 ['name' => 'ver listas', 'guard_name' => 'api'],
+                // http://localhost:8000/semestres
                 ['name' => 'ver semestres', 'guard_name' => 'api'],
+                // http://localhost:8000/materias
                 ['name' => 'ver materias', 'guard_name' => 'api'],
+                // http://localhost:8000/carreras
                 ['name' => 'ver carreras', 'guard_name' => 'api'],
+                // http://localhost:8000/horasdocente
                 ['name' => 'ver horas docente', 'guard_name' => 'api'],
+                // http://localhost:8000/parciales
                 ['name' => 'ver parciales', 'guard_name' => 'api'],
+                // http://localhost:8000/seguimiento
                 ['name' => 'ver seguimiento', 'guard_name' => 'api'],
+                // http://localhost:8000/seguimiento
                 ['name' => 'ver f1', 'guard_name' => 'api'],
-
+                // http://localhost:8000/users
+                ['name' => 'Puede ver estudiantes', 'guard_name' => 'api'],
+                ['name' => 'Puede ver profesores', 'guard_name' => 'api'],
+                // http://localhost:8000/users
                 ['name' => 'Puede agregar estudiantes', 'guard_name' => 'api'],
-            ]
+                ['name' => 'Puede agregar profesores', 'guard_name' => 'api'],
+            ],
+            $this->permisosEstudiante(),
         );
     }
 
@@ -230,14 +244,35 @@ class DatabaseSeeder extends Seeder
     {
         return $this->mergePermissions(
             [
+                // http://localhost:8000/permisos
                 ['name' => 'ver permisos', 'guard_name' => 'api'],
+                // http://localhost:8000/roles
                 ['name' => 'ver roles', 'guard_name' => 'api'],
-                ['name' => 'ver permisos asignados a roles', 'guard_name' => 'api'],                
+                // http://localhost:8000/roles/1/edit
+                ['name' => 'ver permisos asignados a roles', 'guard_name' => 'api'],
+
+                // http://localhost:8000/users
+                ['name' => 'Puede ver orientadores', 'guard_name' => 'api'],
+                ['name' => 'Puede ver administradores', 'guard_name' => 'api'],
+
+                //http://localhost:8000/users
+                ['name' => 'Puede agregar orientadores', 'guard_name' => 'api'],
+                ['name' => 'Puede agregar administradores', 'guard_name' => 'api'],
+
+                // http://localhost:8000/users
+                ['name' => 'puede editar estudiantes', 'guard_name' => 'api'],
+                ['name' => 'puede editar profesores', 'guard_name' => 'api'],
+                ['name' => 'puede editar orientadores', 'guard_name' => 'api'],
+                ['name' => 'puede editar administradores', 'guard_name' => 'api'],
                 
-                ['name' => 'eliminar profesores', 'guard_name' => 'api'],
-                ['name' => 'ver calificaciones', 'guard_name' => 'api'],
+                // http://localhost:8000/users
+                ['name' => 'puede desabilitar estudiantes', 'guard_name' => 'api'],
+                ['name' => 'puede desabilitar profesores', 'guard_name' => 'api'],
+                ['name' => 'puede desabilitar orientadores', 'guard_name' => 'api'],
+                ['name' => 'puede desabilitar administradores', 'guard_name' => 'api'],
+
+
             ],
-            $this->permisosEstudiante(),
             $this->permisosOrientador()
         );
     }

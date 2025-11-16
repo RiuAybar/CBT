@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BienvenidaCrearPassword;
 use App\Http\Requests\UsuarioRequest;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Password;
 
 class UsuarioController extends Controller
@@ -18,21 +19,53 @@ class UsuarioController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-
         $query = User::query();
 
-        if ($search) {
-            $query->where('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->orWhere('estatus', 'like', '%' . $search . '%')
-                ->orWhere('telefono', 'like', '%' . $search . '%')
-                ->orWhere('domicilio', 'like', '%' . $search . '%')
-                ->orWhere('localidadColonia', 'like', '%' . $search . '%')
-                ->orWhereHas('roles', function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
-                })
-                ->limit(5);
+        // Mapa Permiso → Nombre del Rol
+        $restricciones = [
+            'Puede ver estudiantes' => 'estudiante',
+            'Puede ver profesores' => 'profesor',
+            'Puede ver orientadores' => 'orientador',
+            'Puede ver administradores' => 'admin',
+        ];
+        $user = auth('api')->user();
+        // Aplicar restricciones basado en permisos
+        foreach ($restricciones as $permiso => $rol) {
+            if (!$user->can($permiso)) {
+                // si NO tiene permiso, excluir usuarios con ese rol
+                $query->whereDoesntHave('roles', function ($q) use ($rol) {
+                    $q->where('name', $rol);
+                });
+            }
         }
+
+        // 🔵 Búsqueda
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('estatus', 'like', '%' . $search . '%')
+                    ->orWhere('telefono', 'like', '%' . $search . '%')
+                    ->orWhere('domicilio', 'like', '%' . $search . '%')
+                    ->orWhere('localidadColonia', 'like', '%' . $search . '%')
+                    ->orWhereHas('roles', function ($r) use ($search) {
+                        $r->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->limit(5);
+            });
+        }
+        // if ($search) {
+        //     $query->where('name', 'like', '%' . $search . '%')
+        //         ->orWhere('email', 'like', '%' . $search . '%')
+        //         ->orWhere('estatus', 'like', '%' . $search . '%')
+        //         ->orWhere('telefono', 'like', '%' . $search . '%')
+        //         ->orWhere('domicilio', 'like', '%' . $search . '%')
+        //         ->orWhere('localidadColonia', 'like', '%' . $search . '%')
+        //         ->orWhereHas('roles', function ($q) use ($search) {
+        //             $q->where('name', 'like', '%' . $search . '%');
+        //         })
+        //         ->limit(5);
+        // }
         return response()->json($query->orderBy('id', 'desc')->get([
             'id',
             'name',
@@ -141,6 +174,7 @@ class UsuarioController extends Controller
      */
     public function Estatus(User $User)
     {
+         $this->authorize('cambiarEstatus', $User);
         try {
             DB::beginTransaction();
             $nuevoEstatus = $User->estatus === 'habilitado' ? 'deshabilitado' : 'habilitado';
@@ -154,6 +188,4 @@ class UsuarioController extends Controller
             return response()->json(['error' => 'No se actualizó el registro, consulte al administrador', 'detalle' => $e->getMessage()], 500);
         }
     }
-
-    
 }

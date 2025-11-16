@@ -29,12 +29,12 @@
             <EasyDataTable :headers="headers" :items="Usuarios" :loading="cargando" :rows-per-page="5"
               table-class="table table-hover my-0">
               <!-- 🎯 Columna de acciones personalizada -->
-              <template #item-action="{ id, name, email, estatus }">
+              <template #item-action="{ id, name, email, estatus, telefono, domicilio, localidadColonia, rol }">
                 <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary me-1" @click="editarUsuario(id)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="editarUsuario(id)" v-if="hasPermission(permisoSegunRol(rol))">
                     Editar
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" @click="cambiarEstatus(id, name, email)">
+                  <button class="btn btn-sm btn-outline-danger" @click="cambiarEstatus(id, name, email)" v-if="hasPermission(permisoSegunRolUser(rol))">
                     {{ estatusCapitalizado(estatus) }}
                   </button>
                 </div>
@@ -49,89 +49,87 @@
     <Modal size="lg" ref="modalUsuario" id="modal-usuario" :title="Usuario.id ? 'Editar Usuario' : 'Registrar Usuario'">
       <!-- Contenido dinámico: slot principal -->
       <template #default>
-          <div class="row">
+        <div class="row">
 
-            <div class="mb-3">
-              <label class="form-label" for="name">Nombre</label>
-              <input v-model="Usuario.name" type="text" class="form-control" id="name" placeholder="Nombre completo...">
-              <div v-if="errores.name" class="form-text text-danger">
-                {{ errores.name[0] }}
-              </div>
+          <div class="mb-3">
+            <label class="form-label" for="name">Nombre</label>
+            <input v-model="Usuario.name" type="text" class="form-control" id="name" placeholder="Nombre completo...">
+            <div v-if="errores.name" class="form-text text-danger">
+              {{ errores.name[0] }}
             </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="email">Email</label>
-              <input v-model="Usuario.email" type="email" class="form-control" id="email" placeholder="Email">
-              <div v-if="errores.email" class="form-text text-danger">
-                {{ errores.email[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="telefono">Teléfono {{ Usuario.telefono }}</label>
-              <input v-model="Usuario.telefono" type="text" class="form-control" id="telefono" placeholder="Telefono"
-                @input="validarTelefono">
-              <div v-if="errores.telefono" class="form-text text-danger">
-                {{ errores.telefono[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="domicilio">Domicilio</label>
-              <input v-model="Usuario.domicilio" type="text" class="form-control" id="domicilio"
-                placeholder="Domicilio">
-              <div v-if="errores.domicilio" class="form-text text-danger">
-                {{ errores.domicilio[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="localidadColonia">Localidad o Colonia</label>
-              <input v-model="Usuario.localidadColonia" type="text" class="form-control" id="Localidad o Colonia"
-                placeholder="localidadColonia">
-              <div v-if="errores.localidadColonia" class="form-text text-danger">
-                {{ errores.localidadColonia[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="rol">Rol</label>
-              <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
-                :loading="selectLoading" placeholder="Seleccione un permiso" @search="selectFetchOptions"
-                :reduce="option => option" no-options="Seleccione una opción"
-                no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
-              <div v-if="errores.rol" class="form-text text-danger">
-                {{ errores.rol[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="estatus">Estatus</label>
-              <select v-model="Usuario.estatus" id="estatus" class="form-control">
-                <option value="habilitado" selected>Habilitado</option>
-                <option value="deshabilitado">Deshabilitado</option>
-              </select>
-              <div v-if="errores.estatus" class="form-text text-danger">
-                {{ errores.estatus[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="password">Contraseña</label>
-              <input v-model="Usuario.password" type="password" class="form-control" id="password"
-                placeholder="Password">
-              <div v-if="errores.password" class="form-text text-danger">
-                {{ errores.password[0] }}
-              </div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-              <label class="form-label" for="password_confirmation">confirmacion de contraseña</label>
-              <input v-model="Usuario.password_confirmation" type="password" class="form-control"
-                id="password_confirmation" placeholder="Password">
-            </div>
-
           </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="email">Email</label>
+            <input v-model="Usuario.email" type="email" class="form-control" id="email" placeholder="Email">
+            <div v-if="errores.email" class="form-text text-danger">
+              {{ errores.email[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="telefono">Teléfono</label>
+            <input v-model="Usuario.telefono" type="text" class="form-control" id="telefono" placeholder="Telefono"
+              @input="validarTelefono">
+            <div v-if="errores.telefono" class="form-text text-danger">
+              {{ errores.telefono[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="domicilio">Domicilio</label>
+            <input v-model="Usuario.domicilio" type="text" class="form-control" id="domicilio" placeholder="Domicilio">
+            <div v-if="errores.domicilio" class="form-text text-danger">
+              {{ errores.domicilio[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="localidadColonia">Localidad o Colonia</label>
+            <input v-model="Usuario.localidadColonia" type="text" class="form-control" id="Localidad o Colonia"
+              placeholder="localidadColonia">
+            <div v-if="errores.localidadColonia" class="form-text text-danger">
+              {{ errores.localidadColonia[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="rol">Rol</label>
+            <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
+              :loading="selectLoading" placeholder="Seleccione un permiso" @search="selectFetchOptions"
+              :reduce="option => option" no-options="Seleccione una opción" no-results="No se encontraron resultados"
+              :selectable="option => !option.disabled" />
+            <div v-if="errores.RolId" class="form-text text-danger">
+              {{ errores.RolId[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="estatus">Estatus</label>
+            <select v-model="Usuario.estatus" id="estatus" class="form-control">
+              <option value="habilitado" selected>Habilitado</option>
+              <option value="deshabilitado">Deshabilitado</option>
+            </select>
+            <div v-if="errores.estatus" class="form-text text-danger">
+              {{ errores.estatus[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="password">Contraseña</label>
+            <input v-model="Usuario.password" type="password" class="form-control" id="password" placeholder="Password">
+            <div v-if="errores.password" class="form-text text-danger">
+              {{ errores.password[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label class="form-label" for="password_confirmation">confirmacion de contraseña</label>
+            <input v-model="Usuario.password_confirmation" type="password" class="form-control"
+              id="password_confirmation" placeholder="Password">
+          </div>
+
+        </div>
       </template>
 
       <!-- Footer dinámico: slot con nombre -->
@@ -151,6 +149,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import api from '../../services/api';
 import Modal from '../../components/Modal.vue';
 
@@ -211,16 +210,31 @@ export default {
       ],
       selectLoading: false,
       selectSearchTimeout: null,
+      permisosPorRol: {
+        Estudiante: "puede editar estudiantes",
+        Profesor: "puede editar profesores",
+        Orientador: "puede editar orientadores",
+        Admin: "puede editar administradores",
+      },
 
+      permisosPorRolUser: {
+        Estudiante: "puede desabilitar estudiantes",
+        Profesor: "puede desabilitar profesores",
+        Orientador: "puede desabilitar orientadores",
+        Admin: "puede desabilitar administradores",
+      },
       errores: {},
     }
+  },
+  computed: {
+    ...mapGetters('auth', ['hasPermission'])
   },
   watch: {
     // 👀 Observa cada cambio en la búsqueda
     busqueda: {
       handler: debounce(function (val) {
         this.consultar(val);
-      },300),
+      }, 300),
       immediate: true
     }
   },
@@ -269,7 +283,6 @@ export default {
 
     async agregarUsuario() {
       let timerInterval;
-
       try {
         // Mostrar alerta de "Creando..."
         this.$swal.fire({
@@ -291,7 +304,6 @@ export default {
         if (this.selectSelected.id) {
           this.Usuario.RolId = this.selectSelected.id
         }
-
         // Ejecutar solicitud fuera de la alerta
         const response = await api.post('/gestion/user', this.Usuario);
 
@@ -410,7 +422,7 @@ export default {
         this.$swal.fire('Éxito', '✅ Registro actualizado correctamente', 'success');
       } catch (error) {
         console.error(error);
-        this.$swal.fire('Error', '❌ No se pudo agregar el registro', 'error');
+        this.$swal.fire('Error', '❌ No se pudo actualizar el registro', 'error');
       }
     },
     validarTelefono() {
@@ -458,10 +470,20 @@ export default {
         }
       }, 300)
     },
-
+    permisoSegunRol(rol) {
+      if (!rol) return ""; // evita errores
+      const rolLimpio = rol.trim(); // elimina espacios/tabulaciones
+      return this.permisosPorRol[rolLimpio] || "";
+    },
+    permisoSegunRolUser(rol) {
+      if (!rol) return ""; // evita errores
+      const rolLimpio = rol.trim(); // elimina espacios/tabulaciones
+      return this.permisosPorRolUser[rolLimpio] || "";
+    },
   },
   mounted() {
     this.consultar();
+    
   }
 }
 </script>

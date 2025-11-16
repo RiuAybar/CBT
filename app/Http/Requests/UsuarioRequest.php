@@ -24,6 +24,33 @@ class UsuarioRequest extends FormRequest
     {
         $id = $this->route('user');
         $id = is_object($id) ? $id->id : $id;
+        $user = auth('api')->user();
+
+        // Mapa Permiso → Nombre del Rol
+        $restricciones = [
+            'Puede agregar estudiantes' => 'estudiante',
+            'Puede agregar profesores' => 'profesor',
+            'Puede agregar orientadores' => 'orientador',
+            'Puede agregar administradores' => 'administrador',
+        ];
+
+        if ($this->route('user')) {
+            $restricciones = [
+                'puede editar estudiantes' => 'estudiante',
+                'puede editar profesores' => 'profesor',
+                'puede editar orientadores' => 'orientador',
+                'puede editar administradores' => 'administrador',
+            ];
+        }
+
+        // Filtrar roles permitidos según permisos del usuario
+        $rolesPermitidos = \Spatie\Permission\Models\Role::query()
+            ->whereNotIn('name', array_filter(array_map(function ($permiso, $rol) use ($user) {
+                return !$user->can($permiso) ? $rol : null;
+            }, array_keys($restricciones), $restricciones)))
+            ->pluck('id')
+            ->toArray();
+
         return [
             'name' => 'required|string|max:255',
             'email' => [
@@ -32,7 +59,14 @@ class UsuarioRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($id),
             ],
 
-            'RolId' => 'required|integer|exists:roles,id',
+            // 'RolId' => 'required|integer|exists:roles,id',
+            // Validación dinámica
+            'RolId' => [
+                'required',
+                'integer',
+                Rule::in($rolesPermitidos), // <= SOLO los roles permitidos
+            ],
+
             'telefono' => 'required|string|max:10|regex:/^[0-9]+$/',
             'domicilio' => 'required|string|max:100',
             'localidadColonia' => 'required|string|max:100',
@@ -60,6 +94,7 @@ class UsuarioRequest extends FormRequest
             'RolId.required' => 'El rol es obligatorio.',
             'RolId.integer' => 'El rol debe ser un número válido.',
             'RolId.exists' => 'El rol seleccionado no existe.',
+            'RolId.in' => 'No tienes permiso para asignar este rol.',
 
             'domicilio.required' => 'El domicilio es obligatorio.',
             'domicilio.max' => 'El domicilio no debe exceder los 100 caracteres.',

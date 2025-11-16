@@ -149,15 +149,27 @@ class RolController extends Controller
     {
         $search = $request->query('search');
         $data = [];
-        // dd(auth('api')->user()->can('Puede agregar estudiantes') );
         if ($search) {
+
+            $user = auth('api')->user();
+
+            // Mapeo permiso -> rol
+            $restricciones = [
+                'Puede agregar estudiantes' => 'estudiante',
+                'Puede agregar profesores' => 'profesor',
+                'Puede agregar orientadores' => 'orientador',
+                'Puede agregar administradores' => 'administrador',
+            ];
             $query = Role::query();
             $data = $query->where('name', 'like', '%' . $search . '%')
-                // ->where(function ($query) use ($dato) {
-                //     if ($dato) {
-                //         $query->where('campo', 'LIKE', "%$dato%");
-                //     }
-                // })
+                ->where(function ($query) use ($user, $restricciones) {
+
+                    foreach ($restricciones as $permiso => $rol) {
+                        if (!$user->can($permiso)) {
+                            $query->where('name', '!=', $rol);
+                        }
+                    }
+                })
                 ->limit(5)
                 ->orderBy('id', 'desc')
                 ->get(['id', 'name']);
