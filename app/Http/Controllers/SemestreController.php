@@ -14,6 +14,7 @@ class SemestreController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Semestre::class);
         $search = $request->query('search');
 
         $query = Semestre::query();
@@ -38,6 +39,7 @@ class SemestreController extends Controller
      */
     public function store(SemestreRequest $request)
     {
+        $this->authorize('create', Semestre::class);
         try {
             DB::beginTransaction();
             $Semestre = Semestre::create($request->validated());
@@ -72,6 +74,7 @@ class SemestreController extends Controller
      */
     public function update(SemestreRequest $request, Semestre $Semestre)
     {
+        $this->authorize('update', $Semestre);
         try {
             DB::beginTransaction();
             $Semestre->update($request->validated());

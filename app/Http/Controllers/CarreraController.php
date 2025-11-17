@@ -14,10 +14,9 @@ class CarreraController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Carrera::class);
         $search = $request->query('search');
-
         $query = Carrera::query();
-
         if ($search) {
             $query->where('nombre', 'like', '%' . $search . '%')
                 ->limit(5);
@@ -38,6 +37,7 @@ class CarreraController extends Controller
      */
     public function store(CarreraRequest $request)
     {
+        $this->authorize('create', Carrera::class);
         try {
             DB::beginTransaction();
             $Carrera = Carrera::create($request->validated());
@@ -72,6 +72,7 @@ class CarreraController extends Controller
      */
     public function update(CarreraRequest $request, Carrera $Carrera)
     {
+        $this->authorize('update',$Carrera);
         try {
             DB::beginTransaction();
             $Carrera->update($request->validated());

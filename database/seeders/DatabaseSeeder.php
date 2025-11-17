@@ -221,8 +221,14 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'ver materias', 'guard_name' => 'api'],
                 // http://localhost:8000/carreras
                 ['name' => 'ver carreras', 'guard_name' => 'api'],
+                ['name' => 'puede agregar carreras', 'guard_name' => 'api'],
+                ['name' => 'puede editar carreras', 'guard_name' => 'api'],
+
                 // http://localhost:8000/horasdocente
                 ['name' => 'ver horas docente', 'guard_name' => 'api'],
+                ['name' => 'puede agregar horas docente', 'guard_name' => 'api'],
+                ['name' => 'puede editar horas docente', 'guard_name' => 'api'],
+
                 // http://localhost:8000/parciales
                 ['name' => 'ver parciales', 'guard_name' => 'api'],
                 // http://localhost:8000/seguimiento
@@ -235,6 +241,19 @@ class DatabaseSeeder extends Seeder
                 // http://localhost:8000/users
                 ['name' => 'Puede agregar estudiantes', 'guard_name' => 'api'],
                 ['name' => 'Puede agregar profesores', 'guard_name' => 'api'],
+                // http://localhost:8000/grados
+                ['name' => 'Puede agregar grados', 'guard_name' => 'api'],
+                ['name' => 'Puede editar grados', 'guard_name' => 'api'],
+                // http://localhost:8000/grupos/1/edit
+                ['name' => 'puede agregar grupos', 'guard_name' => 'api'],
+                ['name' => 'puede editar grupos', 'guard_name' => 'api'],
+                // http://localhost:8000/materias
+                ['name' => 'puede agregar materias', 'guard_name' => 'api'],
+                ['name' => 'puede editar materias', 'guard_name' => 'api'],
+                // http://localhost:8000/semestres
+                ['name' => 'puede agregar semestres', 'guard_name' => 'api'],
+                ['name' => 'puede editar semestres', 'guard_name' => 'api'],
+
             ],
             $this->permisosEstudiante(),
         );
@@ -270,6 +289,8 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'puede desabilitar profesores', 'guard_name' => 'api'],
                 ['name' => 'puede desabilitar orientadores', 'guard_name' => 'api'],
                 ['name' => 'puede desabilitar administradores', 'guard_name' => 'api'],
+
+
 
 
             ],

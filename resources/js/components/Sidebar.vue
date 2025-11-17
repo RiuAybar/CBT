@@ -65,7 +65,7 @@
 					hasPermission('ver carreras') ||
 					hasPermission('ver horas docente') ||
 					hasPermission('ver parciales')
-				" :class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', '/parciales']) }">
+				" :class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', '/parciales', `/grupos/${this.$route.params.id}/edit`]) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
@@ -74,7 +74,7 @@
 					</a>
 					<ul id="componentes" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 						<li class="sidebar-item" v-if="hasPermission('ver grados')"
-							:class="{ active: isActive('/grados') }">
+							:class="{ active: isActive(['/grados', `/grupos/${this.$route.params.id}/edit`]) }">
 							<router-link to="/grados" class='sidebar-link'>Grados</router-link>
 						</li>
 						<li class="sidebar-item" v-if="hasPermission('ver materias')"

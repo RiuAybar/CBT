@@ -1,14 +1,11 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button v-if="Grado?.id" @click="crear()" class="btn btn-primary float-end mt-n1 mb-1">
+            <button v-if="Grado?.id && hasPermission('puede agregar grupos')" @click="crear()"
+                class="btn btn-primary float-end mt-n1 mb-1">
                 <i class="bi bi-plus-circle"></i>
                 Agregar Grupos
             </button>
-            <router-link v-if="Grado?.id" to="/grados" class="btn btn-danger float-end mt-n1 me-1">
-                <i class="bi bi-arrow-return-left"></i>
-                Regresar
-            </router-link>
             <h1 class="h3 mb-3">
                 <strong>
                     {{ Grado?.nombre ? `Grupos de: ${Grado.nombre}` : '' }}
@@ -31,10 +28,10 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Grupos" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headersFiltrados" :items="Grupos" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre }">
+                            <template v-if="hasPermission('puede editar grupos')" #item-action="{ id, nombre }">
                                 <div class="btn-group">
                                     <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
@@ -46,19 +43,23 @@
                     </div>
                 </div>
             </div>
+            <router-link v-if="Grado?.id" to="/grados" class="btn btn-danger float-end mt-n1 me-1">
+                <i class="bi bi-arrow-return-left"></i>
+                Regresar
+            </router-link>
         </div>
 
         <Modal size="lg" ref="modalGrupos" id="modal-Grupo" :title="Grupo.id ? 'Editar Grupo' : 'Agregar Grupo'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Grupo</label>
-                        <input v-model="Grupo.nombre" type="text" class="form-control" id="nombre"
-                            aria-describedby="Nombre">
-                        <div v-if="errores.nombre" class="form-text text-danger">
-                            {{ errores.nombre[0] }}
-                        </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Grupo</label>
+                    <input v-model="Grupo.nombre" type="text" class="form-control" id="nombre"
+                        aria-describedby="Nombre">
+                    <div v-if="errores.nombre" class="form-text text-danger">
+                        {{ errores.nombre[0] }}
                     </div>
+                </div>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->
@@ -67,7 +68,8 @@
                     <i class="align-middle me-2" data-feather="save"></i>
                     Guardar Cambios
                 </button>
-                <button v-else class="btn btn-success" @click="agregar()">
+                <button v-if="!Grupo.id && hasPermission('puede agregar grupos')" class="btn btn-success"
+                    @click="agregar()">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Agregar
                 </button>
@@ -78,6 +80,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
 
@@ -94,11 +97,6 @@ export default {
     },
     data() {
         return {
-            headers: [
-                { text: 'Id', value: 'id' },
-                { text: 'Nombre', value: 'nombre' },
-                { text: 'Acciones', value: 'action' },
-            ],
             Grupos: [],
             cargando: false,
             Grupo: {
@@ -111,6 +109,19 @@ export default {
                 id: null,
                 nombre: null
             },
+        }
+    },
+    computed: {
+        ...mapGetters('auth', ['hasPermission']),
+        headersFiltrados() {
+            const base = [
+                { text: 'Id', value: 'id' },
+                { text: 'Nombre', value: 'nombre' },
+            ];
+            if (this.hasPermission('puede editar grupos')) {
+                base.push({ text: 'Acciones', value: 'action' });
+            }
+            return base;
         }
     },
     watch: {

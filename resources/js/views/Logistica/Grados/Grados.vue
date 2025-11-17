@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1 me-1">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1 me-1"
+                v-if="hasPermission('Puede agregar grados')">
                 <i class="bi bi-plus-circle"></i>
                 Agregar Grados
             </button>
@@ -27,47 +28,49 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Grados" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headersFiltrados" :items="Grados" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
                             <template #item-action="{ id, nombre }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
+                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)"
+                                        v-if="hasPermission('Puede editar grados')">
                                         Editar
                                     </button>
-                                    <router-link :to="`/grupos/${id}/edit`" class="btn btn-sm btn-outline-warning">
+                                    <router-link :to="`/grupos/${id}/edit`" class="btn btn-sm btn-outline-warning"
+                                        v-if="hasPermission('ver grupos')">
                                         Agregar Grupos
                                     </router-link>
                                 </div>
                             </template>
                         </EasyDataTable>
-
                     </div>
                 </div>
             </div>
         </div>
 
-        <Modal size="lg" ref="modalGrados" id="modal-Grado"
-            :title="Grado.id ? 'Editar Grado' : 'Agregar Grado'">
+        <Modal size="lg" ref="modalGrados" id="modal-Grado" :title="Grado.id ? 'Editar Grado' : 'Agregar Grado'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Grado</label>
-                        <input v-model="Grado.nombre" type="text" class="form-control" id="nombre"
-                            aria-describedby="Nombre">
-                        <div v-if="errores.nombre" class="form-text text-danger">
-                            {{ errores.nombre[0] }}
-                        </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Grado</label>
+                    <input v-model="Grado.nombre" type="text" class="form-control" id="nombre"
+                        aria-describedby="Nombre">
+                    <div v-if="errores.nombre" class="form-text text-danger">
+                        {{ errores.nombre[0] }}
                     </div>
+                </div>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->
             <template #footer>
-                <button v-if="Grado.id" class="btn btn-success" @click="guardarCambios(Grado.id)">
+                <button v-if="Grado.id && hasPermission('Puede editar grados')" class="btn btn-success"
+                    @click="guardarCambios(Grado.id)">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Guardar Cambios
                 </button>
-                <button v-else class="btn btn-success" @click="agregar()">
+                <button v-if="!Grado.id && hasPermission('Puede agregar grados')" class="btn btn-success"
+                    @click="agregar()">
                     <i class="align-middle me-2" data-feather="save"></i>
                     Agregar
                 </button>
@@ -78,6 +81,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
 
@@ -94,11 +98,6 @@ export default {
     },
     data() {
         return {
-            headers: [
-                { text: 'Id', value: 'id' },
-                { text: 'Nombre', value: 'nombre' },
-                { text: 'Acciones', value: 'action' },
-            ],
             Grados: [],
             cargando: false,
             Grado: {
@@ -109,12 +108,25 @@ export default {
             errores: {},
         }
     },
+    computed: {
+        ...mapGetters('auth', ['hasPermission']),
+        headersFiltrados() {
+            const base = [
+                { text: 'Id', value: 'id' },
+                { text: 'Nombre', value: 'nombre' },
+            ];
+            if (this.hasPermission('ver grupos') || this.hasPermission('Puede editar grados')) {
+                base.push({ text: 'Acciones', value: 'action' });
+            }
+            return base;
+        }
+    },
     watch: {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
             handler: debounce(function (val) {
                 this.consultar(val);
-            },300),
+            }, 300),
             immediate: true
         }
     },

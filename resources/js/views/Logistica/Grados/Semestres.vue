@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1"
+                v-if="hasPermission('puede agregar semestres')">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
                 Agregar Semestre
             </button>
@@ -27,10 +28,10 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Semestres" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headersFiltrados" :items="Semestres" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre }">
+                            <template v-if="hasPermission('puede editar semestres')" #item-action="{ id, nombre }">
                                 <div class="btn-group">
                                     <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
@@ -48,14 +49,14 @@
             :title="Semestre.id ? 'Editar Semestre' : 'Agregar Semestre'">
             <!-- Contenido dinámico: slot principal -->
             <template #default>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Semestre</label>
-                        <input v-model="Semestre.nombre" type="text" class="form-control" id="nombre"
-                            aria-describedby="Nombre">
-                        <div v-if="errores.nombre" class="form-text text-danger">
-                            {{ errores.nombre[0] }}
-                        </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Semestre</label>
+                    <input v-model="Semestre.nombre" type="text" class="form-control" id="nombre"
+                        aria-describedby="Nombre">
+                    <div v-if="errores.nombre" class="form-text text-danger">
+                        {{ errores.nombre[0] }}
                     </div>
+                </div>
             </template>
 
             <!-- Footer dinámico: slot con nombre -->
@@ -75,6 +76,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
 
@@ -92,11 +94,11 @@ export default {
     },
     data() {
         return {
-            headers: [
-                { text: 'Id', value: 'id' },
-                { text: 'Nombre', value: 'nombre' },
-                { text: 'Acciones', value: 'action' },
-            ],
+            // headers: [
+            //     { text: 'Id', value: 'id' },
+            //     { text: 'Nombre', value: 'nombre' },
+            //     { text: 'Acciones', value: 'action' },
+            // ],
             Semestres: [],
             cargando: false,
             Semestre: {
@@ -107,12 +109,25 @@ export default {
             errores: {},
         }
     },
+    computed: {
+        ...mapGetters('auth', ['hasPermission']),
+        headersFiltrados() {
+            const base = [
+                { text: 'Id', value: 'id' },
+                { text: 'Nombre', value: 'nombre' },
+            ];
+            if (this.hasPermission('puede editar semestres')) {
+                base.push({ text: 'Acciones', value: 'action' });
+            }
+            return base;
+        }
+    },
     watch: {
         // 👀 Observa cada cambio en la búsqueda
         busqueda: {
             handler: debounce(function (val) {
                 this.consultar(val);
-            },300),
+            }, 300),
             immediate: true
         }
     },

@@ -14,10 +14,9 @@ class RegistroHorasDocenciaController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', RegistroHorasDocencia::class);
         $search = $request->query('search');
-
         $query = RegistroHorasDocencia::with(['carrera:id,nombre as text']);
-
         if ($search) {
             $query->where('mes', 'like', '%' . $search . '%')
                 ->OrWhere('horasImpartidas', 'like', '%' . $search . '%')
@@ -43,6 +42,7 @@ class RegistroHorasDocenciaController extends Controller
      */
     public function store(RegistroHoraDocenciaRequest $request)
     {
+        $this->authorize('create', RegistroHorasDocencia::class);
         try {
             DB::beginTransaction();
             $RegistroHorasDocencia = RegistroHorasDocencia::create($request->validated());
@@ -87,6 +87,7 @@ class RegistroHorasDocenciaController extends Controller
      */
     public function update(RegistroHoraDocenciaRequest $request, RegistroHorasDocencia $RegistroHorasDocencia)
     {
+        $this->authorize('update', $RegistroHorasDocencia);
         try {
             DB::beginTransaction();
             $RegistroHorasDocencia->update($request->validated());

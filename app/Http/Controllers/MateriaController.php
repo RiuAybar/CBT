@@ -16,6 +16,7 @@ class MateriaController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Materia::class);
         $serach = $request->query('search');
         $query = Materia::query();
         if ($serach) {
@@ -38,6 +39,7 @@ class MateriaController extends Controller
      */
     public function store(MateriaRequest $request)
     {
+        $this->authorize('create', Materia::class);
         try {
             DB::beginTransaction();
             $Materia = Materia::create($request->validated());
@@ -71,6 +73,7 @@ class MateriaController extends Controller
      */
     public function update(MateriaRequest $request, Materia $Materia)
     {
+        $this->authorize('update', $Materia);
         try {
             DB::beginTransaction();
             $Materia->update($request->validated());

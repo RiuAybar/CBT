@@ -66,7 +66,7 @@ Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']
         Route::resource('Semestre', SemestreController::class)->only(['index', 'store', 'update']);
         Route::resource('Carrera', CarreraController::class)->only(['index', 'store', 'update']);
         Route::resource('RegistroHorasDocencia', RegistroHorasDocenciaController::class)->only(['index', 'store', 'update','show'])
-        ->parameters(['RegistroHorasDocencia'=>'RegistroHorasDocencia']);;
+        ->parameters(['RegistroHorasDocencia'=>'RegistroHorasDocencia']);
         Route::resource('Materia', MateriaController::class)->only(['index', 'store', 'update'])->parameters(['Materia'=>'Materia']);
         Route::resource('Parcial', ParcialController::class)->only(['index', 'store', 'update']);
     });

@@ -14,10 +14,9 @@ class GradoController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Grado::class);
         $search = $request->query('search');
-
         $query = Grado::query();
-
         if ($search) {
             $query->where('nombre', 'like', '%' . $search . '%')
                 ->limit(5);
@@ -38,6 +37,7 @@ class GradoController extends Controller
      */
     public function store(GradoRequest $request)
     {
+        $this->authorize('create', Grado::class);
         try {
             DB::beginTransaction();
             $Grado = Grado::create($request->validated());
@@ -72,6 +72,7 @@ class GradoController extends Controller
      */
     public function update(GradoRequest $request, Grado $Grado)
     {
+        $this->authorize('update', $Grado);
         try {
             DB::beginTransaction();
             $Grado->update($request->validated());

@@ -14,6 +14,7 @@ class GrupoController extends Controller
      */
     public function index(Request $request, $Grado_id)
     {
+        $this->authorize('viewAny', Grupo::class);
         $search = $request->query('search');
 
         $query = Grupo::query();
@@ -38,6 +39,7 @@ class GrupoController extends Controller
      */
     public function store(GrupoRequest $request)
     {
+        $this->authorize('create', Grupo::class);
         try {
             DB::beginTransaction();
             $Grado = Grupo::create($request->validated());
@@ -72,6 +74,7 @@ class GrupoController extends Controller
      */
     public function update(GrupoRequest $request, Grupo $Grupo)
     {
+        $this->authorize('update', $Grupo);
         try {
             DB::beginTransaction();
             $Grupo->update($request->validated());

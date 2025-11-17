@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1" v-if="hasPermission('ver horas docente')">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
                 Agregar
             </button>
@@ -97,6 +97,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
 
@@ -148,6 +149,19 @@ export default {
             ],
             selectLoading: false,
 
+        }
+    },
+    computed: {
+        ...mapGetters('auth', ['hasPermission']),
+        headersFiltrados() {
+            const base = [
+                { text: 'Id', value: 'id' },
+                { text: 'Nombre', value: 'nombre' }
+            ];
+            if (this.hasPermission('puede editar materias')) {
+                base.push({ text: 'Acciones', value: 'action' });
+            }
+            return base;
         }
     },
     watch: {
