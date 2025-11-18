@@ -14,6 +14,7 @@ class SeguimientoController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny',Seguimiento::class);
         $search = $request->query('search');
         $query = Seguimiento::join('materias', 'seguimientos.materia_id', '=', 'materias.id')
             ->join('semestres', 'seguimientos.semestre_id', '=', 'semestres.id')
@@ -67,6 +68,7 @@ class SeguimientoController extends Controller
      */
     public function store(SeguimientoRequest $request)
     {
+        $this->authorize('create',Seguimiento::class);
         try {
             DB::beginTransaction();
             Seguimiento::create($request->validated());
@@ -101,9 +103,9 @@ class SeguimientoController extends Controller
      */
     public function update(SeguimientoRequest $request, Seguimiento $Seguimiento)
     {
+        $this->authorize('update', $Seguimiento);
         try {
             DB::beginTransaction();
-            // dd($Seguimiento, $request->validated());
             $Seguimiento->update($request->validated());
             DB::commit();
             return response()->json($Seguimiento, 201);
@@ -219,6 +221,7 @@ class SeguimientoController extends Controller
     // formato1
     public function formato1(Seguimiento $Seguimiento)
     {
+        $this->authorize('formato', $Seguimiento);
         // Obtener parciales
         $parciales = DB::table('parciales')->pluck('id', 'nombre');
 

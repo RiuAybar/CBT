@@ -2,7 +2,7 @@
     <div>
         <div class="container-fluid p-0">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <h1 class="h3 mb-3">
                         Rol
                         <strong>
@@ -11,12 +11,9 @@
                     </h1>
 
                 </div>
-                <div class="col-sm-2">
-                    <router-link to="/roles" class="btn btn-danger mt-2">
-                        <i class="bi bi-arrow-return-left"></i>
-                        Regresar
-                    </router-link>
-                </div>
+                <!-- <div class="col-sm-2">
+                    
+                </div> -->
                 <div class="col-sm-4">
                     <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
                         :loading="selectLoading" placeholder="Seleccione un permiso" @search="selectFetchOptions"
@@ -53,6 +50,14 @@
                                 </div>
                             </template>
                         </EasyDataTable>
+                        <div class="row">
+                            <div class="col-sm-12 text-end">
+                                <router-link to="/roles" class="btn btn-danger m-2">
+                                    <i class="bi bi-arrow-return-left"></i>
+                                    Regresar
+                                </router-link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

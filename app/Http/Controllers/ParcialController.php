@@ -14,10 +14,9 @@ class ParcialController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Parcial::class);
         $search = $request->query('search');
-
         $query = Parcial::query();
-
         if ($search) {
             $query->where('nombre', 'like', '%' . $search . '%')
                 ->limit(5);
@@ -38,6 +37,7 @@ class ParcialController extends Controller
      */
     public function store(ParcialRequest $request)
     {
+        $this->authorize('create', Parcial::class);
         try {
             DB::beginTransaction();
             $Parcial = Parcial::create($request->validated());
@@ -72,6 +72,7 @@ class ParcialController extends Controller
      */
     public function update(ParcialRequest $request, Parcial $Parcial)
     {
+        $this->authorize('update', $Parcial);
         try {
             DB::beginTransaction();
             $Parcial->update($request->validated());

@@ -215,6 +215,13 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'ver grupos', 'guard_name' => 'api'],
                 // http://localhost:8000/lista/1/edit
                 ['name' => 'ver listas', 'guard_name' => 'api'],
+                ['name' => 'puede agregar alumno listas', 'guard_name' => 'api'],
+                ['name' => 'ver parciales en lista', 'guard_name' => 'api'],
+                ['name' => 'ver escalas asignadas en lista', 'guard_name' => 'api'],
+                ['name' => 'puede agregar escala en lista', 'guard_name' => 'api'],
+                ['name' => 'puede eliminar materia parcial escala', 'guard_name' => 'api'],
+
+
                 // http://localhost:8000/semestres
                 ['name' => 'ver semestres', 'guard_name' => 'api'],
                 // http://localhost:8000/materias
@@ -231,10 +238,18 @@ class DatabaseSeeder extends Seeder
 
                 // http://localhost:8000/parciales
                 ['name' => 'ver parciales', 'guard_name' => 'api'],
+                ['name' => 'puede agregar parciales', 'guard_name' => 'api'],
+                ['name' => 'puede editar parciales', 'guard_name' => 'api'],
+
                 // http://localhost:8000/seguimiento
                 ['name' => 'ver seguimiento', 'guard_name' => 'api'],
+                ['name' => 'puede crear seguimientos', 'guard_name' => 'api'],
+                ['name' => 'puede editar seguimientos', 'guard_name' => 'api'],
+
                 // http://localhost:8000/seguimiento
                 ['name' => 'ver f1', 'guard_name' => 'api'],
+
+
                 // http://localhost:8000/users
                 ['name' => 'Puede ver estudiantes', 'guard_name' => 'api'],
                 ['name' => 'Puede ver profesores', 'guard_name' => 'api'],

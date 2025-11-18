@@ -25,7 +25,7 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/password/reset', [RestablecerContraseñaController::class, 'restablecer']);
 Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']);
 
-// Route::middleware('auth:api')->prefix('/')->group(function () {
+Route::middleware('auth:api')->prefix('/')->group(function () {
 
     // Rutas permisos Usuarios
     Route::resource('Permission', PermisoController::class)->only(['index', 'store', 'update']);
@@ -93,12 +93,4 @@ Route::post('/sendResetLink', [ForgotPasswordController::class, 'sendResetLink']
     // ]);
     // más rutas aquí
 // });
-
-Route::get('createUser', function(){
-    $user = User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'estatus' => 'habilitado',
-            'password' => bcrypt('$Super001'),
-        ]);
 });

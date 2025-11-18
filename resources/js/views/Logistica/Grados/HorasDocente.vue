@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1" v-if="hasPermission('ver horas docente')">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1" v-if="hasPermission('puede agregar horas docente')">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
                 Agregar
             </button>
@@ -27,10 +27,10 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="MesesHoras" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headersFiltrados" :items="MesesHoras" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre }">
+                            <template v-if="hasPermission('puede editar horas docente')" #item-action="{ id, nombre }">
                                 <div class="btn-group">
                                     <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
                                         Editar
@@ -119,13 +119,6 @@ export default {
     },
     data() {
         return {
-            headers: [
-                { text: 'Id', value: 'id' },
-                { text: 'Mes', value: 'mes' },
-                { text: 'Horas Impartidas', value: 'horasImpartidas' },
-                { text: 'Carrera', value: 'carrera.text' },
-                { text: 'Acciones', value: 'action' },
-            ],
             MesesHoras: [],
             cargando: false,
             MesHora: {
@@ -156,9 +149,11 @@ export default {
         headersFiltrados() {
             const base = [
                 { text: 'Id', value: 'id' },
-                { text: 'Nombre', value: 'nombre' }
+                { text: 'Mes', value: 'mes' },
+                { text: 'Horas Impartidas', value: 'horasImpartidas' },
+                { text: 'Carrera', value: 'carrera.text' },
             ];
-            if (this.hasPermission('puede editar materias')) {
+            if (this.hasPermission('puede editar horas docente')) {
                 base.push({ text: 'Acciones', value: 'action' });
             }
             return base;

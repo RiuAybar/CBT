@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SeguimientoRequest;
 use App\Models\{Carrera, Grupo, Lista, Materia, User, Seguimiento, Semestre,};
 
-class SeguimientoController extends Controller
+class SeguimientoControllerCpy extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -219,6 +219,8 @@ class SeguimientoController extends Controller
     // formato1
     public function formato1(Seguimiento $Seguimiento)
     {
+        $this->authorize('formato', $Seguimiento);
+
         // Paso 1: Obtener parciales dinámicos
         $parciales = DB::table('parciales')->pluck('id', 'nombre');
 

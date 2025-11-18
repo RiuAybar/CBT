@@ -28,8 +28,8 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headersFiltrados" :items="Grupos" :loading="cargando" :rows-per-page="5"
-                            table-class="table table-hover my-0">
+                        <EasyDataTable :headers="headersFiltrados" :items="Grupos" :loading="cargando"
+                            :rows-per-page="5" table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
                             <template v-if="hasPermission('puede editar grupos')" #item-action="{ id, nombre }">
                                 <div class="btn-group">
@@ -39,14 +39,17 @@
                                 </div>
                             </template>
                         </EasyDataTable>
-
+                        <div class="row">
+                            <div class="col-sm-12 text-end">
+                                <router-link v-if="Grado?.id" to="/grados" class="btn btn-danger m-2">
+                                    <i class="bi bi-arrow-return-left"></i>
+                                    Regresar
+                                </router-link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <router-link v-if="Grado?.id" to="/grados" class="btn btn-danger float-end mt-n1 me-1">
-                <i class="bi bi-arrow-return-left"></i>
-                Regresar
-            </router-link>
         </div>
 
         <Modal size="lg" ref="modalGrupos" id="modal-Grupo" :title="Grupo.id ? 'Editar Grupo' : 'Agregar Grupo'">

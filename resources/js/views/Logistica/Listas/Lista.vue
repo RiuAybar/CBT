@@ -57,15 +57,15 @@
                 <hr>
               </div>
 
-              <div class="row">
+              <div class="row justify-content-end">
 
-                <div class="col-sm-4 text-end col-md-5">
+                <div class="col-sm-4 text-end col-md-5" v-if="hasPermission('ver escalas asignadas en lista')">
                   <button @click="escalaEvaluativa" v-if="selectSelected.Parcial" class="btn btn-secondary mt-2">
                     <i class="bi bi-clipboard2-data-fill"></i>
                     Escala Evaluativa.
                   </button>
                 </div>
-                <div class="col-sm-4 col-md-3">
+                <div class="col-sm-4 col-md-3" v-if="hasPermission('ver parciales en lista')">
                   <v-select v-model="selectSelected.Parcial" :options="selectOptions.Parciales" label="text"
                     :filterable="false" :loading="selectLoading.Parcial" placeholder="Seleccione un parcial"
                     @search="selectFetchOptionsParciales" @change="handleChangeParcial" :reduce="option => option"
@@ -78,7 +78,7 @@
 
                 </div>
 
-                <div class="col-sm-4 col-md-4">
+                <div class="col-sm-4 col-md-4" v-if="hasPermission('puede agregar alumno listas')">
                   <v-select v-model="selectSelected.User" :options="selectOptions.User" label="text" :filterable="false"
                     :loading="selectLoading.User" placeholder="Seleccione un alumno" @search="selectFetchOptionsUser"
                     @change="handleChangeUser" :reduce="option => option.id" class="form-control mb-3"
@@ -127,34 +127,34 @@
     <Modal size="lg" ref="modalLista" id="modal-lista" :title="'Escala Evaluativa.'">
       <!-- Contenido dinámico: slot principal -->
       <template #default>
-          <div class="row">
-            <div class="mb-3 col-sm-4">
-              <label for="ano" class="form-label">Escala Evaluativa</label>
-              <v-select v-model="selectSelected.Escala" :options="selectOptions.Escala" label="text" :filterable="false"
-                :loading="selectLoading.Escala" placeholder="Seleccione una opción" @search="selectFetchOptionsEscala"
-                @change="handleChangeEscala" :reduce="option => option.id" no-options="Seleccione un escala evaluativa"
-                no-results="No se encontraron resultados" :selectable="option => !option.disabled">
-                <!-- Mensaje cuando no hay opciones iniciales -->
-                <template #no-options>
-                  Buscar Escala Evaluativa
-                </template>
-              </v-select>
-            </div>
-          </div>
-          <div class="row">
-            <EasyDataTable :headers="headersEscala" :items="EscalasEvaluativas" :loading="cargando" :rows-per-page="5"
-              table-class="table table-hover my-0">
-              <!-- 🎯 Columna de acciones personalizada -->
-              <template #item-action="{ id, nombre, abreviatura, materiaParcialEscalaId }">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-danger"
-                    @click="eliminarEscalaEvaluativa(materiaParcialEscalaId, nombre)">
-                    Eliminar
-                  </button>
-                </div>
+        <div class="row">
+          <div class="mb-3 col-sm-4" v-if="hasPermission('puede agregar escala en lista')">
+            <label for="ano" class="form-label">Escala Evaluativa</label>
+            <v-select v-model="selectSelected.Escala" :options="selectOptions.Escala" label="text" :filterable="false"
+              :loading="selectLoading.Escala" placeholder="Seleccione una opción" @search="selectFetchOptionsEscala"
+              @change="handleChangeEscala" :reduce="option => option.id" no-options="Seleccione un escala evaluativa"
+              no-results="No se encontraron resultados" :selectable="option => !option.disabled">
+              <!-- Mensaje cuando no hay opciones iniciales -->
+              <template #no-options>
+                Buscar Escala Evaluativa
               </template>
-            </EasyDataTable>
+            </v-select>
           </div>
+        </div>
+        <div class="row">
+          <EasyDataTable :headers="headersFiltrados" :items="EscalasEvaluativas" :loading="cargando" :rows-per-page="5"
+            table-class="table table-hover my-0">
+            <!-- 🎯 Columna de acciones personalizada -->
+            <template v-if="hasPermission('puede eliminar materia parcial escala')" #item-action="{ id, nombre, abreviatura, materiaParcialEscalaId }">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                  @click="eliminarEscalaEvaluativa(materiaParcialEscalaId, nombre)">
+                  Eliminar
+                </button>
+              </div>
+            </template>
+          </EasyDataTable>
+        </div>
       </template>
     </Modal>
 
@@ -162,7 +162,7 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import api from '../../../services/api';
@@ -201,12 +201,12 @@ export default {
       selectSearchTimeout: null,
       EscalasEvaluativas: [],
       cargando: false,
-      headersEscala: [
-        { text: 'Id', value: 'id' },
-        { text: 'nombre', value: 'nombre' },
-        { text: 'Abreviatura', value: 'abreviatura' },
-        { text: 'Acciones', value: 'action' }
-      ],
+      // headersEscala: [
+      //   { text: 'Id', value: 'id' },
+      //   { text: 'nombre', value: 'nombre' },
+      //   { text: 'Abreviatura', value: 'abreviatura' },
+      //   { text: 'Acciones', value: 'action' }
+      // ],
 
       // Lista
 
@@ -221,6 +221,20 @@ export default {
       rowData: [],
 
       errores: {}, // 🔄 Errores
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['hasPermission']),
+    headersFiltrados() {
+      const base = [
+        { text: 'Id', value: 'id' },
+        { text: 'nombre', value: 'nombre' },
+        { text: 'Abreviatura', value: 'abreviatura' },
+      ];
+      if (this.hasPermission('puede eliminar materia parcial escala')) {
+        base.push({ text: 'Acciones', value: 'action' });
+      }
+      return base;
     }
   },
   watch: {
@@ -406,6 +420,7 @@ export default {
           // 🚨 Petición DELETE a API
           try {
             await api.delete(`/Estudiuante/Lista/${id}/EliminarEscala`);
+            this.consultarEscala();
             this.cargarDatos();
             this.errores = {}; // 🔄 Limpia los errores
             this.$swal.fire('Éxito', `✅ Registro ${nombre} eliminado correctamente`, 'success');

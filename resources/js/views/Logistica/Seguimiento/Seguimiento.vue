@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button @click="crear()" class="btn btn-primary float-end mt-n1">
+            <button @click="crear()" class="btn btn-primary float-end mt-n1" v-if="hasPermission('puede crear seguimientos')">
                 <i class="align-middle me-2" data-feather="plus-circle"></i>
                 Agregar Seguimiento
             </button>
@@ -27,18 +27,18 @@
                             </div>
                         </div>
 
-                        <EasyDataTable :headers="headers" :items="Seguimientos" :loading="cargando" :rows-per-page="5"
+                        <EasyDataTable :headers="headersFiltrados" :items="Seguimientos" :loading="cargando" :rows-per-page="5"
                             table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template #item-action="{ id, nombre }">
+                            <template v-if="hasPermission('puede editar seguimientos')|| hasPermission('ver listas') || hasPermission('ver f1')" #item-action="{ id, nombre }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
+                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)" v-if="hasPermission('puede editar seguimientos')">
                                         Editar
                                     </button>
-                                    <router-link :to="`lista/${id}/edit`" class="btn btn-sm btn-outline-secondary me-1">
+                                    <router-link :to="`lista/${id}/edit`" class="btn btn-sm btn-outline-secondary me-1" v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)">
+                                    <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)" v-if="hasPermission('ver f1')">
                                         F1
                                     </button>
                                 </div>
@@ -331,6 +331,7 @@
     </div>
 </template>
 
+
 <script>
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
@@ -355,16 +356,6 @@ export default {
     },
     data() {
         return {
-            headers: [
-                { text: 'Id', value: 'id' },
-                { text: 'Profesores', value: 'profesores' },
-                { text: 'Materias', value: 'materias' },
-                { text: 'Semestres', value: 'semestres' },
-                { text: 'Grados/Grupos', value: 'grupos' },
-                { text: 'Carreras', value: 'carreras' },
-                { text: 'Año', value: 'ano' },
-                { text: 'Acciones', value: 'action' },
-            ],
             Seguimientos: [],
             cargando: false,
             Seguimiento: {
@@ -419,6 +410,22 @@ export default {
     },
     computed: {
         ...mapGetters(['selectedYear']), // trae selectedYear del store
+        ...mapGetters('auth', ['hasPermission']),
+        headersFiltrados() {
+            const base = [
+                { text: 'Id', value: 'id' },
+                { text: 'Profesores', value: 'profesores' },
+                { text: 'Materias', value: 'materias' },
+                { text: 'Semestres', value: 'semestres' },
+                { text: 'Grados/Grupos', value: 'grupos' },
+                { text: 'Carreras', value: 'carreras' },
+                { text: 'Año', value: 'ano' },
+            ];
+            if (this.hasPermission('puede editar seguimientos')|| this.hasPermission('ver listas') || this.hasPermission('ver f1')) {
+                base.push({ text: 'Acciones', value: 'action' });
+            }
+            return base;
+        }
     },
     methods: {
         async consultar(filtro = '') {
@@ -714,7 +721,7 @@ export default {
         },
         async formato1(id) {
             try {
-                const response = await axios.get(`/api/Registro/Seguimiento/${id}/formato1`);
+                const response = await api.get(`/Registro/Seguimiento/${id}/formato1`);
                 this.alumnos = response.data.alumnos;
                 this.estadisticas = response.data.estadisticas;
                 this.parciales = this.parcialesObjeto(response.data.parciales);

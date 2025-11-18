@@ -57,7 +57,7 @@
                             </div>
 
                             <div class="mb-3 col-md-4">
-                                <label class="form-label" for="telefono">Teléfono {{ user.telefono }}</label>
+                                <label class="form-label" for="telefono">Teléfono</label>
                                 <input v-model="user.telefono" type="text" class="form-control" id="telefono"
                                     placeholder="Telefono" @input="validarTelefono">
                                 <div v-if="errores.telefono" class="form-text text-danger">

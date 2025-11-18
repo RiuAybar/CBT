@@ -150,7 +150,6 @@ class ListaController extends Controller
     public function Seguimiento(int $seguimiento_id)
     {
         $Parcial = Parcial::first(['id as id', 'nombre as text']);
-        // dd($seguimiento_id);
         $Seguimiento = Seguimiento::
             // join('seguimientos', 'listas.seguimiento_id', '=', 'seguimientos.id')
             join('materias', 'seguimientos.materia_id', '=', 'materias.id')
@@ -182,6 +181,7 @@ class ListaController extends Controller
     // User
     public function UserDisponibles(int $seguimiento_id, Request $request)
     {
+        $this->authorize('agregarEstudiantelista', Lista::class);
         $search = trim($request->query('search'));
 
         // Si no hay búsqueda, devolver vacío
@@ -208,6 +208,7 @@ class ListaController extends Controller
     // asignarUsuario
     public function asignarUsuario(Request $request, Seguimiento $Seguimiento)
     {
+        $this->authorize('agregarEstudiantelista', Lista::class);
         try {
             DB::beginTransaction();
             // Validar solo el alumno, el seguimiento ya está ligado
@@ -229,6 +230,7 @@ class ListaController extends Controller
     }
     public function buscarParciales(Request $request, int $seguimiento_id)
     {
+        $this->authorize('buscarParciales', Lista::class);
         $search = trim($request->query('search'));
         // Si no hay búsqueda, devolver vacío
         if (empty($search)) {
@@ -278,6 +280,7 @@ class ListaController extends Controller
     // buscarEscalasAsignadas
     public function buscarEscalasAsignadas(Request $request, Seguimiento $Seguimiento)
     {
+        $this->authorize('buscarEscalasAsignadas', Lista::class);
         $search = trim($request->query('search'));
         $parcial_id = intval($request->query('parcial_id'));
 
@@ -302,6 +305,7 @@ class ListaController extends Controller
     // asignarEscala
     public function asignarEscala(Request $request, Seguimiento $Seguimiento)
     {
+        $this->authorize('asignarEscalaLista', Lista::class);
         try {
             DB::beginTransaction();
             // Validar solo el alumno, el seguimiento ya está ligado
@@ -326,6 +330,7 @@ class ListaController extends Controller
 
     public function evaluacion(Request $request, Seguimiento $Seguimiento)
     {
+        $this->authorize('viewAny', Lista::class);
         $parcial_id = $request->query('parcial_id');
         if (!$parcial_id) {
             return response()->json(['error' => 'Parcial no especificado'], 422);
@@ -432,6 +437,7 @@ class ListaController extends Controller
      */
     public function EliminarEscala(MateriaParcialEscala $MateriaParcialEscala)
     {
+        $this->authorize('deleteMateriaParcialEscala', Lista::class);
         try {
             DB::beginTransaction();
             $MateriaParcialEscala->delete();
