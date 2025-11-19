@@ -53,6 +53,8 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::delete('/Lista/{MateriaParcialEscala}/EliminarEscala', [ListaController::class, 'EliminarEscala']);
         // NotasPorAspecto
         Route::post('/Lista/{MateriaParcialEscala}/NotasPorAspecto', [ListaController::class, 'guardarNotasPorAspecto']);
+
+        Route::get('/Lista/VistaCalificaciones', [ListaController::class, 'VistaCalificaciones']);
         Route::resource('Lista', ListaController::class);
     });
 

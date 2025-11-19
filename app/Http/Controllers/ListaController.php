@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Type\Integer;
 use Spatie\Permission\Models\Role;
+use App\Models\VistaCalificacionesEstudiante;
 
 class ListaController extends Controller
 {
@@ -25,9 +26,7 @@ class ListaController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request);
         $search = $request->query('search');
-
         // Obtener todas las fechas únicas de asistencias ordenadas y formateadas
         $fechas = Asistencia::select('date')
             ->distinct()
@@ -38,7 +37,6 @@ class ListaController extends Controller
             ->map(fn($date) => \Carbon\Carbon::parse($date)->format('Y-m-d'))
             ->values()
             ->toArray();
-
         // Query con relaciones y filtro por asistencias de fechas obtenidas
         $query = Estudiante::with([
             'user',
@@ -496,5 +494,23 @@ class ListaController extends Controller
             DB::rollBack();
             return response()->json($e->getMessage(), 500);
         }
+    }
+
+    public function VistaCalificaciones(Request $request)
+    {
+        $search = $request->query('search');
+        
+        $estudianteId = auth('api')->user()->estudiante->id;
+        $query =  DB::table('vista_calificaciones_estudiante')
+            ->where('estudiante_id', $estudianteId)
+            // ->where('año_escolar', $año)
+            ;
+        if ($request->ano) {
+            $query->where('año_escolar', $request->ano);
+        }
+        dd($query->get());
+        return response()->json([
+            'calificaciones' => $query->get(),
+        ]); 
     }
 }

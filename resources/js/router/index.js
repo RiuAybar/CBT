@@ -21,6 +21,7 @@ import Parciales from '../views/Logistica/Grados/Parciales.vue';
 import Seguimiento from '../views/Logistica/Seguimiento/Seguimiento.vue';
 import ConfiguracionUsuarios from '../views/Usuarios/Configuracion/ConfiguracionUsuarios.vue';
 import Lista from '../views/Logistica/Listas/Lista.vue';
+import Calificaciones from '../views/Logistica/Calificaciones/Calificaciones.vue';
 import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
 
 const routes = [
@@ -50,6 +51,7 @@ const routes = [
     children: [
       { path: '', name: 'home', component: Home, meta: { title: 'Inicio' } },
       // { path: 'about', name: 'about', component: About, meta: { title: 'Sobre' } },
+      { path: 'calificaciones', name: 'calificaciones', component: Calificaciones, meta: { title: 'Calificaciones' } },
       { path: 'users', name: 'users', component: Users, meta: { title: 'Usuarios', requiresPermission: 'ver usuarios' } },
       // { path: 'usuarios', name: 'usuarios', component: Usuarios, meta: { title: 'Usuarios' } },
       { path: 'permisos', name: 'permisos', component: Permisos, meta: { title: 'Permisos', requiresPermission: 'ver permisos' } },
