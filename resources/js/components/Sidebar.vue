@@ -9,6 +9,17 @@
 			</router-link>
 
 			<ul class="sidebar-nav">
+				<li class="sidebar-header" v-if="getUserRole == 'estudiante'">
+					Calificaciones
+				</li>
+				<li class="sidebar-item" :class="{ active: isActive('/calificaciones') }" v-if="getUserRole == 'estudiante'">
+					<router-link class="sidebar-link" to="/calificaciones">
+						<span class="align-middle">
+							Calificaciones
+						</span>
+					</router-link>
+				</li>
+
 				<li class="sidebar-header"
 					v-if="hasPermission('ver roles') || hasPermission('ver permisos') || hasPermission('ver usuarios')">
 					Pages
@@ -49,8 +60,8 @@
 					</ul>
 				</li>
 				<li class="sidebar-header" v-if="
-					hasPermission('ver grados') || 
-					hasPermission('ver materias') || 
+					hasPermission('ver grados') ||
+					hasPermission('ver materias') ||
 					hasPermission('ver semestres') ||
 					hasPermission('ver carreras') ||
 					hasPermission('ver horas docente') ||
@@ -59,8 +70,8 @@
 					conf
 				</li>
 				<li class="sidebar-item" v-if="
-					hasPermission('ver grados') || 
-					hasPermission('ver materias') || 
+					hasPermission('ver grados') ||
+					hasPermission('ver materias') ||
 					hasPermission('ver semestres') ||
 					hasPermission('ver carreras') ||
 					hasPermission('ver horas docente') ||
@@ -108,6 +119,7 @@
 						<i class="bi bi-file-earmark-medical me-2"></i>
 						<span class="align-middle">
 							Seguimiento
+							<!-- {{ getUserRole }} -->
 						</span>
 					</a>
 					<ul id="Seguimiento" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
@@ -136,7 +148,7 @@ export default {
 	},
 	computed: {
 		...mapGetters(['isCollapsed']),
-		...mapGetters('auth', ['isAuthenticated', 'getUser', 'hasPermission']),
+		...mapGetters('auth', ['isAuthenticated', 'getUserRole', 'hasPermission']),
 	},
 	methods: {
 		isActive(path) {

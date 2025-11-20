@@ -14,7 +14,7 @@ class SeguimientoController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny',Seguimiento::class);
+        $this->authorize('viewAny', Seguimiento::class);
         $search = $request->query('search');
         $query = Seguimiento::join('materias', 'seguimientos.materia_id', '=', 'materias.id')
             ->join('semestres', 'seguimientos.semestre_id', '=', 'semestres.id')
@@ -40,6 +40,11 @@ class SeguimientoController extends Controller
             ]);
         if ($request->ano) {
             $query->where('seguimientos.ano', $request->ano);
+        }
+        // Aplicar restricción si es profesor
+        $user = auth('api')->user();
+        if ($user && $user->hasRole('profesor')) {
+            $query->where('profesores.id', $user->id);
         }
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -68,7 +73,7 @@ class SeguimientoController extends Controller
      */
     public function store(SeguimientoRequest $request)
     {
-        $this->authorize('create',Seguimiento::class);
+        $this->authorize('create', Seguimiento::class);
         try {
             DB::beginTransaction();
             Seguimiento::create($request->validated());

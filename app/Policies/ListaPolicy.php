@@ -91,4 +91,22 @@ class ListaPolicy
     {
         return $user->can('puede eliminar materia parcial escala');
     }
+
+    public function guardarNotasPorAspecto(User $user, Lista $lista): bool
+    {
+        // Validaciones básicas
+        if (!$user || !$lista || !$lista->seguimiento) {
+            return false;
+        }
+        // Si es estudiantes → nunca puede guardar
+        if ($user->hasRole('estudiante')) {
+            return false;
+        }
+        // Si es profesor → solo si el seguimiento le pertenece
+        if ($user->hasRole('profesor')) {
+            return $lista->seguimiento->profesor_id === $user->id;
+        }
+        // Otros roles (admin, coordinador, etc.) → siempre pueden
+        return true;
+    }
 }

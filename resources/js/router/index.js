@@ -30,8 +30,8 @@ const routes = [
     component: () => import('../views/Layouts/auth/Auth.vue'),
     meta: { guest: true },
     children: [
-      { path: '', name: 'login', component: Login, meta: { title: 'Inicio' }, meta: { guest: true }  },
-      { path: '/restablecer/contrasena', name: 'restablecerContraseña', component: RestablecerPassword, meta: { title: 'Restablecer Contraseña' }, meta: { guest: true }  },
+      { path: '', name: 'login', component: Login, meta: { title: 'Inicio', guest: true } },
+      { path: '/restablecer/contrasena', name: 'restablecerContraseña', component: RestablecerPassword, meta: { title: 'Restablecer Contraseña', guest: true } },
       {
         path: 'registrar/password/:token', // ✅ sin "/"
         name: 'registrar-password',
@@ -40,7 +40,7 @@ const routes = [
           token: route.params.token,
           email: route.query.email
         }),
-        meta: { guest: true } 
+        meta: { guest: true }
       }
     ],
   },
@@ -50,10 +50,8 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: '', name: 'home', component: Home, meta: { title: 'Inicio' } },
-      // { path: 'about', name: 'about', component: About, meta: { title: 'Sobre' } },
-      { path: 'calificaciones', name: 'calificaciones', component: Calificaciones, meta: { title: 'Calificaciones' } },
+      { path: 'calificaciones', name: 'calificaciones', component: Calificaciones, meta: { title: 'Calificaciones', requiresRole: 'estudiante' } },
       { path: 'users', name: 'users', component: Users, meta: { title: 'Usuarios', requiresPermission: 'ver usuarios' } },
-      // { path: 'usuarios', name: 'usuarios', component: Usuarios, meta: { title: 'Usuarios' } },
       { path: 'permisos', name: 'permisos', component: Permisos, meta: { title: 'Permisos', requiresPermission: 'ver permisos' } },
       { path: 'roles', name: 'roles', component: Roles, meta: { title: 'Roles', requiresPermission: 'ver roles' } },
       { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos', requiresPermission: 'ver permisos asignados a roles' } },

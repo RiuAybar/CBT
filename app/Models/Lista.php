@@ -24,4 +24,9 @@ class Lista extends Model
         return $this->hasMany(User::class, 'alumno_id');
     }
 
+    public function seguimiento()
+    {
+        return $this->belongsTo(Seguimiento::class, 'seguimiento_id');
+    }
+
 }

@@ -450,17 +450,18 @@ class ListaController extends Controller
 
     public function guardarNotasPorAspecto(Request $request, int $id)
     {
+        $lista = Lista::findOrFail($request->input('lista_id'));
+        $this->authorize('guardarNotasPorAspecto', $lista);
         try {
             DB::beginTransaction();
             $parcialId = $request->input('parcial_id');
-            $listaId = $request->input('lista_id');
             $items = $request->input('items');
             $name = $request->input('name');
             $value = $request->input('value');
             $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial']) ? $name : null;
 
             $evaluacion = Evaluacion::firstOrCreate([
-                'lista_id' => $listaId,
+                'lista_id' => $lista->id,
                 'parcial_id' => $parcialId,
             ]);
             if ($columnasDef) {
@@ -470,9 +471,6 @@ class ListaController extends Controller
             }
 
             foreach ($items as $item) {
-                // $listaId = $item['lista_id'];
-
-
                 $escala = EscalaEvaluativa::where('abreviatura', $item['escala_abreviatura'])->first();
                 if ($escala) {
                     NotasPorAspecto::updateOrCreate(
@@ -499,18 +497,80 @@ class ListaController extends Controller
     public function VistaCalificaciones(Request $request)
     {
         $search = $request->query('search');
-        
+        $año = $request->query('ano');
+
         $estudianteId = auth('api')->user()->estudiante->id;
-        $query =  DB::table('vista_calificaciones_estudiante')
-            ->where('estudiante_id', $estudianteId)
-            // ->where('año_escolar', $año)
-            ;
-        if ($request->ano) {
-            $query->where('año_escolar', $request->ano);
+        // 1. Obtener parciales dinámicamente
+        $parciales = DB::table('parciales')
+            ->orderBy('id')
+            ->pluck('nombre');
+
+        // 2. Traer registros completos
+        $registros = DB::table('evaluaciones')
+            ->join('listas', 'listas.id', '=', 'evaluaciones.lista_id')
+            ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
+            ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
+            ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
+            ->where('listas.alumno_id', $estudianteId)
+
+            // Filtro opcional del año
+            ->when($año, function ($q) use ($año) {
+                $q->where('seguimientos.ano', $año);
+            })
+
+            // Filtro opcional de búsqueda
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('materias.nombre', 'like', "%{$search}%");
+                });
+            })
+
+            ->select(
+                'materias.id as materia_id',
+                'materias.nombre as materia',
+                'parciales.nombre as parcial',
+                'evaluaciones.calificacion_parcial'
+            )
+            ->get();
+        // 3. Armar estructura tipo tabla
+        $materias = [];
+
+        foreach ($registros as $r) {
+
+            if (!isset($materias[$r->materia_id])) {
+                $materias[$r->materia_id] = [
+                    'materia' => $r->materia
+                ];
+
+                foreach ($parciales as $p) {
+                    $materias[$r->materia_id][$p] = null;
+                }
+
+                $materias[$r->materia_id]['promedio'] = 0;
+                $materias[$r->materia_id]['T_E'] = 0;
+            }
+
+            $materias[$r->materia_id][$r->parcial] = $r->calificacion_parcial;
         }
-        dd($query->get());
+
+        // 4. Calcular promedios
+        foreach ($materias as $id => $m) {
+
+            $califs = collect($parciales)
+                ->map(fn($p) => $m[$p])
+                ->filter()
+                ->toArray();
+
+            $materias[$id]['promedio'] = count($califs)
+                ? round(array_sum($califs) / count($califs), 2)
+                : 0;
+
+            $materias[$id]['T_E'] = $materias[$id]['promedio'] < 70 ? 'Extra' : '0';
+        }
+        // dd(array_values($materias));
         return response()->json([
-            'calificaciones' => $query->get(),
-        ]); 
+            'materias' => array_values($materias),
+            'parciales' => $parciales
+        ],200);
     }
 }
