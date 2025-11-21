@@ -72,4 +72,25 @@ class SeguimientoPolicy
     {
         return $user->can('ver f1'); // Devuelve true temporalmente para permitir la depuración
     }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function agregarEstudiantelista(User $user, Seguimiento $Seguimiento): bool
+    {
+        // Validaciones básicas
+        if (!$user || !$Seguimiento) {
+            return false;
+        }
+        // Si es estudiantes → nunca puede guardar
+        if ($user->hasRole('estudiante')) {
+            return false;
+        }
+        // Si es profesor → solo si el seguimiento le pertenece
+        if ($user->hasRole('profesor')) {
+            return $Seguimiento?->profesor_id === $user->id;
+        }
+        // Otros roles (admin, coordinador, etc.) → siempre pueden
+        return true;
+    }
 }

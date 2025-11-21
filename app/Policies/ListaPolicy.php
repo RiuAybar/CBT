@@ -67,7 +67,7 @@ class ListaPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function agregarEstudiantelista(User $user): bool
+    public function agregarEstudiantelistaBuscador(User $user): bool
     {
         return $user->can('puede agregar alumno listas');
     }

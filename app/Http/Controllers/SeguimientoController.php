@@ -285,4 +285,28 @@ class SeguimientoController extends Controller
             'parciales' => array_keys($parciales->toArray())
         ]);
     }
+
+    // asignarUsuario
+    public function asignarUsuario(Request $request, Seguimiento $Seguimiento)
+    {
+        $this->authorize('agregarEstudiantelista', $Seguimiento);
+        try {
+            DB::beginTransaction();
+            // Validar solo el alumno, el seguimiento ya está ligado
+            $request->validate([
+                'alumno_id' => 'required|exists:users,id',
+            ]);
+            // Crear el registro en la tabla `listas`
+            Lista::create([
+                'alumno_id' => $request->alumno_id,
+                'seguimiento_id' => $Seguimiento->id,
+            ]);
+            DB::commit();
+            return response()->json(['message' => 'Usuario asignado correctamente'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // return response()->json($e->getMessage(), 500);
+            return response()->json("No se asignó el usuario, consulte al administrador", 500);
+        }
+    }
 }

@@ -43,7 +43,7 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     Route::prefix('/Estudiuante')->group(function () {
         Route::get('Lista/{lista_id}/User', [ListaController::class, 'UserDisponibles']);
         Route::get('Lista/{Seguimiento_id}/Seguimiento', [ListaController::class, 'Seguimiento']);
-        Route::post('Lista/{Seguimiento}/asignarUsuario', [ListaController::class, 'asignarUsuario']);
+        Route::post('Lista/{Seguimiento}/asignarUsuario', [SeguimientoController::class, 'asignarUsuario']);
         Route::get('Lista/{Seguimiento}/Parciales', [ListaController::class, 'buscarParciales']);
         Route::get('Lista/{Seguimiento}/Escalas', [ListaController::class, 'buscarEscalas']);
         Route::post('Lista/{Seguimiento}/asignarEscala', [ListaController::class, 'asignarEscala']);
