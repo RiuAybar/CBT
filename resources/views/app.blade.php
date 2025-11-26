@@ -4,7 +4,8 @@
  <head>
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
-     <title>C B T</title>     
+     <title>C B T</title>
+     <link rel="icon" href="{{ url('/favicon1.ico') }}">
      <link class="js-stylesheet" href="{{ secure_asset('css/light.css') }}" rel="stylesheet">
      </link>
      <!-- Styles / Scripts -->

@@ -31,10 +31,12 @@
               <!-- 🎯 Columna de acciones personalizada -->
               <template #item-action="{ id, name, email, estatus, telefono, domicilio, localidadColonia, rol }">
                 <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary me-1" @click="editarUsuario(id)" v-if="hasPermission(permisoSegunRol(rol))">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="editarUsuario(id)"
+                    v-if="hasPermission(permisoSegunRol(rol))">
                     Editar
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" @click="cambiarEstatus(id, name, email)" v-if="hasPermission(permisoSegunRolUser(rol))">
+                  <button class="btn btn-sm btn-outline-danger" @click="cambiarEstatus(id, name, email)"
+                    v-if="hasPermission(permisoSegunRolUser(rol))">
                     {{ estatusCapitalizado(estatus) }}
                   </button>
                 </div>
@@ -51,11 +53,22 @@
       <template #default>
         <div class="row">
 
-          <div class="mb-3">
+          <div class="mb-3 col-md-8">
             <label class="form-label" for="name">Nombre</label>
             <input v-model="Usuario.name" type="text" class="form-control" id="name" placeholder="Nombre completo...">
             <div v-if="errores.name" class="form-text text-danger">
               {{ errores.name[0] }}
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-4">
+            <label class="form-label" for="sexo">Sexo</label>
+            <select v-model="Usuario.sexo" id="sexo" class="form-control">
+              <option value="M" selected>Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+            <div v-if="errores.sexo" class="form-text text-danger">
+              {{ errores.sexo[0] }}
             </div>
           </div>
 
@@ -173,6 +186,7 @@ export default {
       headers: [
         { text: 'Id', value: 'id' },
         { text: 'Nombre', value: 'name' },
+        { text: 'Sexo', value: 'sexo' },
         { text: 'Email', value: 'email' },
         { text: 'Rol', value: 'rol' },
         { text: 'Telefono', value: 'telefono' },
@@ -185,6 +199,7 @@ export default {
       Usuario: {
         id: null,
         name: '',
+        sexo: '',
         email: '',
         rol: '',
         RolId: '',
@@ -196,7 +211,6 @@ export default {
         password_confirmation: '',
       },
       busqueda: '',
-
       selectSelected: {
         id: null,
         text: null,
@@ -257,6 +271,7 @@ export default {
       this.Usuario = {
         id: null,
         name: '',
+        sexo: '',
         email: '',
         rol: '',
         RolId: '',
@@ -316,6 +331,7 @@ export default {
           this.Usuario = {
             id: null,
             name: '',
+            sexo: '',
             email: '',
             rol: '',
             RolId: '',
@@ -388,6 +404,7 @@ export default {
         this.Usuario = {
           id: null,
           name: '',
+          sexo: '',
           email: '',
           rol: '',
           RolId: '',
@@ -483,7 +500,7 @@ export default {
   },
   mounted() {
     this.consultar();
-    
+
   }
 }
 </script>

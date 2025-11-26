@@ -43,6 +43,7 @@ class UsuarioController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('sexo', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%')
                     ->orWhere('estatus', 'like', '%' . $search . '%')
                     ->orWhere('telefono', 'like', '%' . $search . '%')
@@ -69,6 +70,7 @@ class UsuarioController extends Controller
         return response()->json($query->orderBy('id', 'desc')->get([
             'id',
             'name',
+            'sexo',
             'email',
             'estatus',
             'telefono',

@@ -45,6 +45,16 @@ const routes = [
     ],
   },
   {
+    path: '/pdf',
+    component: () => import('../views/Layouts/pdf/PDF.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      // { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.' } }
+      { path: 'reportepdf/:id', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
+
+    ],
+  },
+  {
     path: '/',
     component: () => import('../views/Layouts/Layout.vue'),
     meta: { requiresAuth: true },
@@ -65,7 +75,7 @@ const routes = [
       { path: 'parciales', name: 'parciales', component: Parciales, meta: { title: 'Lista de parciales.', requiresPermission: 'ver parciales' } },
       { path: 'seguimiento', name: 'seguimiento', component: Seguimiento, meta: { title: 'Lista de seguimiento.', requiresPermission: 'ver seguimiento' } },
       { path: 'perfil', name: 'perfil', component: ConfiguracionUsuarios, meta: { title: 'Configuración de mi perfil.' } },
-      { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
+      // { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
     ]
   }
 ];

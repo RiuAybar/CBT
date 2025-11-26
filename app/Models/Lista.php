@@ -17,6 +17,8 @@ class Lista extends Model
     protected $fillable = [
         'seguimiento_id',
         'alumno_id',
+        'listaNumero',
+        'porcentajeAsistencia',
     ];
 
     public function alumnos()

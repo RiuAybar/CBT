@@ -228,6 +228,7 @@ export default {
     headersFiltrados() {
       const base = [
         { text: 'Id', value: 'id' },
+        // { text: 'N. Lista', value: 'listaNumero' },
         { text: 'nombre', value: 'nombre' },
         { text: 'Abreviatura', value: 'abreviatura' },
       ];
@@ -445,8 +446,10 @@ export default {
           },
         });
         this.columnDefs = [
+          { field: 'listaNumero', headerName: 'N.Lista', editable: true },
           { field: 'nombre', headerName: 'Alumno' },
           { field: 'faltas', headerName: 'Faltas', editable: true },
+          { field: 'porcentajeAsistencia', headerName: '%Asistencia', editable: true },
         ];
         // Agrega dinámicamente columnas por cada escala evaluativa
         data.escalas.forEach((escala) => {

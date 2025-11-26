@@ -43,14 +43,10 @@
                                         v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <router-link :to="`pdf/reportepdf/${id}`" class="btn btn-sm btn-outline-info me-1"
+                                    <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)"
                                         v-if="hasPermission('ver f1')">
                                         F1
-                                    </router-link>
-                                    <!-- <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)"
-                                        v-if="hasPermission('ver f1')">
-                                        F1
-                                    </button> -->
+                                    </button>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -143,165 +139,125 @@
             </template>
         </Modal>
 
-        <div class="container" ref="pdfContent"
-            style="visibility: hidden; position: absolute; left: -999px; width: 210mm;">
-            <!-- <div class="m-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <img :src="logo" width="120" height="30">
-                            </th>
-                            <th class="px-2">
-                                <h4 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h4>
-                                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
-                                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div> -->
-
-            <div class="m-3">
-                <table style="border: 2px solid #FFFFFF;">
-                    <thead>
-                        <tr>
-                            <th style="border: 2px solid #FFFFFF;">
-                                <img :src="logo" width="120" height="30">
-                            </th>
-                            <th class="px-2" style="border: 2px solid #FFFFFF;">
-                                <h4 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h4>
-                                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
-                                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
+        <div class="container" ref="pdfContent" style="visibility: visible; position: static; left: 0px; width: 210mm;">
+            <div class="header-container">
+                <div class="header-logo">
+                    <div style="text-align:center; padding-top:15px; font-size:8px; color:#999;">LOGO</div>
+                </div>
+                <div class="header-titles">
+                    <div style="font-size: 12px; font-weight: bold;">GOBIERNO DEL ESTADO DE MÉXICO</div>
+                    <div style="font-size: 10px;">SECRETARÍA DE EDUCACIÓN</div>
+                    <div style="font-size: 9px;">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</div>
+                </div>
             </div>
-
 
             <table style="border: 2px solid black;">
 
                 <tr>
-                    <td colspan="2" class="text-center bold"
-                        style="font-size: 12px; border-bottom: 2px solid black; padding: 5px;">
-                        REGISTRO DE FALTAS DE ASISTENCIA , CALIFICACIONES Y PROMEDIO POR ASIGNATURA
+                    <td colspan="2" class="text-center bold bg-header"
+                        style="font-size: 10px; border-bottom: 2px solid black;">
+                        REGISTRO DE FALTAS DE ASISTENCIA, CALIFICACIONES Y PROMEDIO POR ASIGNATURA
                     </td>
                 </tr>
 
                 <tr>
-                    <td class="nested-container" style="width: 60%; border-right: 2px solid black;">
-                        <table class="nested-table">
+                    <td class="nested-wrapper" style="width: 65%;">
+                        <table style="width: 100%; height: 100%;">
                             <tr>
-                                <td colspan="4"><span class="label-tiny">1/ DIRECCIÓN</span>
+                                <td colspan="4">
+                                    <span class="label-tiny">1/ DIRECCIÓN</span>
                                     <div class="text-center bold">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4"><span class="label-tiny">2/ DEPARTAMENTO</span>
+                                <td colspan="4">
+                                    <span class="label-tiny">2/ DEPARTAMENTO</span>
                                     <div class="text-center">DE BACHILLERATO TECNOLÓGICO</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" style="height: 35px;"><span class="label-tiny">3/ NOMBRE DE LA
-                                        ESCUELA</span>
-                                    <div class="text-center bold" style="font-size: 11px;">CBT, AMANALCO DE BECERRA
-                                    </div>
+                                <td colspan="4">
+                                    <span class="label-tiny">3/ NOMBRE DE LA ESCUELA</span>
+                                    <div class="text-center bold" style="padding: 5px;">CBT, AMANALCO DE BECERRA</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="width: 40%;"><span class="label-tiny">4/ TURNO</span>
+                                <td style="width: 25%;">
+                                    <span class="label-tiny">4/ TURNO</span>
                                     <div class="text-center bold">DISCONTINUO</div>
                                 </td>
-                                <td colspan="2" style="width: 60%;"><span class="label-tiny">5/ NIVEL</span>
+                                <td style="width: 25%;">
+                                    <span class="label-tiny">5/ NIVEL</span>
                                     <div class="text-center bold">MEDIO SUPERIOR TÉCNICO</div>
                                 </td>
+                                <td style="width: 50%;" colspan="2"></td>
                             </tr>
                             <tr>
-                                <td><span class="label-tiny">8/ CLAVE CENTRO DE TRABAJO</span>
+                                <td>
+                                    <span class="label-tiny">8/ CLAVE CENTRO DE TRABAJO</span>
                                     <div class="text-center bold">15ECT0112M</div>
                                 </td>
-                                <td><span class="label-tiny">9/ No. DE C.R.E.S.E.</span>
+                                <td>
+                                    <span class="label-tiny">9/ No. DE R.E.V.O.E.</span>
                                     <div class="text-center">NA</div>
                                 </td>
-                                <td colspan="2"><span class="label-tiny">10/ ZONA ESCOLAR</span>
-                                    <div class="text-center bold text-right">BT009</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">10/ ZONA ESCOLAR</span>
+                                    <div class="text-center">BT009</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2"><span class="label-tiny">11/ DOMICILIO</span>
-                                    <div class="bold text-center">DOMICILIO CONOCIDO S/N</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">11/ DOMICILIO</span>
+                                    <div class="bold">DOMICILIO CONOCIDO S/N</div>
                                 </td>
-                                <td colspan="2"><span class="label-tiny">12/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">EL POTRERO</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">12/ LOCALIDAD O COLONIA</span>
+                                    <div class="bold">EL POTRERO</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="label-tiny">13/ MUNICIPIO</span>
+                                <td>
+                                    <span class="label-tiny">13/ MUNICIPIO</span>
                                     <div class="bold text-center">AMANALCO</div>
                                 </td>
-                                <td><span class="label-tiny">14/ TELÉFONO</span>
+                                <td>
+                                    <span class="label-tiny">14/ TELÉFONO</span>
                                     <div class="bold text-center">7228353322</div>
                                 </td>
-                                <td colspan="2"><span class="label-tiny">15/ CICLO ESCOLAR</span>
+                                <td colspan="2">
+                                    <span class="label-tiny">15/ CICLO ESCOLAR</span>
                                     <div class="bold text-center">2024-2025</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2"><span class="label-tiny">16/ NOMBRE DEL PROFESOR</span>
-                                    <div class="bold text-center">LÓPEZ SANTANA SEBASTIAN</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">16/ NOMBRE DEL PROFESOR</span>
+                                    <div class="bold">LÓPEZ SANTANA SEBASTIAN</div>
                                 </td>
-                                <td colspan="2"><span class="label-tiny">17/ TELÉFONO</span>
-                                    <div class="bold text-center">7228353322</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="h-30"><span class="label-tiny">18/ DOMICILIO</span>
-                                    <div class="bold text-left">San Lucas, Amanalco; Méx</div>
-                                </td>
-                                <td colspan="2" class="h-30"><span class="label-tiny">19/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">San Lucas 2da secc.</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="2" style="width: 50%; vertical-align: top;">
-                                    <span class="label-tiny">20/ ASIGNATURA</span>
-                                    <div class="bold" style="font-size: 9px; padding-top: 5px;">
-                                        SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES
-                                    </div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">21/ CURSO</span>
-                                    <div class="text-center" style="margin-top: 10px;">ORDINARIO</div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">22/ GRUPO</span>
-                                    <div class="text-center bold" style="margin-top: 10px;">2 1</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">17/ TELÉFONO</span>
+                                    <div class="bold text-right" style="padding-right: 10px;">7228353322</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3">
-                                    <span class="label-tiny">23/ BACHILLERATO O CARRERA</span>
-                                    <div class="text-center bold">TÉCNICO EN INFORMÁTICA</div>
+                                <td colspan="2" style="height: 30px;">
+                                    <span class="label-tiny">18/ DOMICILIO</span>
+                                    <div>San Lucas, Amanalco; Méx</div>
                                 </td>
-                                <td>
-                                    <span class="label-tiny">24/ SEMESTRE</span>
-                                    <div class="text-center bold">2</div>
+                                <td colspan="2">
+                                    <span class="label-tiny">19/ LOCALIDAD O COLONIA</span>
+                                    <div class="text-right">San Lucas 2da secc.</div>
                                 </td>
                             </tr>
                         </table>
                     </td>
 
-                    <td class="nested-container" style="width: 40%;">
-                        <table class="nested-table">
+                    <td class="nested-wrapper" style="width: 35%;">
+                        <table style="width: 100%;">
                             <tr>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">33/</span> MESES
-                                </td>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">34/</span> No. DE
-                                    HORAS
-                                    IMPARTIDAS
-                                </td>
+                                <td class="text-center"><span class="label-tiny">20/</span>MESES</td>
+                                <td class="text-center"><span class="label-tiny">21/</span>No. DE HORAS IMPARTIDAS</td>
                             </tr>
                             <tr>
                                 <td>FEBRERO</td>
@@ -327,235 +283,300 @@
                                 <td>JULIO</td>
                                 <td class="text-center">12</td>
                             </tr>
-                            <tr>
-                                <td class="bold text-center">TOTAL DE HORAS SEMESTRALES</td>
-                                <td class="text-center bold">116</td>
+                            <tr class="bold">
+                                <td>TOTAL DE HORAS SEMESTRALES</td>
+                                <td class="text-center">116</td>
                             </tr>
                         </table>
 
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="width: 55%;  border-right: 1px solid black;" class="bold text-center">
-                                    <span class="label-tiny text-left">35/</span> DATOS ESTADÍSTICOS
-                                </td>
-                                <td style="width: 15%;" class="bold text-center">HOMBRES</td>
-                                <td style="width: 15%;" class="bold text-center">MUJERES</td>
-                                <td style="width: 15%; border-right: none;" class="bold text-center">TOTAL</td>
+                        <table style="width: 100%; border-top: 2px solid black;">
+                            <tr class="bold text-center bg-header">
+                                <td class="text-left">DATOS ESTADÍSTICOS</td>
+                                <td>HOMBRES</td>
+                                <td>MUJERES</td>
+                                <td>TOTAL</td>
                             </tr>
                             <tr>
-                                <td style="">No. DE ALUMNOS INSCRITOS</td>
+                                <td>No. DE ALUMNOS INSCRITOS</td>
                                 <td class="text-center">10</td>
                                 <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
+                                <td class="text-center">23</td>
                             </tr>
                             <tr>
-                                <td style="">BAJAS DURANTE EL AÑO</td>
+                                <td>BAJAS DURANTE EL AÑO</td>
                                 <td class="text-center">0</td>
                                 <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">0</td>
+                                <td class="text-center">0</td>
                             </tr>
                             <tr>
-                                <td style="">EXISTENCIA AL FINAL DEL AÑO</td>
+                                <td>EXISTENCIA AL FINAL DEL AÑO</td>
                                 <td class="text-center">10</td>
                                 <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
+                                <td class="text-center">23</td>
                             </tr>
                             <tr>
-                                <td style="">No. DE APROBADOS</td>
+                                <td>No. DE APROBADOS</td>
                                 <td class="text-center">4</td>
                                 <td class="text-center">6</td>
-                                <td class="text-center" style="border-right: none;">10</td>
+                                <td class="text-center">10</td>
                             </tr>
                             <tr>
-                                <td style="">No. REPROBADOS</td>
+                                <td>No. REPROBADOS</td>
                                 <td class="text-center">1</td>
                                 <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">1</td>
+                                <td class="text-center">1</td>
                             </tr>
                             <tr>
-                                <td style="">% DE ALUMNOS APROBADOS</td>
+                                <td>% DE ALUMNOS APROBADOS</td>
                                 <td class="text-center">40.00</td>
                                 <td class="text-center">46.15</td>
-                                <td class="text-center" style="border-right: none;">43.08</td>
+                                <td class="text-center">43.08</td>
                             </tr>
                             <tr>
-                                <td style="">% DE ALUMNOS REPROBADOS</td>
+                                <td>% DE ALUMNOS REPROBADOS</td>
                                 <td class="text-center">60.00</td>
                                 <td class="text-center">53.85</td>
-                                <td class="text-center" style="border-right: none;">56.92</td>
+                                <td class="text-center">56.92</td>
                             </tr>
                             <tr>
-                                <td style="">SUMA DE CALIFICACIONES</td>
+                                <td>SUMA DE CALIFICACIONES</td>
                                 <td class="text-center">35</td>
                                 <td class="text-center">52</td>
-                                <td class="text-center" style="border-right: none;">87</td>
+                                <td class="text-center">87</td>
                             </tr>
                             <tr>
-                                <td style="">PROMEDIO DE CALIFICACIONES</td>
+                                <td>PROMEDIO DE CALIFICACIONES</td>
                                 <td class="text-center">3.50</td>
                                 <td class="text-center">4.00</td>
-                                <td class="text-center" style="border-right: none;">3.78</td>
+                                <td class="text-center">3.78</td>
                             </tr>
                             <tr>
-                                <td style="">METAS INSTITUCIONALES LOGRADAS</td>
-                                <td colspan="3" class="text-center" style="border-right: none;">NO</td>
+                                <td colspan="2">METAS INSTITUCIONALES LOGRADAS</td>
+                                <td colspan="2" class="text-center">NO</td>
                             </tr>
                         </table>
-
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td colspan="2" style=" border-right: none; border-top: 1px solid black;">
-                                    <span class="label-tiny">38/ HORARIO</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="width: 50%; ">LUNES</td>
-                                <td class="schedule-cell" style="width: 50%; border-right: none;">JUEVES</td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="">
-                                    MARTES <span style="margin-left: 5px;">7:30-9:10, 12:00-12:50</span>
-                                </td>
-                                <td class="schedule-cell" style="border-right: none;"></td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style=" border-bottom: none;">MIERCOLES</td>
-                                <td class="schedule-cell" style="border-right: none; border-bottom: none;">
-                                    VIERNES <span style="margin-left: 5px;">12:00-14:30</span>
-                                </td>
-                            </tr>
-                        </table>
-
                     </td>
                 </tr>
-            </table>
 
-            <table style="border: 1px solid black">
                 <tr>
-                    <td colspan="2" class="nested-container">
-                        <table class="nested-table">
+                    <td colspan="2" class="nested-wrapper">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 35%;">
+                                    <span class="label-tiny">20/ ASIGNATURA</span>
+                                    <div class="bold" style="font-size: 8px;">SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE
+                                        DATOS
+                                        SIMPLES</div>
+                                </td>
+                                <td style="width: 15%;">
+                                    <span class="label-tiny">21/ CURSO</span>
+                                    <div class="text-center">ORDINARIO</div>
+                                </td>
+                                <td style="width: 5%;">
+                                    <span class="label-tiny">22/ GRUPO</span>
+                                    <div class="text-center bold">21</div>
+                                </td>
+                                <td style="width: 45%; font-size: 8px;">
+                                    <span class="label-tiny">18/ HORARIO</span>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                                        <div>LUNES</div>
+                                        <div>JUEVES</div>
+                                        <div>MARTES <span style="margin-left: 10px;">7:30-9:10, 12:00-12:50</span></div>
+                                        <div>VIERNES <span style="margin-left: 10px;">12:00-14:30</span></div>
+                                        <div>MIERCOLES</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="label-tiny">23/ BACHILLERATO O CARRERA</span>
+                                    <div class="text-center bold">TÉCNICO EN INFORMÁTICA</div>
+                                </td>
+                                <td>
+                                    <span class="label-tiny">24/ SEMESTRE</span>
+                                    <div class="text-center bold">2</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="nested-wrapper">
+                        <table style="width: 100%;">
                             <thead>
-                                <tr style="height: 140px">
+                                <tr style="height: 120px;">
                                     <th class="col-list">
-                                        <div class="vertical-wrapper">
-                                            <div class="">No. DE LISTA</div>
-                                        </div>
+                                        <div class="vertical-text">No. DE LISTA</div>
                                     </th>
-
                                     <th class="col-sex">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SEXO</div>
-                                        </div>
+                                        <div class="vertical-text">SEXO</div>
                                     </th>
+                                    <th class="col-name">NOMBRE DEL ALUMNO (A)</th>
 
-                                    <th style="width: 250px" class="text-center">
-                                        NOMBRE DEL ALUMNO (A)
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
+                                    <th style="padding: 0; width: 75px;">
+                                        <table style="width: 100%; height: 100%; border: none;">
                                             <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="" style="width: 120px">
-                                                            FALTAS DE ASISTENCIA
-                                                        </div>
+                                                <td colspan="3"
+                                                    style="border:none; border-bottom: 1px solid black; height: 80px;">
+                                                    <div class="vertical-text" style="height: 80px;">FALTAS
+                                                        DE<br>ASISTENCIA
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
+                                                <td style="border:none; border-right:1px solid black; height: 40px;">1a
                                                 </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
+                                                <td style="border:none; border-right:1px solid black;">2a</td>
+                                                <td style="border:none;">3a</td>
                                             </tr>
                                         </table>
                                     </th>
 
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">TOT. DE FALTAS</div>
-                                        </div>
+                                    <th style="width: 25px;">
+                                        <div class="vertical-text">TOT. DE FALTAS</div>
+                                    </th>
+                                    <th style="width: 25px;">
+                                        <div class="vertical-text">% DE INASISTENCIA</div>
                                     </th>
 
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="" style="width: 120px">
-                                                % DE INASISTENCIA
-                                            </div>
-                                        </div>
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
+                                    <th style="padding: 0; width: 75px;">
+                                        <table style="width: 100%; height: 100%; border: none;">
                                             <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="">EVALUACIONES</div>
-                                                    </div>
+                                                <td colspan="3"
+                                                    style="border:none; border-bottom: 1px solid black; height: 80px;">
+                                                    <div class="vertical-text" style="height: 80px;">EVALUACIONES</div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
+                                                <td style="border:none; border-right:1px solid black; height: 40px;">1a
                                                 </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
+                                                <td style="border:none; border-right:1px solid black;">2a</td>
+                                                <td style="border:none;">3a</td>
                                             </tr>
                                         </table>
                                     </th>
 
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SUMA</div>
-                                        </div>
+                                    <th style="width: 25px;">
+                                        <div class="vertical-text">SUMA</div>
                                     </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">PROMEDIO</div>
-                                        </div>
+                                    <th style="width: 25px;">
+                                        <div class="vertical-text">PROMEDIO</div>
                                     </th>
-
-                                    <th class="text-center">OBSERVACIONES</th>
+                                    <th style="width: 100px;">OBSERVACIONES</th>
                                 </tr>
                             </thead>
-
                             <tbody>
-                                <tr style="height: 20px">
+                                <tr>
                                     <td class="text-center">1</td>
-                                    <td class="text-center">H</td>
-                                    <td style="padding-left: 5px">EJEMPLO PÉREZ JUAN</td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-
+                                    <td class="text-center">M</td>
+                                    <td>ARRIAGA ARRIAGA CHRISTOPHER</td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade">0.0</td>
+                                    <td class="col-grade">8</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">8.0</td>
+                                    <td class="col-grade">8.0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">2</td>
+                                    <td class="text-center">M</td>
+                                    <td>ALVAREZ COLIN LUIS ENRIQUE</td>
+                                    <td class="col-grade">5</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">5</td>
+                                    <td class="col-grade">4.3</td>
+                                    <td class="col-grade">5</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">5.0</td>
+                                    <td class="col-grade">5.0</td>
+                                    <td style="font-size: 7px;">E. EXTR.</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">3</td>
+                                    <td class="text-center">F</td>
+                                    <td>ARRIAGA MARTINEZ LIZBETH</td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade">0.0</td>
+                                    <td class="col-grade">7</td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade"></td>
+                                    <td class="col-grade">7.0</td>
+                                    <td class="col-grade">7.0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">4</td>
+                                    <td class="text-center">M</td>
+                                    <td>AVILA BARTOLO EFRAIN</td>
+                                    <td class="col-grade">2</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">2</td>
+                                    <td class="col-grade">1.7</td>
+                                    <td class="col-grade">8</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">8.0</td>
+                                    <td class="col-grade">8.0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">5</td>
+                                    <td class="text-center">F</td>
+                                    <td>FAVILA CASTILLO STEPHANIE</td>
+                                    <td class="col-grade">0</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade">0.0</td>
+                                    <td class="col-grade">9</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">9.0</td>
+                                    <td class="col-grade">9.0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">6</td>
+                                    <td class="text-center">M</td>
+                                    <td>CARBAJAL NIETO CESAR JAVIER</td>
+                                    <td class="col-grade">0</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade">0.0</td>
+                                    <td class="col-grade">7</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">7.0</td>
+                                    <td class="col-grade">7.0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">7</td>
+                                    <td class="text-center">F</td>
+                                    <td>CASTILLO ALBARRAN ALEXA</td>
+                                    <td class="col-grade">0</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">0</td>
+                                    <td class="col-grade">0.0</td>
+                                    <td class="col-grade">8</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-grade">8.0</td>
+                                    <td class="col-grade">8.0</td>
                                     <td></td>
                                 </tr>
                             </tbody>
@@ -601,12 +622,17 @@
             </div>
         </div>
 
+        
+        <!-- <img :src="logo" alt="Logo" /> -->
+
     </div>
 </template>
 
 
 <script>
+// import logo from '@/asset/img/Imagen1.png';
 import logo from '@asset/img/Imagen1.png';
+
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
 
@@ -668,7 +694,8 @@ export default {
             alumnos: [],
             parciales: [],
             estadisticas: {},
-            seguimientoId: 1
+            seguimientoId: 1,
+            pdfvisibility: false
         }
     },
     watch: {
@@ -996,6 +1023,7 @@ export default {
         },
         async formato1(id) {
             try {
+                this.pdfvisibility = true;
                 const response = await api.get(`/Registro/Seguimiento/${id}/formato1`);
                 this.alumnos = response.data.alumnos;
                 this.estadisticas = response.data.estadisticas;
@@ -1018,7 +1046,9 @@ export default {
                 element.style.visibility = 'hidden';
                 element.style.position = 'absolute';
                 element.style.left = '-9999px';
+                this.pdfvisibility = false;
             } catch (error) {
+                this.pdfvisibility = false;
                 console.error('Error al generar Formato 1:', error);
             }
         }
@@ -1031,95 +1061,228 @@ export default {
 </script>
 
 <style>
-.pdf-container {
-  font-family: Arial, sans-serif;
-  font-size: 7px;
-  margin: 20px;
+@page {
+    size: A4 landscape;
+    margin: 0.5cm;
 }
 
-/* ESTILOS DE TABLA GENERAL */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    /* Letra base muy pequeña para que quepa todo */
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+}
+
+/* ESTILOS DE TABLA */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 td,
 th {
-  border: 1px solid black;
-  padding: 3px 4px;
-  vertical-align: middle;
+    border: 1px solid black;
+    padding: 2px 4px;
+    vertical-align: middle;
 }
 
-/* CLASES DE UTILIDAD */
+/* CLASES UTILITARIAS */
 .text-center {
-  text-align: center;
+    text-align: center;
 }
 
 .text-left {
-  text-align: left;
+    text-align: left;
 }
 
 .text-right {
-  text-align: right;
+    text-align: right;
 }
 
 .bold {
-  font-weight: bold;
+    font-weight: bold;
 }
 
-/* Configuración para tablas anidadas (Layout) */
-.nested-container {
-  padding: 0 !important;
-  border: none !important;
-  vertical-align: top;
+.no-border-top {
+    border-top: none !important;
 }
 
-.nested-table {
-  width: 100%;
-  border: none;
+.no-border-bottom {
+    border-bottom: none !important;
 }
 
-.nested-table td {
-  border: 1px solid black;
-  /* Quitamos bordes laterales externos */
-
-  border-right: none;
+.no-border-left {
+    border-left: none !important;
 }
 
-/* Eliminar bordes duplicados en la primera y última fila de las anidadas */
-.nested-table tr:first-child td {
-  border-top: none;
-}
-
-.nested-table tr:last-child td {
-  border-bottom: none;
+.no-border-right {
+    border-right: none !important;
 }
 
 /* ETIQUETAS PEQUEÑAS (Ej: "1/ DIRECCIÓN") */
 .label-tiny {
-  font-size: 6px;
-  color: #444;
-  display: block;
-  line-height: 1;
-  margin-bottom: 2px;
-  text-align: left;
+    font-size: 6px;
+    color: #333;
+    display: block;
+    margin-bottom: 1px;
+    line-height: 1;
 }
 
-/* Filas con altura mínima específica */
-.h-40 {
-  height: 40px;
+/* TEXTO VERTICAL (Para encabezados de tabla inferior) */
+.vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    height: 100px;
+    /* Altura forzada para el header */
+    text-align: center;
+    vertical-align: middle;
+    display: block;
+    margin: 0 auto;
 }
 
-.h-30 {
-  height: 30px;
+/* ENCABEZADO INSTITUCIONAL (LOGO Y TITULOS) */
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
-/* Estilo específico para el horario */
-.schedule-cell {
-  font-size: 9px;
-  height: 20px;
-  /* Altura fija para filas de horario */
-  vertical-align: top;
+.header-logo {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #ccc;
+    /* Placeholder borde logo */
+    margin-right: 15px;
 }
+
+.header-titles h2,
+.header-titles h3 {
+    margin: 2px 0;
+    text-align: left;
+}
+
+/* COLORES */
+.bg-header {
+    background-color: #f2f2f2;
+}
+
+/* AJUSTES ESPECÍFICOS DE ANCHO */
+.col-list {
+    width: 20px;
+}
+
+.col-sex {
+    width: 20px;
+}
+
+.col-name {
+    width: 250px;
+}
+
+.col-grade {
+    width: 25px;
+    text-align: center;
+}
+
+/* TABLA ANIDADA SIN BORDES EXTERNOS */
+.nested-table td {
+    border: 1px solid black;
+}
+
+.nested-wrapper {
+    padding: 0 !important;
+    border: none !important;
+    vertical-align: top;
+}
+
+/* Solo aplicar estilos de PDF dentro de .pdf-section */
+.pdf-section {
+    background-color: white;
+    width: 297mm; /* Ancho A4 Landscape */
+    /* Visibility control is handled by Vue v-show, but absolute positioning helps prevent layout shift */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Detrás de todo */
+}
+
+/* Reemplaza tus estilos de tabla globales por estos específicos */
+.pdf-section table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.pdf-section td, .pdf-section th {
+    border: 1px solid black;
+    padding: 2px 4px;
+    vertical-align: middle;
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+}
+
+.pdf-section .header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
+/* ... Resto de clases utilitarias, asegúrate de que estén disponibles ... */
+.nested-wrapper {
+    padding: 0 !important;
+    border: none !important;
+    vertical-align: top;
+}
+.vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    height: 80px; /* Ajustado */
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+/* --- CORRECCIÓN PARA TEXTO VERTICAL EN PDF --- */
+
+/* 1. Ajustamos las celdas contenedoras (TH) para usar Flexbox */
+.col-list, .col-sex, .col-grade, .header-vertical-container {
+    height: 120px; /* Altura fija para el encabezado */
+    vertical-align: middle;
+    padding: 0 !important; /* Quitamos padding para manejarlo con flex */
+    position: relative;
+}
+
+/* 2. Creamos un contenedor interno flexible */
+.vertical-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Por seguridad */
+}
+
+/* 3. El texto en sí: Rotación limpia de -90 grados */
+.vertical-text {
+    transform: rotate(-90deg);
+    white-space: nowrap;      /* Evita que el texto se parta */
+    display: block;
+    font-size: 9px;           /* Aseguramos tamaño legible */
+    text-align: center;
+    
+    /* Truco: Le damos un ancho fijo grande al texto para que quepa
+       y luego html2canvas lo recorta visualmente al rotar */
+    /* width: 100px;  */
+}
+
+/* Ajustes específicos para columnas muy estrechas */
+.col-list { width: 25px; }
+.col-sex  { width: 25px; }
+.col-grade { width: 30px; }
 </style>

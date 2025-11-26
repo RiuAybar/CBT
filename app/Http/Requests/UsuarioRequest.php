@@ -53,6 +53,7 @@ class UsuarioRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
+            'sexo' => 'required|in:M,F',
             'email' => [
                 'required',
                 'email',
@@ -82,6 +83,8 @@ class UsuarioRequest extends FormRequest
         return [
             'name.required' => 'El campo es obligatorio.',
             'name.max' => 'Excede el número máximo de caracteres.',
+
+            'sexo.in' => 'El sexo debe ser M (Masculino) o F (Femenino).',
 
             'email.required' => 'El correo es obligatorio.',
             'email.email' => 'Debe ser un correo válido.',

@@ -43,14 +43,10 @@
                                         v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <router-link :to="`pdf/reportepdf/${id}`" class="btn btn-sm btn-outline-info me-1"
+                                    <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)"
                                         v-if="hasPermission('ver f1')">
                                         F1
-                                    </router-link>
-                                    <!-- <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)"
-                                        v-if="hasPermission('ver f1')">
-                                        F1
-                                    </button> -->
+                                    </button>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -144,8 +140,8 @@
         </Modal>
 
         <div class="container" ref="pdfContent"
-            style="visibility: hidden; position: absolute; left: -999px; width: 210mm;">
-            <!-- <div class="m-3">
+            style="visibility: visible; position: static; left: 0Ppx; width: 210mm;">
+            <div class="m-3">
                 <table>
                     <thead>
                         <tr>
@@ -160,408 +156,255 @@
                         </tr>
                     </thead>
                 </table>
-            </div> -->
-
-            <div class="m-3">
-                <table style="border: 2px solid #FFFFFF;">
-                    <thead>
-                        <tr>
-                            <th style="border: 2px solid #FFFFFF;">
-                                <img :src="logo" width="120" height="30">
-                            </th>
-                            <th class="px-2" style="border: 2px solid #FFFFFF;">
-                                <h4 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h4>
-                                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
-                                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
             </div>
 
+            <!-- Información general -->
+            <table class="table table-bordered table-sm mb-3">
+                <tbody>
+                    <tr>
+                        <td colspan="3">
+                            <h7>
+                                <strong>
+                                    REGISTRO DE FALTAS DE ASISTENCIA, CALIFICACIONES Y PROMEDIO POR ASIGNATURA
+                                </strong>
+                            </h7>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <!-- Texto pequeño arriba a la izquierda -->
+                            <div class="text-start" style="font-size: 6px; font-weight: bold;">
+                                1/ DIRECCIÓN
+                            </div>
 
-            <table style="border: 2px solid black;">
+                            <!-- Texto centrado abajo -->
+                            <div class="text-center" style="font-size: 12px; font-weight: bold; margin-top: -5px;">
+                                GENERAL DE EDUCACIÓN MEDIA SUPERIOR
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Texto pequeño arriba a la izquierda -->
+                            <div class="text-start" style="font-size: 6px; font-weight: bold;">
+                                33/
+                            </div>
 
-                <tr>
-                    <td colspan="2" class="text-center bold"
-                        style="font-size: 12px; border-bottom: 2px solid black; padding: 5px;">
-                        REGISTRO DE FALTAS DE ASISTENCIA , CALIFICACIONES Y PROMEDIO POR ASIGNATURA
-                    </td>
-                </tr>
+                            <!-- Texto centrado abajo -->
+                            <div class="text-center" style="font-size: 12px; font-weight: bold; margin-top: -5px;">
+                                MESES
+                            </div>
+                        </td>
+                        <td>
+                            <!-- <strong>No. DE HORAS IMPARTIDAS</strong> -->
+                            <!-- Texto pequeño arriba a la izquierda -->
+                            <div class="text-start" style="font-size: 6px; font-weight: bold;">
+                                34/
+                            </div>
 
-                <tr>
-                    <td class="nested-container" style="width: 60%; border-right: 2px solid black;">
-                        <table class="nested-table">
-                            <tr>
-                                <td colspan="4"><span class="label-tiny">1/ DIRECCIÓN</span>
-                                    <div class="text-center bold">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4"><span class="label-tiny">2/ DEPARTAMENTO</span>
-                                    <div class="text-center">DE BACHILLERATO TECNOLÓGICO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" style="height: 35px;"><span class="label-tiny">3/ NOMBRE DE LA
-                                        ESCUELA</span>
-                                    <div class="text-center bold" style="font-size: 11px;">CBT, AMANALCO DE BECERRA
+                            <!-- Texto centrado abajo -->
+                            <div class="text-center" style="font-size: 12px; font-weight: bold; margin-top: -5px;">
+                                No. DE HORAS IMPARTIDAS
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="6">
+                            <div style="display: flex; flex-direction: column; height: 100%;">
+
+                                <!-- <div style="flex: 1; border-bottom: 1px solid #ccc;">
+                                    <span class="label-tiny">1/ DIRECCIÓN</span>
+                                </div> -->
+
+                                <div style="flex: 1; border-bottom: 1px solid #000000;" class="text-center bold">
+                                    <div class="text-start" style="font-size: 6px; font-weight: bold;">
+                                        2/ DEPARTAMENTO
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="width: 40%;"><span class="label-tiny">4/ TURNO</span>
-                                    <div class="text-center bold">DISCONTINUO</div>
-                                </td>
-                                <td colspan="2" style="width: 60%;"><span class="label-tiny">5/ NIVEL</span>
-                                    <div class="text-center bold">MEDIO SUPERIOR TÉCNICO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="label-tiny">8/ CLAVE CENTRO DE TRABAJO</span>
-                                    <div class="text-center bold">15ECT0112M</div>
-                                </td>
-                                <td><span class="label-tiny">9/ No. DE C.R.E.S.E.</span>
-                                    <div class="text-center">NA</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">10/ ZONA ESCOLAR</span>
-                                    <div class="text-center bold text-right">BT009</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><span class="label-tiny">11/ DOMICILIO</span>
-                                    <div class="bold text-center">DOMICILIO CONOCIDO S/N</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">12/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">EL POTRERO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="label-tiny">13/ MUNICIPIO</span>
-                                    <div class="bold text-center">AMANALCO</div>
-                                </td>
-                                <td><span class="label-tiny">14/ TELÉFONO</span>
-                                    <div class="bold text-center">7228353322</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">15/ CICLO ESCOLAR</span>
-                                    <div class="bold text-center">2024-2025</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><span class="label-tiny">16/ NOMBRE DEL PROFESOR</span>
-                                    <div class="bold text-center">LÓPEZ SANTANA SEBASTIAN</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">17/ TELÉFONO</span>
-                                    <div class="bold text-center">7228353322</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="h-30"><span class="label-tiny">18/ DOMICILIO</span>
-                                    <div class="bold text-left">San Lucas, Amanalco; Méx</div>
-                                </td>
-                                <td colspan="2" class="h-30"><span class="label-tiny">19/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">San Lucas 2da secc.</div>
-                                </td>
-                            </tr>
+                                    DE BACHILLERATO TECNOLÓGICO
+                                </div>
 
-                            <tr>
-                                <td colspan="2" style="width: 50%; vertical-align: top;">
-                                    <span class="label-tiny">20/ ASIGNATURA</span>
-                                    <div class="bold" style="font-size: 9px; padding-top: 5px;">
-                                        SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES
+                                <div style="flex: 1; border-bottom: 1px solid #000000;">
+                                    <div class="text-start" style="font-size: 6px; font-weight: bold;">
+                                        2/ DEPARTAMENTO
                                     </div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">21/ CURSO</span>
-                                    <div class="text-center" style="margin-top: 10px;">ORDINARIO</div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">22/ GRUPO</span>
-                                    <div class="text-center bold" style="margin-top: 10px;">2 1</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <span class="label-tiny">23/ BACHILLERATO O CARRERA</span>
-                                    <div class="text-center bold">TÉCNICO EN INFORMÁTICA</div>
-                                </td>
-                                <td>
-                                    <span class="label-tiny">24/ SEMESTRE</span>
-                                    <div class="text-center bold">2</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
+                                    <strong>
+                                        CBT, AMANALCO DE BECERRA
+                                    </strong>
+                                </div>
 
-                    <td class="nested-container" style="width: 40%;">
-                        <table class="nested-table">
-                            <tr>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">33/</span> MESES
-                                </td>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">34/</span> No. DE
-                                    HORAS
-                                    IMPARTIDAS
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>FEBRERO</td>
-                                <td class="text-center">20</td>
-                            </tr>
-                            <tr>
-                                <td>MARZO</td>
-                                <td class="text-center">24</td>
-                            </tr>
-                            <tr>
-                                <td>ABRIL</td>
-                                <td class="text-center">15</td>
-                            </tr>
-                            <tr>
-                                <td>MAYO</td>
-                                <td class="text-center">24</td>
-                            </tr>
-                            <tr>
-                                <td>JUNIO</td>
-                                <td class="text-center">21</td>
-                            </tr>
-                            <tr>
-                                <td>JULIO</td>
-                                <td class="text-center">12</td>
-                            </tr>
-                            <tr>
-                                <td class="bold text-center">TOTAL DE HORAS SEMESTRALES</td>
-                                <td class="text-center bold">116</td>
-                            </tr>
-                        </table>
+                                <div
+                                    style="display: flex; width: 100%; border: 1px solid #000; box-sizing: border-box;">
+                                    <div
+                                        style="flex: 1; border-right: 1px solid #000; padding: 2px; box-sizing: border-box;">
+                                        Columna 1
+                                    </div>
+                                    <div style="flex: 1; padding: 2px; box-sizing: border-box;">
+                                        Columna 2
+                                    </div>
+                                </div>
+                                <div
+                                    style="display: flex; width: 100%; border: 1px solid #000; box-sizing: border-box;">
+                                    <div
+                                        style="flex: 1; border-right: 1px solid #000; padding: 2px; box-sizing: border-box;">
+                                        Columna 1
+                                    </div>
+                                    <div style="flex: 1; padding: 2px; box-sizing: border-box;">
+                                        Columna 2
+                                    </div>
+                                </div>
 
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="width: 55%;  border-right: 1px solid black;" class="bold text-center">
-                                    <span class="label-tiny text-left">35/</span> DATOS ESTADÍSTICOS
-                                </td>
-                                <td style="width: 15%;" class="bold text-center">HOMBRES</td>
-                                <td style="width: 15%;" class="bold text-center">MUJERES</td>
-                                <td style="width: 15%; border-right: none;" class="bold text-center">TOTAL</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. DE ALUMNOS INSCRITOS</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
-                            </tr>
-                            <tr>
-                                <td style="">BAJAS DURANTE EL AÑO</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">0</td>
-                            </tr>
-                            <tr>
-                                <td style="">EXISTENCIA AL FINAL DEL AÑO</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. DE APROBADOS</td>
-                                <td class="text-center">4</td>
-                                <td class="text-center">6</td>
-                                <td class="text-center" style="border-right: none;">10</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. REPROBADOS</td>
-                                <td class="text-center">1</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">1</td>
-                            </tr>
-                            <tr>
-                                <td style="">% DE ALUMNOS APROBADOS</td>
-                                <td class="text-center">40.00</td>
-                                <td class="text-center">46.15</td>
-                                <td class="text-center" style="border-right: none;">43.08</td>
-                            </tr>
-                            <tr>
-                                <td style="">% DE ALUMNOS REPROBADOS</td>
-                                <td class="text-center">60.00</td>
-                                <td class="text-center">53.85</td>
-                                <td class="text-center" style="border-right: none;">56.92</td>
-                            </tr>
-                            <tr>
-                                <td style="">SUMA DE CALIFICACIONES</td>
-                                <td class="text-center">35</td>
-                                <td class="text-center">52</td>
-                                <td class="text-center" style="border-right: none;">87</td>
-                            </tr>
-                            <tr>
-                                <td style="">PROMEDIO DE CALIFICACIONES</td>
-                                <td class="text-center">3.50</td>
-                                <td class="text-center">4.00</td>
-                                <td class="text-center" style="border-right: none;">3.78</td>
-                            </tr>
-                            <tr>
-                                <td style="">METAS INSTITUCIONALES LOGRADAS</td>
-                                <td colspan="3" class="text-center" style="border-right: none;">NO</td>
-                            </tr>
-                        </table>
 
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td colspan="2" style=" border-right: none; border-top: 1px solid black;">
-                                    <span class="label-tiny">38/ HORARIO</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="width: 50%; ">LUNES</td>
-                                <td class="schedule-cell" style="width: 50%; border-right: none;">JUEVES</td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="">
-                                    MARTES <span style="margin-left: 5px;">7:30-9:10, 12:00-12:50</span>
-                                </td>
-                                <td class="schedule-cell" style="border-right: none;"></td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style=" border-bottom: none;">MIERCOLES</td>
-                                <td class="schedule-cell" style="border-right: none; border-bottom: none;">
-                                    VIERNES <span style="margin-left: 5px;">12:00-14:30</span>
-                                </td>
-                            </tr>
-                        </table>
 
-                    </td>
-                </tr>
+                            </div>
+                        </td>
+
+                        <!-- <td rowspan="6">
+                            <span class="label-tiny">1/ DIRECCIÓN</span>
+                            <div class="text-center bold">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</div>
+                        </td> -->
+                        <!-- <td rowspan="6">
+                            <th colsapn="2">
+                                <strong>DE BACHILLERATO TECNOLÓGICO</strong>
+
+                            </th>
+                            <th>
+
+                                <strong>CBT, AMANALCO DE
+                                    BECERRA
+                                </strong>
+                            </th>
+                        </td>
+                        <td>FEBRERO</td>
+                        <td>20</td> -->
+                    </tr>
+                    <tr>
+                        <td>MARZO</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>ABRIL</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>MAYO</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>JUNIO</td>
+                        <td>21</td>
+                    </tr>
+                    <tr>
+                        <td>JULIO</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>TOTAL DE HORAS SEMESTRALES</strong></td>
+                        <td><strong>116</strong></td>
+                    </tr>
+                </tbody>
             </table>
 
-            <table style="border: 1px solid black">
-                <tr>
-                    <td colspan="2" class="nested-container">
-                        <table class="nested-table">
-                            <thead>
-                                <tr style="height: 140px">
-                                    <th class="col-list">
-                                        <div class="vertical-wrapper">
-                                            <div class="">No. DE LISTA</div>
-                                        </div>
-                                    </th>
+            <!-- Estadísticas del plantel -->
+            <table class="table table-bordered table-sm mb-3">
+                <tbody>
+                    <tr>
+                        <td><strong>DOMICILIO CONOCIDO S/N</strong></td>
+                        <td><strong>EL POTRERO</strong></td>
+                        <td><strong>No. DE ALUMNOS INSCRITOS</strong></td>
+                        <td colspan="3">{{ estadisticas.total_inscritos }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AMANALCO</strong></td>
+                        <td><strong>7228353322</strong></td>
+                        <td><strong>BAJAS DURANTE EL AÑO</strong></td>
+                        <td colspan="3">{{ estadisticas.bajas }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LÓPEZ SANTANA SEBASTIAN</strong></td>
+                        <td><strong>7228353322</strong></td>
+                        <td><strong>EXISTENCIA AL FINAL DEL AÑO</strong></td>
+                        <td colspan="3">{{ estadisticas.existencia_final }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SAN LUCAS, ArmandoOMEx</strong></td>
+                        <td><strong>San Lucas 2da secc.</strong></td>
+                        <td><strong>No. DE APROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.aprobados }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>No. REPROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.reprobados }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>% DE ALUMNOS APROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.porcentaje_aprobados }}%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>% DE ALUMNOS REPROBADOS</strong></td>
+                        <td colspan="3">{{ estadisticas.porcentaje_reprobados }}%</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>SUMA DE CALIFICACIONES</strong></td>
+                        <td colspan="3">{{ estadisticas.suma_calificaciones }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><strong>PROMEDIO DE CALIFICACIONES</strong></td>
+                        <td colspan="3">{{ estadisticas.promedio_general }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                                    <th class="col-sex">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SEXO</div>
-                                        </div>
-                                    </th>
-
-                                    <th style="width: 250px" class="text-center">
-                                        NOMBRE DEL ALUMNO (A)
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
-                                            <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="" style="width: 120px">
-                                                            FALTAS DE ASISTENCIA
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
-                                                </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
-                                            </tr>
-                                        </table>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">TOT. DE FALTAS</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="" style="width: 120px">
-                                                % DE INASISTENCIA
-                                            </div>
-                                        </div>
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
-                                            <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="">EVALUACIONES</div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
-                                                </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
-                                            </tr>
-                                        </table>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SUMA</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">PROMEDIO</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="text-center">OBSERVACIONES</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr style="height: 20px">
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">H</td>
-                                    <td style="padding-left: 5px">EJEMPLO PÉREZ JUAN</td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+            <!-- Tabla de alumnos -->
+            <h6 class="text-center mb-2"><strong>SUBMÓDULO II: DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES</strong></h6>
+            <table class="table table-bordered table-sm mb-4">
+                <thead>
+                    <tr>
+                        <th rowspan="2">No. DE LISTA</th>
+                        <th rowspan="2">NOMBRE DEL ALUMNO (A)</th>
+                        <th :colspan="parciales.length">FALTAS DE ASISTENCIA</th>
+                        <th rowspan="2">TOT. DE FALTAS</th>
+                        <th rowspan="2">% DE INASISTENCIA</th>
+                        <th :colspan="parciales.length">EVALUACIONES</th>
+                        <th rowspan="2">PROMEDIO</th>
+                        <th rowspan="2">OBSERVACIONES</th>
+                    </tr>
+                    <tr>
+                        <th v-for="(parcial, i) in parciales.length">
+                            {{ `${i + 1}a` }}
+                        </th>
+                        <th v-for="(parcial, index) in parciales.length">
+                            {{ `${index + 1}a` }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="alumno in alumnos" :key="alumno.No_DE_LISTA">
+                        <td>{{ alumno.No_DE_LISTA }}</td>
+                        <td>{{ alumno.NOMBRE_DEL_ALUMNO }}</td>
+                        <td v-for="(parcial, index) in parciales">
+                            {{ alumno[`faltas_${parcial}`] || '' }}
+                        </td>
+                        <!-- <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td> -->
+                        <td>{{ alumno.TOT_DE_FALTAS }}</td>
+                        <td>{{ alumno.PORC_INASISTENCIA }}%</td>
+                        <td v-for="(parcial, index) in parciales">
+                            {{ alumno[`eval_${parcial}`] || '' }}
+                        </td>
+                        <td>{{ alumno.PROMEDIO || '' }}</td>
+                        <td>{{ alumno.OBSERVACIONES || '' }}</td>
+                    </tr>
+                </tbody>
             </table>
 
             <!-- Firmas -->
@@ -1031,95 +874,54 @@ export default {
 </script>
 
 <style>
-.pdf-container {
-  font-family: Arial, sans-serif;
-  font-size: 7px;
-  margin: 20px;
+.vs__selected {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* ESTILOS DE TABLA GENERAL */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
+.reporte-container {
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.2;
 }
 
-td,
-th {
-  border: 1px solid black;
-  padding: 3px 4px;
-  vertical-align: middle;
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
 }
 
-/* CLASES DE UTILIDAD */
+.table th,
+.table td {
+    border: 1px solid #000;
+    padding: 3px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
 .text-center {
-  text-align: center;
+    text-align: center;
 }
 
-.text-left {
-  text-align: left;
+.firmas-container {
+    margin-top: 30px;
 }
 
-.text-right {
-  text-align: right;
+.firmas-container p {
+    margin-bottom: 5px;
 }
 
-.bold {
-  font-weight: bold;
+.mt-0 {
+    margin-top: 0;
 }
 
-/* Configuración para tablas anidadas (Layout) */
-.nested-container {
-  padding: 0 !important;
-  border: none !important;
-  vertical-align: top;
-}
-
-.nested-table {
-  width: 100%;
-  border: none;
-}
-
-.nested-table td {
-  border: 1px solid black;
-  /* Quitamos bordes laterales externos */
-
-  border-right: none;
-}
-
-/* Eliminar bordes duplicados en la primera y última fila de las anidadas */
-.nested-table tr:first-child td {
-  border-top: none;
-}
-
-.nested-table tr:last-child td {
-  border-bottom: none;
-}
-
-/* ETIQUETAS PEQUEÑAS (Ej: "1/ DIRECCIÓN") */
-.label-tiny {
-  font-size: 6px;
-  color: #444;
-  display: block;
-  line-height: 1;
-  margin-bottom: 2px;
-  text-align: left;
-}
-
-/* Filas con altura mínima específica */
-.h-40 {
-  height: 40px;
-}
-
-.h-30 {
-  height: 30px;
-}
-
-/* Estilo específico para el horario */
-.schedule-cell {
-  font-size: 9px;
-  height: 20px;
-  /* Altura fija para filas de horario */
-  vertical-align: top;
+.mb-0 {
+    margin-bottom: 0;
 }
 </style>

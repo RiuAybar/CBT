@@ -149,7 +149,7 @@ class ListaController extends Controller
     {
         $Parcial = Parcial::first(['id as id', 'nombre as text']);
         $Seguimiento = Seguimiento::
-            // join('seguimientos', 'listas.seguimiento_id', '=', 'seguimientos.id')
+            // leftJoin('listas', 'listas.seguimiento_id', '=', 'seguimientos.id')
             join('materias', 'seguimientos.materia_id', '=', 'materias.id')
             ->join('semestres', 'seguimientos.semestre_id', '=', 'semestres.id')
             ->join('grupos', 'seguimientos.grupo_id', '=', 'grupos.id')
@@ -159,6 +159,7 @@ class ListaController extends Controller
             ->where('seguimientos.id', $seguimiento_id)
             ->select(
                 'seguimientos.id as seguimiento_id',
+                // 'listas.listaNumero',
                 // 'listas.alumno_id',
                 // 'listas.created_at as fecha_lista',
                 'materias.nombre as materia',
@@ -322,7 +323,8 @@ class ListaController extends Controller
         $listas = DB::table('listas as l')
             ->join('users as u', 'u.id', '=', 'l.alumno_id')
             ->where('l.seguimiento_id', $Seguimiento->id)
-            ->select('l.id as lista_id', 'u.name as alumno')
+            ->select('l.id as lista_id', 'u.name as alumno','l.listaNumero','l.porcentajeAsistencia')
+            ->orderBy('l.listaNumero', 'desc')
             ->get();
 
         // 3. Obtener todas las evaluaciones de este parcial
@@ -393,6 +395,8 @@ class ListaController extends Controller
             $alumnos[] = [
                 'lista_id' => $lista->lista_id,
                 'nombre' => $lista->alumno,
+                'listaNumero' => $lista->listaNumero,
+                'porcentajeAsistencia' => $lista->porcentajeAsistencia,
                 'faltas' => $evaluacion->faltas ?? null,
                 'suma' => $evaluacion->suma ?? null,
                 'calificacion' => $evaluacion->calificacion_parcial ?? null,
@@ -436,6 +440,7 @@ class ListaController extends Controller
             $name = $request->input('name');
             $value = $request->input('value');
             $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial']) ? $name : null;
+            $columnasDefLista = in_array($name, ['listaNumero','porcentajeAsistencia']) ? $name : null;
 
             $evaluacion = Evaluacion::firstOrCreate([
                 'lista_id' => $lista->id,
@@ -446,7 +451,11 @@ class ListaController extends Controller
                     $columnasDef => $value,
                 ]);
             }
-
+            if ($columnasDefLista) {
+                $lista->update([
+                    $columnasDefLista => $value,
+                ]);
+            }
             foreach ($items as $item) {
                 $escala = EscalaEvaluativa::where('abreviatura', $item['escala_abreviatura'])->first();
                 if ($escala) {
@@ -463,7 +472,7 @@ class ListaController extends Controller
                 }
             }
             DB::commit();
-            return response()->json('Exito', 204);
+            return response()->json('Exito', 201);
         } catch (\Exception $e) {
             //throw $th;
             DB::rollBack();
@@ -475,8 +484,8 @@ class ListaController extends Controller
     {
         $search = $request->query('search');
         $año = $request->query('ano');
-
-        $estudianteId = auth('api')->user()->estudiante->id;
+        // dd(auth('api')->user()->estudiante);
+        $estudianteId = auth('api')->user()->id;
         // 1. Obtener parciales dinámicamente
         $parciales = DB::table('parciales')
             ->orderBy('id')
@@ -484,11 +493,11 @@ class ListaController extends Controller
 
         // 2. Traer registros completos
         $registros = DB::table('evaluaciones')
-            ->join('listas', 'listas.id', '=', 'evaluaciones.lista_id')
+            ->leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
             ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
             ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
             ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
-            ->where('listas.alumno_id', $estudianteId)
+            // ->where('listas.alumno_id', $estudianteId)
 
             // Filtro opcional del año
             ->when($año, function ($q) use ($año) {

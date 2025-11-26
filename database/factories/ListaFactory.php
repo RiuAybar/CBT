@@ -21,6 +21,8 @@ class ListaFactory extends Factory
         return [
             'seguimiento_id' => Seguimiento::inRandomOrder()->first()?->id ?? Seguimiento::factory(),
             'alumno_id' => User::role('estudiante')->inRandomOrder()->first()?->id ?? User::factory(),
+            'listaNumero' => $this->faker->numberBetween(1, 50),
+            'porcentajeAsistencia' => $this->faker->randomFloat(2, 0, 100),
         ];
     }
 }

@@ -35,4 +35,9 @@ class Seguimiento extends Model
     {
         return $this->hasMany(Lista::class, 'seguimiento_id');
     }
+    public function RegistroHorasDocencia()
+    {
+        return $this->hasMany(RegistroHorasDocencia::class, 'carrera_id','carrera_id');
+        // ->latest()->limit(5);
+    }
 }
