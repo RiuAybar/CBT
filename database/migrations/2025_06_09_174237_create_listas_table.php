@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('seguimiento_id')->constrained();
             $table->foreignId('alumno_id')->constrained('users'); // también apunta a `users`
             $table->integer('listaNumero')->nullable();
-            $table->decimal('porcentajeAsistencia', 5, 2)->nullable();
             $table->timestamps();
         });
     }

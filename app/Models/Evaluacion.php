@@ -21,6 +21,7 @@ class Evaluacion extends Model
         'faltas',
         'suma',
         'calificacion_parcial',
+        'porcentajeAsistencia',
     ];
 
     public function notasPorAspectos()

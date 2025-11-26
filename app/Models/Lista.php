@@ -18,7 +18,6 @@ class Lista extends Model
         'seguimiento_id',
         'alumno_id',
         'listaNumero',
-        'porcentajeAsistencia',
     ];
 
     public function alumnos()

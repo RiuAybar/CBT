@@ -323,7 +323,8 @@ class ListaController extends Controller
         $listas = DB::table('listas as l')
             ->join('users as u', 'u.id', '=', 'l.alumno_id')
             ->where('l.seguimiento_id', $Seguimiento->id)
-            ->select('l.id as lista_id', 'u.name as alumno','l.listaNumero','l.porcentajeAsistencia')
+            // ,'l.porcentajeAsistencia'
+            ->select('l.id as lista_id', 'u.name as alumno','l.listaNumero')
             ->orderBy('l.listaNumero', 'desc')
             ->get();
 
@@ -391,12 +392,11 @@ class ListaController extends Controller
                 $cantidadesCompletas[$abrev] = $notasEval['cantidades'][$abrev] ?? null;
                 $puntajesCompletas[$abrev] = $notasEval['puntajes'][$abrev] ?? null;
             }
-
             $alumnos[] = [
                 'lista_id' => $lista->lista_id,
                 'nombre' => $lista->alumno,
                 'listaNumero' => $lista->listaNumero,
-                'porcentajeAsistencia' => $lista->porcentajeAsistencia,
+                'porcentajeAsistencia' => $evaluacion->porcentajeAsistencia ?? null,
                 'faltas' => $evaluacion->faltas ?? null,
                 'suma' => $evaluacion->suma ?? null,
                 'calificacion' => $evaluacion->calificacion_parcial ?? null,
@@ -439,8 +439,8 @@ class ListaController extends Controller
             $items = $request->input('items');
             $name = $request->input('name');
             $value = $request->input('value');
-            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial']) ? $name : null;
-            $columnasDefLista = in_array($name, ['listaNumero','porcentajeAsistencia']) ? $name : null;
+            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial','porcentajeAsistencia']) ? $name : null;
+            $columnasDefLista = in_array($name, ['listaNumero']) ? $name : null;
 
             $evaluacion = Evaluacion::firstOrCreate([
                 'lista_id' => $lista->id,
