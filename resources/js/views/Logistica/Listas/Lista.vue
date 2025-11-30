@@ -440,11 +440,11 @@ export default {
     async cargarDatos(busqueda = '') {
       try {
         const { data } = await api.get(`/Estudiuante/Lista/${this.$route.params.id}/evaluacion`, {
-          params: {
+         params: {
             parcial_id: this.selectSelected.Parcial?.id,
             busqueda: busqueda,
           },
-        });
+        }); 
         this.columnDefs = [
           { field: 'listaNumero', headerName: 'N.Lista', editable: true },
           { field: 'nombre', headerName: 'Alumno' },

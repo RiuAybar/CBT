@@ -82,6 +82,8 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::get('Seguimiento/Carrera',[SeguimientoController::class,'seguimientoCarrera']);
                 // formato1
         Route::get('/Seguimiento/{Seguimiento}/formato1', [SeguimientoController::class, 'formato1']);
+        Route::get('/Seguimiento/{Seguimiento}/reporte', [SeguimientoController::class, 'reporte']);
+
     });
 
     Route::prefix('/Actualizar')->group(function () {

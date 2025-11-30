@@ -43,14 +43,14 @@
                                         v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <router-link :to="`pdf/reportepdf/${id}`" class="btn btn-sm btn-outline-info me-1"
+                                    <!-- <router-link :to="`pdf/reportepdf/${id}`" class="btn btn-sm btn-outline-info me-1"
                                         v-if="hasPermission('ver f1')">
                                         F1
-                                    </router-link>
-                                    <!-- <button class="btn btn-sm btn-outline-info me-1" @click="formato1(id)"
+                                    </router-link> -->
+                                    <button class="btn btn-sm btn-outline-info me-1" @click="descargarPDF(id)"
                                         v-if="hasPermission('ver f1')">
                                         F1
-                                    </button> -->
+                                    </button>
                                 </div>
                             </template>
                         </EasyDataTable>
@@ -1021,7 +1021,54 @@ export default {
             } catch (error) {
                 console.error('Error al generar Formato 1:', error);
             }
+        },
+
+        async descargarPDF(id) {
+            this.loading = true; // Suponiendo que tienes una variable de estado
+
+            try {
+                // 2. Usamos 'api.get' para aprovechar tus interceptors (token y refresh)
+                const response = await api.get(`/Registro/Seguimiento/${id}/reporte`, {
+                    // AQUI ESTÁ LA CLAVE:
+                    responseType: 'blob',
+
+                    // Si necesitaras enviar parámetros extra como en tu ejemplo de lista:
+                    // params: { parcial_id: 1, ... } 
+                });
+
+                // 3. Crear la URL del objeto binario (Blob)
+                // response.data contiene el archivo PDF crudo gracias a responseType: 'blob'
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+
+                // 4. Crear enlace invisible y forzar descarga
+                const link = document.createElement('a');
+                link.href = url;
+
+                // Nombre del archivo (puedes hacerlo dinámico con el ID)
+                const nombreArchivo = `Reporte_Seguimiento_${this.$route.params.id}.pdf`;
+                link.setAttribute('download', nombreArchivo);
+
+                document.body.appendChild(link);
+                link.click();
+
+                // 5. Limpieza
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error("Error al descargar:", error);
+
+                // Nota: Tu interceptor en api.js ya maneja el error 401 (Unauthenticated)
+                // y redirige al login, así que aquí solo manejas errores genéricos (500, 404)
+                if (error.response?.status !== 401) {
+                    alert("Hubo un error al generar el documento.");
+                }
+            } finally {
+                this.loading = false;
+            }
         }
+
 
     },
     mounted() {
@@ -1032,94 +1079,94 @@ export default {
 
 <style>
 .pdf-container {
-  font-family: Arial, sans-serif;
-  font-size: 7px;
-  margin: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 7px;
+    margin: 20px;
 }
 
 /* ESTILOS DE TABLA GENERAL */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 td,
 th {
-  border: 1px solid black;
-  padding: 3px 4px;
-  vertical-align: middle;
+    border: 1px solid black;
+    padding: 3px 4px;
+    vertical-align: middle;
 }
 
 /* CLASES DE UTILIDAD */
 .text-center {
-  text-align: center;
+    text-align: center;
 }
 
 .text-left {
-  text-align: left;
+    text-align: left;
 }
 
 .text-right {
-  text-align: right;
+    text-align: right;
 }
 
 .bold {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 /* Configuración para tablas anidadas (Layout) */
 .nested-container {
-  padding: 0 !important;
-  border: none !important;
-  vertical-align: top;
+    padding: 0 !important;
+    border: none !important;
+    vertical-align: top;
 }
 
 .nested-table {
-  width: 100%;
-  border: none;
+    width: 100%;
+    border: none;
 }
 
 .nested-table td {
-  border: 1px solid black;
-  /* Quitamos bordes laterales externos */
+    border: 1px solid black;
+    /* Quitamos bordes laterales externos */
 
-  border-right: none;
+    border-right: none;
 }
 
 /* Eliminar bordes duplicados en la primera y última fila de las anidadas */
 .nested-table tr:first-child td {
-  border-top: none;
+    border-top: none;
 }
 
 .nested-table tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 /* ETIQUETAS PEQUEÑAS (Ej: "1/ DIRECCIÓN") */
 .label-tiny {
-  font-size: 6px;
-  color: #444;
-  display: block;
-  line-height: 1;
-  margin-bottom: 2px;
-  text-align: left;
+    font-size: 6px;
+    color: #444;
+    display: block;
+    line-height: 1;
+    margin-bottom: 2px;
+    text-align: left;
 }
 
 /* Filas con altura mínima específica */
 .h-40 {
-  height: 40px;
+    height: 40px;
 }
 
 .h-30 {
-  height: 30px;
+    height: 30px;
 }
 
 /* Estilo específico para el horario */
 .schedule-cell {
-  font-size: 9px;
-  height: 20px;
-  /* Altura fija para filas de horario */
-  vertical-align: top;
+    font-size: 9px;
+    height: 20px;
+    /* Altura fija para filas de horario */
+    vertical-align: top;
 }
 </style>

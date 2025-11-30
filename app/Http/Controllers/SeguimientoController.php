@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SeguimientoRequest;
 use App\Models\{Carrera, Grupo, Lista, Materia, User, Seguimiento, Semestre,};
@@ -271,7 +272,7 @@ class SeguimientoController extends Controller
             ->leftJoin('evaluaciones as ev', 'l.id', '=', 'ev.lista_id')
             ->leftJoin('asistencias as a', 'l.alumno_id', '=', 'a.estudiante_id')
             ->select($selects)
-            ->groupBy('l.id', 'l.listaNumero', 'u.name','u.sexo')
+            ->groupBy('l.id', 'l.listaNumero', 'u.name', 'u.sexo')
             ->orderBy('l.listaNumero')
             ->get();
 
@@ -298,6 +299,102 @@ class SeguimientoController extends Controller
             'parciales' => array_keys($parciales->toArray()),
             'RegistroHoras' => $RegistroHorasDocencia,
         ]);
+    }
+
+    public function reporte(Seguimiento $Seguimiento)
+    {
+        // dd($Seguimiento);
+        // Obtener parciales
+        $parciales = DB::table('parciales')->pluck('id', 'nombre');
+
+        $RegistroHorasDocencia = $Seguimiento?->RegistroHorasDocencia ?? [];
+
+        // SELECT base
+        $selects = [
+            'l.id',
+            'l.listaNumero as No_DE_LISTA',
+            // DB::raw("'M' as SEXO"), // Si quieres usar sexo real: u.sexo
+            'u.sexo',
+            'u.name as NOMBRE_DEL_ALUMNO',
+            DB::raw('COALESCE(SUM(CASE WHEN a.status = "ausente" THEN 1 ELSE 0 END), 0) as FALTAS_DE_ASISTENCIA'),
+            DB::raw('COALESCE(SUM(CASE WHEN a.status = "ausente" THEN 1 ELSE 0 END), 0) as TOT_DE_FALTAS'),
+            DB::raw('ROUND(COALESCE(SUM(CASE WHEN a.status = "ausente" THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(a.id), 0) * 100, 1) as PORC_INASISTENCIA'),
+        ];
+
+        // Agrega columnas dinámicas para cada parcial
+        foreach ($parciales as $nombre => $id) {
+            $alias = preg_replace('/[^A-Za-z0-9]/', '_', $nombre);
+
+            $selects[] = DB::raw("MAX(CASE WHEN ev.parcial_id = $id THEN ev.faltas END) as faltas_$alias");
+            $selects[] = DB::raw("MAX(CASE WHEN ev.parcial_id = $id THEN ev.calificacion_parcial END) as eval_$alias");
+            $selects[] = DB::raw("MAX(CASE WHEN ev.parcial_id = $id THEN ev.suma END) as suma_$alias");
+        }
+
+        // Promedios finales
+        // $selects[] = DB::raw('ROUND(AVG(ev.faltas), 1) as FALTAS');
+        // $selects[] = DB::raw('SUM(ev.faltas) as FALTAS');
+        $selects[] = DB::raw('(SELECT SUM(e2.faltas)
+                       FROM evaluaciones e2
+                       WHERE e2.lista_id = l.id) AS FALTAS');
+
+        $selects[] = DB::raw('ROUND(AVG(ev.calificacion_parcial), 1) as PROMEDIO');
+        // $selects[] = DB::raw('ev.porcentajeAsistencia');
+        $selects[] = DB::raw("CASE WHEN ROUND(AVG(ev.calificacion_parcial), 1) < 6 THEN 'E. EXTR.' ELSE '' END as OBSERVACIONES");
+
+        // === ALUMNOS (CORREGIDO) ===
+        $alumnos = DB::table('listas as l')
+            ->where('l.seguimiento_id', $Seguimiento->id)
+            ->join('users as u', 'l.alumno_id', '=', 'u.id')
+            ->leftJoin('evaluaciones as ev', 'l.id', '=', 'ev.lista_id')
+            ->leftJoin('asistencias as a', 'l.alumno_id', '=', 'a.estudiante_id')
+            ->select($selects)
+            ->groupBy('l.id', 'l.listaNumero', 'u.name', 'u.sexo')
+            ->orderBy('l.listaNumero')
+            ->get();
+
+        // === ESTADÍSTICAS (CORREGIDAS) ===
+        $estadisticas = DB::table('listas as l')
+            ->leftJoin('evaluaciones as ev', 'l.id', '=', 'ev.lista_id')
+            ->where('l.seguimiento_id', $Seguimiento->id)
+            ->select(
+                DB::raw('COUNT(DISTINCT l.alumno_id) as total_inscritos'),
+                DB::raw('0 as bajas'), // si luego quieres contar bajas, aquí va
+                DB::raw('COUNT(DISTINCT l.alumno_id) as existencia_final'),
+                DB::raw('SUM(CASE WHEN ev.calificacion_parcial >= 6 THEN 1 ELSE 0 END) as aprobados'),
+                DB::raw('SUM(CASE WHEN ev.calificacion_parcial < 6 THEN 1 ELSE 0 END) as reprobados'),
+                DB::raw('ROUND(100.0 * SUM(CASE WHEN ev.calificacion_parcial >= 6 THEN 1 ELSE 0 END) / NULLIF(COUNT(ev.id), 0), 2) as porcentaje_aprobados'),
+                DB::raw('ROUND(100.0 * SUM(CASE WHEN ev.calificacion_parcial < 6 THEN 1 ELSE 0 END) / NULLIF(COUNT(ev.id), 0), 2) as porcentaje_reprobados'),
+                DB::raw('SUM(ev.calificacion_parcial) as suma_calificaciones'),
+                DB::raw('ROUND(AVG(ev.calificacion_parcial), 2) as promedio_general')
+            )
+            ->first();
+
+        // return response()->json([
+        //     'alumnos' => $alumnos,
+        //     'estadisticas' => $estadisticas,
+        $parciales = array_keys($parciales->toArray());
+        $conteoSexo = $alumnos->countBy('sexo');
+        $Aprobados = collect($alumnos)
+            ->filter(function ($alumno) {
+                return floatval($alumno->PROMEDIO) >= 70;
+            })
+            ->countBy('sexo');
+        $Reprobados = collect($alumnos)
+            ->filter(function ($alumno) {
+                return floatval($alumno->PROMEDIO) < 70;
+            })
+            ->countBy('sexo');
+        //     'RegistroHoras' => $RegistroHorasDocencia,
+        // ]);
+        // dump(
+        //     // $Aprobados, 
+        //     $alumnos->toarray()
+        // );
+        // $data = ['titulo' => 'Hola Mundo desde Laravel DomPDF'];
+        $pdf = Pdf::loadView('pdf.FormatoF1', compact('alumnos', 'estadisticas', 'parciales', 'RegistroHorasDocencia', 'conteoSexo','Aprobados','Reprobados'));
+
+        // stream() lo muestra en el navegador, download() lo descarga
+        return $pdf->stream('archivo.pdf');
     }
 
     // public function formato1(Seguimiento $Seguimiento)
