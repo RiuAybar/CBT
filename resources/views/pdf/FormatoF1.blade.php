@@ -187,94 +187,115 @@
                     <tr>
                         <td colspan="4">
                             <span class="tiny-label">1/ DIRECCIÓN</span>
-                            <div class="text-center bold">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</div>
+                            <div class="text-center bold">{{ $Escuela?->direccion }}</div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
                             <span class="tiny-label">2/ DEPARTAMENTO</span>
-                            <div class="text-center">DE BACHILLERATO TECNOLÓGICO</div>
+                            <div class="text-center">{{ $Escuela?->departamento }}</div>
                         </td>
                     </tr>
                     <tr class="row-h-30">
                         <td colspan="4">
                             <span class="tiny-label">3/ NOMBRE DE LA ESCUELA</span>
-                            <div class="text-center bold" style="font-size: 11px;">CBT, AMANALCO DE BECERRA</div>
+                            <div class="text-center bold" style="font-size: 11px;">{{ $Escuela?->nombre_escuela }}</div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <span class="tiny-label">4/ TURNO</span>
-                            <div class="text-center bold">DISCONTINUO</div>
+                            <div class="text-center bold">{{ $Escuela?->turno }}</div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">5/ NIVEL</span>
-                            <div class="text-center bold">MEDIO SUPERIOR TÉCNICO</div>
+                            <div class="text-center bold">{{ $Escuela?->nivel }}</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span class="tiny-label">8/ CLAVE CENTRO DE TRABAJO</span>
-                            <div class="text-center bold">15ECT0112M</div>
+                            <div class="text-center bold">{{ $Escuela?->clave_trabajo }}</div>
                         </td>
                         <td>
                             <span class="tiny-label">9/ No. DE C.R.E.S.E.</span>
-                            <div class="text-center">NA</div>
+                            <div class="text-center">{{ $Escuela?->numero_cct }}</div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">10/ ZONA ESCOLAR</span>
-                            <div class="text-center bold text-right" style="padding-right: 10px;">BT009</div>
+                            <div class="text-center bold text-right" style="padding-right: 10px;">
+                                {{ $Escuela?->zona_escolar }}
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <span class="tiny-label">11/ DOMICILIO</span>
-                            <div class="bold text-center">DOMICILIO CONOCIDO S/N</div>
+                            <div class="bold text-center">
+                                {{ $Escuela?->domicilio }}
+                            </div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">12/ LOCALIDAD O COLONIA</span>
-                            <div class="bold text-center">EL POTRERO</div>
+                            <div class="bold text-center">
+                                {{ $Escuela?->localidad_colonia }}
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span class="tiny-label">13/ MUNICIPIO</span>
-                            <div class="bold text-center">AMANALCO</div>
+                            <div class="bold text-center">
+                                {{ $Escuela?->municipio }}
+                            </div>
                         </td>
                         <td>
                             <span class="tiny-label">14/ TELÉFONO</span>
-                            <div class="bold text-center">7228353322</div>
+                            <div class="bold text-center">
+                                {{ $Escuela?->telefono }}
+                            </div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">15/ CICLO ESCOLAR</span>
-                            <div class="bold text-center">2024-2025</div>
+                            <div class="bold text-center">
+                                {{ $Seguimiento?->ciclo }}
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <span class="tiny-label">16/ NOMBRE DEL PROFESOR</span>
-                            <div class="bold text-center">LÓPEZ SANTANA SEBASTIAN</div>
+                            <div class="bold text-center">
+                                {{ $Seguimiento?->Profesor?->name }}
+                            </div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">17/ TELÉFONO</span>
-                            <div class="bold text-center">7228353322</div>
+                            <div class="bold text-center">
+                                {{ $Seguimiento?->Profesor?->telefono }}
+                            </div>
                         </td>
                     </tr>
                     <tr class="row-h-30">
                         <td colspan="2">
                             <span class="tiny-label">18/ DOMICILIO</span>
-                            <div class="bold text-left">San Lucas, Amanalco;Méx</div>
+                            <div class="bold text-left">
+                                {{ $Seguimiento?->Profesor?->domicilio }}
+                            </div>
                         </td>
                         <td colspan="2">
                             <span class="tiny-label">19/ LOCALIDAD O COLONIA</span>
-                            <div class="bold text-center" style="margin-top: 5px;">San Lucas 2da secc.</div>
+                            <div class="bold text-center" style="margin-top: 5px;">
+                                {{ $Seguimiento?->Profesor?->localidadColonia }}
+                            </div>
                         </td>
                     </tr>
                     <tr class="row-h-30">
                         <td colspan="2">
                             <span class="tiny-label">20/ ASIGNATURA</span>
-                            <div class="bold" style="font-size: 8px;">SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE DATOS
-                                SIMPLES</div>
+                            <div class="bold" style="font-size: 8px;">
+                                {{ $Seguimiento?->materia?->nombre }}
+                            </div>
                         </td>
                         <td>
                             <span class="tiny-label">21/ CURSO</span>
@@ -282,17 +303,24 @@
                         </td>
                         <td>
                             <span class="tiny-label">22/ GRUPO</span>
-                            <div class="text-center bold" style="margin-top: 5px;">2 1</div>
+                            <div class="text-center bold" style="margin-top: 5px;">
+                                {{ $Seguimiento?->Grupos?->grado?->nombre }}
+                                {{ $Seguimiento?->Grupos?->nombre }}
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3" style="border: 1px solid black;">
                             <span class="tiny-label">23/ BACHILLERATO O CARRERA</span>
-                            <div class="text-center bold">TÉCNICO EN INFORMÁTICA</div>
+                            <div class="text-center bold">
+                                {{ $Seguimiento?->Carrera?->nombre }}
+                            </div>
                         </td>
                         <td style="border: 1px solid black;">
                             <span class="tiny-label">24/ SEMESTRE</span>
-                            <div class="text-center bold">2</div>
+                            <div class="text-center bold">
+                                {{ $Seguimiento?->Semestre?->nombre }}
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -305,7 +333,6 @@
                         <td style="width: 50%;" class="text-center"><span class="tiny-label">34/</span> No. DE HORAS
                             IMPARTIDAS</td>
                     </tr>
-                    {{-- @dump($RegistroHorasDocencia->toarray()) --}}
                     @foreach ($RegistroHorasDocencia as $registro)
                         <tr>
                             <td class="text-center">{{ $registro->mes }}</td>
@@ -329,27 +356,39 @@
                     </tr>
                     <tr>
                         <td>No. DE ALUMNOS INSCRITOS</td>
-                        <td class="text-center">{{ $conteoSexo['M'] }}</td>
-                        <td class="text-center">{{ $conteoSexo['F'] }}</td>
+                        <td class="text-center">{{ $conteoSexo['M'] ?? 0 }}</td>
+                        <td class="text-center">{{ $conteoSexo['F'] ?? 0 }}</td>
                         <td class="text-center">{{ $alumnos->count() }}</td>
                     </tr>
                     <tr>
                         <td>BAJAS DURANTE EL AÑO</td>
-                        <td class="text-center">0</td>
-                        <td class="text-center">0</td>
-                        <td class="text-center">0</td>
+                        <td class="text-center">
+                            {{ isset($BajasAltasXs['M']['Baja']) ? $BajasAltasXs['M']['Baja'] : 0 }}
+                        </td>
+                        <td class="text-center">
+                            {{ isset($BajasAltasXs['F']['Baja']) ? $BajasAltasXs['F']['Baja'] : 0 }}
+
+                        </td>
+                        <td class="text-center">
+                            {{ ($BajasAltasXs['M']['Baja'] ?? 0) + ($BajasAltasXs['F']['Baja'] ?? 0) }}
+                        </td>
                     </tr>
                     <tr>
                         <td>EXISTENCIA AL FINAL DEL AÑO</td>
-                        <td class="text-center">{{ $conteoSexo['M'] }}</td>
-                        <td class="text-center">{{ $conteoSexo['F'] }}</td>
-                        <td class="text-center">{{ $conteoSexo['F'] + $conteoSexo['M'] }}</td>
+                        <td class="text-center">{{ ($conteoSexo['M'] ?? 0) - ($BajasAltasXs['M']['Baja'] ?? 0) }}</td>
+                        <td class="text-center">{{ ($conteoSexo['F'] ?? 0) - ($BajasAltasXs['F']['Baja'] ?? 0) }}</td>
+                        <td class="text-center">
+                            {{ ($conteoSexo['M'] ?? 0) -
+                                ($BajasAltasXs['M']['Baja'] ?? 0) +
+                                ($conteoSexo['F'] ?? 0) -
+                                ($BajasAltasXs['F']['Baja'] ?? 0) }}
+                        </td>
                     </tr>
                     <tr>
                         <td>No. DE APROBADOS</td>
-                        <td class="text-center">{{ $Aprobados['M'] }}</td>
-                        <td class="text-center">{{ $Aprobados['F'] }}</td>
-                        <td class="text-center">{{ $Aprobados['F'] + $Aprobados['M'] }}</td>
+                        <td class="text-center">{{ $Aprobados['M'] ?? 0 }}</td>
+                        <td class="text-center">{{ $Aprobados['F'] ?? 0 }}</td>
+                        <td class="text-center">{{ ($Aprobados['F'] ?? 0) + ($Aprobados['M'] ?? 0) }}</td>
                     </tr>
                     <tr>
                         <td>No. REPROBADOS</td>
@@ -366,7 +405,7 @@
                             {{ ($conteoSexo['F'] ?? 0) > 0 ? number_format((($Aprobados['F'] ?? 0) / $conteoSexo['F']) * 100, 2) : 0 }}
                         </td>
                         <td class="text-center">
-                            {{ $alumnos->count() > 0 ? number_format((($Aprobados['M'] + $Aprobados['F']) / $alumnos->count()) * 100, 2) : 0 }}
+                            {{ $alumnos->count() > 0 ? number_format(((($Aprobados['M'] ?? 0) + ($Aprobados['F'] ?? 0)) / $alumnos->count()) * 100, 2) : 0 }}
                         </td>
                     </tr>
                     <tr>
@@ -378,24 +417,72 @@
                             {{ ($conteoSexo['F'] ?? 0) > 0 ? number_format(100 - (($Aprobados['F'] ?? 0) / $conteoSexo['F']) * 100, 2) : 0 }}
                         </td>
                         <td class="text-center">
-                            {{ $alumnos->count() > 0 ? number_format(((100 - (($Aprobados['M'] ?? 0) / $conteoSexo['M']) * 100 + (100 - (($Aprobados['F'] ?? 0) / $conteoSexo['F']) * 100)) / $alumnos->count()) * 100, 2) : 0 }}
+                            {{ $alumnos->count() > 0 && ($conteoSexo['F'] ?? 0) && ($conteoSexo['M'] ?? 0) ? number_format(((100 - (($Aprobados['M'] ?? 0) / $conteoSexo['M']) * 100 + (100 - (($Aprobados['F'] ?? 0) / $conteoSexo['F']) * 100)) / $alumnos->count()) * 100, 2) : 0 }}
                         </td>
                     </tr>
                     <tr>
                         <td>SUMA DE CALIFICACIONES</td>
-                        <td class="text-center">34</td>
-                        <td class="text-center">52</td>
-                        <td class="text-center">86</td>
+                        <td class="text-center">
+                            {{ $sumaPorSexo['M'] ?? 0 }}
+                        </td>
+                        <td class="text-center">
+                            {{ $sumaPorSexo['F'] ?? 0 }}
+                        </td>
+                        <td class="text-center">
+                            {{ ($sumaPorSexo['M'] ?? 0) + ($sumaPorSexo['F'] ?? 0) }}
+                        </td>
                     </tr>
                     <tr>
                         <td>PROMEDIO DE CALIFICACIONES</td>
-                        <td class="text-center">3.40</td>
-                        <td class="text-center">4.00</td>
-                        <td class="text-center">3.74</td>
+                        <td class="text-center">
+                            {{ ($conteoSexo['M'] ?? 0) > 0 ? number_format(($sumaPorSexo['M'] ?? 0) / $conteoSexo['M'], 2) : 0 }}
+                        </td>
+                        <td class="text-center">
+                            {{ ($conteoSexo['F'] ?? 0) && ($sumaPorSexo['F'] ?? 0) ? ($sumaPorSexo['F'] ?? 0) / ($conteoSexo['F'] ?? 0) : 0 }}
+                        </td>
+                        <td class="text-center">
+                            @php
+                                $sumaM = $sumaPorSexo['M'] ?? 0;
+                                $sumaF = $sumaPorSexo['F'] ?? 0;
+                                $conteoM = $conteoSexo['M'] ?? 0;
+                                $conteoF = $conteoSexo['F'] ?? 0;
+
+                                $division = $conteoF > 0 ? $sumaF / $conteoF : 0;
+
+                                $resultado = $sumaM + $division + $conteoM;
+                            @endphp
+                            {{ number_format($resultado, 2) }}
+                        </td>
                     </tr>
                     <tr>
                         <td>METAS INSTITUCIONALES LOGRADAS</td>
-                        <td colspan="3" class="text-center">NO</td>
+                        <td colspan="3" class="text-center">
+                            @php
+                                $aprobM = $Aprobados['M'] ?? 0;
+                                $aprobF = $Aprobados['F'] ?? 0;
+
+                                $totalAlumnos = $alumnos->count();
+
+                                // Evitar división entre 0 en ambos sexos
+                                $porcM = $conteoM > 0 ? ($aprobM / $conteoM) * 100 : 0;
+                                $porcF = $conteoF > 0 ? ($aprobF / $conteoF) * 100 : 0;
+
+                                // Fórmula original pero segura
+                                $resultadoPorc =
+                                    $totalAlumnos > 0 ? ((100 - $porcM + (100 - $porcF)) / $totalAlumnos) * 100 : 0;
+
+                                // Suma segura
+                                $sumaGeneral = $sumaM + $sumaF / ($conteoF > 0 ? $conteoF : 1) + $conteoM;
+
+                                // Regla final
+                                if ($resultadoPorc == 0) {
+                                    $resultadoFinal = $sumaGeneral >= 8.7 && $resultadoPorc == 0 ? 'Si' : 'No';
+                                } else {
+                                    $resultadoFinal = $sumaGeneral >= 8.7 && $resultadoPorc >= 90 ? 'Si' : 'No';
+                                }
+                            @endphp
+                            {{ $resultadoFinal }}
+                        </td>
                     </tr>
                 </table>
 
@@ -405,22 +492,36 @@
                             <span class="tiny-label">38/ HORARIO</span>
                         </td>
                     </tr>
-                    <tr>
-                        <td style="width: 50%; vertical-align: top; border-right: none;">LUNES</td>
-                        <td style="width: 50%; vertical-align: top; border-left: none;">JUEVES</td>
+                    @foreach ($SeguimientoHorario->chunk(2) as $fila)
+                        <tr>
+                            @foreach ($fila as $Seg)
+                                <td>
+                                    {{ $Seg->dia }}
+                                    <span style="margin-left: 5px;">
+                                        {{ $Seg->hora_inicio }} - {{ $Seg->hora_fin }}
+                                    </span>
+                                </td>
+                            @endforeach
+
+                            {{-- Si solo viene 1 registro, agregamos un <td> vacío para completar los 2 --}}
+                            @if ($fila->count() == 1)
+                                <td style="border-bottom: none;"></td>
+                            @endif
+                        </tr>
+                    @endforeach
+
+                    @if (!$SeguimientoHorario->count())
+                        <tr>
+                        <td style="width: 50%; vertical-align: top; border-right: none;">ㅤㅤ</td>
+                        <td style="width: 50%; vertical-align: top; border-left: none;">ㅤㅤ</td>
                     </tr>
                     <tr class="row-h-30">
-                        <td style="vertical-align: top; border-right: none;">
-                            MARTES <span style="margin-left: 5px;">7:30-9:10, 12:00-12:50</span>
+                        <td style="vertical-align: top; border-right: none;">ㅤㅤ
+                            <span style="margin-left: 5px;">ㅤㅤ</span>
                         </td>
-                        <td style="vertical-align: top; border-left: none;"></td>
+                        <td style="vertical-align: top; border-left: none;">ㅤㅤ</td>
                     </tr>
-                    <tr>
-                        <td style="border-bottom: none; border-right: none;">MIERCOLES</td>
-                        <td style="border-bottom: none; border-left: none;">
-                            VIERNES <span style="margin-left: 5px;">12:00-14:30</span>
-                        </td>
-                    </tr>
+                    @endif
                 </table>
             </td>
         </tr>
@@ -523,7 +624,10 @@
                         {{ $al->FALTAS }}
                     </td>
                     <td class="text-center">
-                        {{ number_format((100 / $RegistroHorasDocencia->pluck('horasImpartidas')->sum()) * $al->FALTAS, 2) }}
+                        @php
+                            $totalHoras = $RegistroHorasDocencia->pluck('horasImpartidas')->sum();
+                        @endphp
+                        {{ $totalHoras > 0 ? number_format((100 / $totalHoras) * ($al->FALTAS ?? 0), 2) : 0 }}
                     </td>
                     <td class="text-center">
                         {{ $al->eval_Parcial_1 }}
@@ -555,23 +659,25 @@
                     </td>
 
                     @php
-                    // 2. Contar cuántos valores iguales a 5 hay entre N36, O36, P36
-                    $contar5 = 0;
+                        // 2. Contar cuántos valores iguales a 5 hay entre N36, O36, P36
+                        $contar5 = 0;
 
-                    foreach ($vals as $v) {
-                        if ($v == 5) {
-                            $contar5++;
+                        foreach ($vals as $v) {
+                            if ($v == 5) {
+                                $contar5++;
+                            }
                         }
-                    }
                     @endphp
                     <td class="text-center">
-                        {{ $promedio === '' || $promedio ===null ? '' : (
-                            $contar5 >= 2 ? 'E. EXTR.' : (
-                                $promedio < 6 ? 'E. EXTR.' : (
-                                    number_format((100 / $RegistroHorasDocencia->pluck('horasImpartidas')->sum()) * $al->FALTAS, 2) >= 20 ? 'E. EXTR.' : ''
-                                )
-                            )
-                        ) }}
+                        {{ $promedio === '' || $promedio === null
+                            ? ''
+                            : ($contar5 >= 2
+                                ? 'E. EXTR.'
+                                : ($promedio < 6
+                                    ? 'E. EXTR.'
+                                    : ($totalHoras > 0 && number_format((100 / $totalHoras) * ($al->FALTAS ?? 0), 2) >= 20
+                                        ? 'E. EXTR.'
+                                        : ''))) }}
                     </td>
                 </tr>
             @endforeach
@@ -581,7 +687,24 @@
     <div style="margin-top: 30px; width: 100%; page-break-inside: avoid;">
 
         <div style="text-align: right; font-size: 8px; margin-bottom: 15px;">
-            El Potrero, Amanalco, México viernes, 28 de noviembre de 2025
+            @php
+                date_default_timezone_set('America/Mexico_City');
+
+                $fecha = new DateTime(); // ← fecha actual (puedes poner otra)
+
+                // Formateador en español (México)
+                $fmt = new IntlDateFormatter(
+                    'es_MX',
+                    IntlDateFormatter::NONE,
+                    IntlDateFormatter::NONE,
+                    'America/Mexico_City',
+                    IntlDateFormatter::GREGORIAN,
+                    "EEEE, d 'de' MMMM 'de' y",
+                );
+
+                $fechaFormateada = mb_strtolower($fmt->format($fecha), 'UTF-8');
+            @endphp
+            El Potrero, Amanalco, México {{ $fechaFormateada }}
         </div>
 
         <div style="text-align: center; font-weight: bold; font-size: 9px; margin-bottom: 10px;">
@@ -594,13 +717,17 @@
                 <td
                     style="width: 50%; border: none; text-align: center; vertical-align: bottom; height: 50px; padding: 0 10px;">
                     <div style="border-bottom: 1px solid black; width: 80%; margin: 0 auto 2px auto;"></div>
-                    <div class="bold">LÓPEZ SANTANA SEBASTIAN</div>
+                    <div class="bold">
+                        {{ $Escuela?->docente }}
+                    </div>
                     <div style="font-size: 7px;">DOCENTE</div>
                 </td>
                 <td
                     style="width: 50%; border: none; text-align: center; vertical-align: bottom; height: 50px; padding: 0 10px;">
                     <div style="border-bottom: 1px solid black; width: 80%; margin: 0 auto 2px auto;"></div>
-                    <div class="bold">ANDREA GUADALUPE HERNÁNDEZ HERNÁNDEZ</div>
+                    <div class="bold">
+                        {{ $Seguimiento?->Orientador?->name }}
+                    </div>
                     <div style="font-size: 7px;">ORIENTADOR</div>
                 </td>
             </tr>
@@ -618,13 +745,17 @@
                 <td
                     style="width: 50%; border: none; text-align: center; vertical-align: bottom; height: 50px; padding: 0 10px;">
                     <div style="border-bottom: 1px solid black; width: 80%; margin: 0 auto 2px auto;"></div>
-                    <div class="bold">ARÍA DEL CARMEN ASSENETH VELÁZQUEZ LÓP</div>
+                    <div class="bold">
+                        {{ $Escuela?->subdirector_escolar }}
+                    </div>
                     <div class="bold" style="font-size: 7px;">SUBDIRECTORA ESCOLAR</div>
                 </td>
                 <td
                     style="width: 50%; border: none; text-align: center; vertical-align: bottom; height: 50px; padding: 0 10px;">
                     <div style="border-bottom: 1px solid black; width: 80%; margin: 0 auto 2px auto;"></div>
-                    <div class="bold">GADIEL RECILLAS MIRANDA</div>
+                    <div class="bold">
+                        {{ $Escuela?->director_escolar }}
+                    </div>
                     <div class="bold" style="font-size: 7px;">DIRECTOR ESCOLAR</div>
                 </td>
             </tr>
@@ -639,7 +770,9 @@
             <tr>
                 <td colspan="2" style="border: none; text-align: center; vertical-align: bottom; height: 50px;">
                     <div style="border-bottom: 1px solid black; width: 40%; margin: 0 auto 2px auto;"></div>
-                    <div class="bold">LUIS GONZÁLEZ CALIXTO</div>
+                    <div class="bold">
+                        {{ $Escuela?->secretario_escolar }}
+                    </div>
                     <div class="bold" style="font-size: 7px;">SECRETARIO ESCOLAR</div>
                 </td>
             </tr>

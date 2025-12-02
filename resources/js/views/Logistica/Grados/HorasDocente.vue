@@ -49,7 +49,7 @@
             <!-- Contenido dinámico: slot principal -->
             <template #default>
                     <div class="row">
-                        <div class="mb-3 col-sm-4">
+                        <div class="mb-3 col-sm-6">
                             <label for="mes" class="form-label">Mes</label>
 
                             <v-select :options="meses" v-model="mesSeleccionado" label="nombre"
@@ -58,7 +58,7 @@
                                 {{ errores.mes[0] }}
                             </div>
                         </div>
-                        <div class="mb-3 col-sm-4">
+                        <div class="mb-3 col-sm-6">
                             <label for="horasImpartidas" class="form-label">Horas Impartidas</label>
                             <input v-model="MesHora.horasImpartidas" type="text" class="form-control"
                                 id="horasImpartidas" aria-describedby="Horas Impartidas">
@@ -66,15 +66,26 @@
                                 {{ errores.horasImpartidas[0] }}
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label for="carrera_id" class="form-label">Carrera</label>
                             <v-select v-model="selectSelected" :options="selectOptions" label="text" :filterable="false"
-                                :loading="selectLoading" placeholder="Seleccione una materia"
+                                :loading="selectLoading" placeholder="Seleccione una carrera"
                                 @search="selectFetchOptions" :reduce="option => option"
                                 no-options="Seleccione una opción" no-results="No se encontraron resultados"
                                 :selectable="option => !option.disabled" />
                             <div v-if="errores.carrera_id" class="form-text text-danger">
                                 {{ errores.carrera_id[0] }}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="materia_id" class="form-label">Materia</label>
+                            <v-select v-model="selectSelectedMateria" :options="selectOptionsMateria" label="text" :filterable="false"
+                                :loading="selectLoadingMateria" placeholder="Seleccione una materia"
+                                @search="selectFetchOptionsMateria" :reduce="option => option"
+                                no-options="Seleccione una opción" no-results="No se encontraron resultados"
+                                :selectable="option => !option.disabled" />
+                            <div v-if="errores.materia_id" class="form-text text-danger">
+                                {{ errores.materia_id[0] }}
                             </div>
                         </div>
                     </div>
@@ -133,6 +144,7 @@ export default {
             meses: this.generarMeses(),
 
             selectSelected: null,
+            selectSelectedMateria: null,
             selectOptions: [
                 {
                     id: null,
@@ -140,7 +152,15 @@ export default {
                     disabled: true
                 }
             ],
+            selectOptionsMateria: [
+                {
+                    id: null,
+                    text: 'Seleccione una opción',
+                    disabled: true
+                }
+            ],
             selectLoading: false,
+            selectLoadingMateria: false,
 
         }
     },
@@ -152,6 +172,7 @@ export default {
                 { text: 'Mes', value: 'mes' },
                 { text: 'Horas Impartidas', value: 'horasImpartidas' },
                 { text: 'Carrera', value: 'carrera.text' },
+                { text: 'Materia', value: 'materia.text' },
             ];
             if (this.hasPermission('puede editar horas docente')) {
                 base.push({ text: 'Acciones', value: 'action' });
@@ -194,6 +215,11 @@ export default {
                 id: null,
                 text: null,
             };
+            this.selectSelectedMateria = {
+                id: null,
+                text: null,
+            };
+            
             this.$refs.modalHorasMeses.abrir();
         },
 
@@ -203,6 +229,7 @@ export default {
                 // Asigna los valores seleccionados antes de enviar
                 this.MesHora.mes = this.mesSeleccionado?.valor || '';
                 this.MesHora.carrera_id = this.selectSelected?.id || null;
+                this.MesHora.materia_id = this.selectSelectedMateria?.id || null;
                 
                 await api.post('/Logistica/RegistroHorasDocencia', this.MesHora);
                 this.consultar();
@@ -237,7 +264,10 @@ export default {
                     nombre: this.MesHora.mes,
                     valor: this.MesHora.mes,
                 };
+                console.log(this.MesHora);
                 this.selectSelected = { ...this.MesHora.carrera };
+                this.selectSelectedMateria = { ...this.MesHora.materia };
+                
                 this.$refs.modalHorasMeses.abrir();
             }
         },
@@ -248,6 +278,7 @@ export default {
                 // Asigna los valores seleccionados antes de enviar
                 this.MesHora.mes = this.mesSeleccionado?.valor || '';
                 this.MesHora.carrera_id = this.selectSelected?.id || null;
+                this.MesHora.materia_id = this.selectSelectedMateria?.id || null;
 
                 await api.put(`/Logistica/RegistroHorasDocencia/${id}`, this.MesHora);
                 this.consultar();
@@ -311,7 +342,34 @@ export default {
                 }
             }, 300)
         },
-
+        selectFetchOptionsMateria(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingMateria = true;
+                try {
+                    const response = await api.get(`/Logistica/Materia/searchMateria`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsMateria = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.nombre
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsMateria = []
+                } finally {
+                    this.selectLoadingMateria = false
+                }
+            }, 300)
+        },
     },
     mounted() {
         this.consultar();

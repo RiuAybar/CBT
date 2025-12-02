@@ -14,9 +14,10 @@ use App\Models\Asistencia;
 use App\Models\Estudiante;
 use App\Models\Evaluacion;
 use App\Models\Seguimiento;
-use App\Models\NotasPorAspecto;
 use Illuminate\Database\Seeder;
 use App\Models\EscalaEvaluativa;
+use App\Models\Escuela;
+use App\Models\SeguimientoHorario;
 use Spatie\Permission\Models\Role;
 use App\Models\RegistroHorasDocencia;
 use Spatie\Permission\Models\Permission;
@@ -158,6 +159,8 @@ class DatabaseSeeder extends Seeder
         //Crear 10 evaluaciones
         Evaluacion::factory()->count(10)->create();
 
+        SeguimientoHorario::factory()->count(5)->create();
+
         $materias = Materia::all();
         $parciales = Parcial::all();
         $escalas = EscalaEvaluativa::all();
@@ -172,6 +175,25 @@ class DatabaseSeeder extends Seeder
             }
         }
         // NotasPorAspecto::factory()->count(20)->create();
+
+        Escuela::create([
+            'nombre_escuela' => 'CBT, AMANALCO DE BECERRA',
+            'direccion' => 'GENERAL DE EDUCACIÓN MEDIA SUPERIOR',
+            'departamento' => 'DE BACHILLERATO TECNOLÓGICO',
+            'turno' => 'DISCONTINUO',
+            'nivel' => 'MEDIO SUPERIOR TÉCNICO',
+            'clave_trabajo' => '15ECT0112M',
+            'numero_cct' => 'NA',
+            'zona_escolar' => 'BT009',
+            'domicilio' => 'DOMICILIO CONOCIDO S/N',
+            'localidad_colonia' => 'EL POTRERO',
+            'municipio' => 'AMANALCO',
+            'telefono' => '7228353322',
+            'docente' => 'LÓPEZ SANTANA SEBASTIAN',
+            'subdirector_escolar' => 'MARÍA DEL CARMEN ASSENETH VELÁZQUEZ LÓPEZ',
+            'director_escolar' => 'GADIEL RECILLAS MIRANDA',
+            'secretario_escolar' => 'LUIS GONZÁLEZ CALIXTO',
+        ]);
     }
 
     public function Roles()

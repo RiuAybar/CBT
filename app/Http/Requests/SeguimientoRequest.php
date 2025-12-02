@@ -41,6 +41,19 @@ class SeguimientoRequest extends FormRequest
                     }
                 },
             ],
+            'orientador_id' => [
+                'required',
+                'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    $user = User::find($value);
+                    if (!$user || !$user->hasRole('orientador')) {
+                        $fail('El usuario seleccionado no tiene el rol de orientador.');
+                    }
+                },
+            ],
+            'ciclo' =>[
+                'required',
+            ],
             'ano' => [
                 'required',
                 'digits:4',
@@ -50,6 +63,8 @@ class SeguimientoRequest extends FormRequest
                             ->where('semestre_id', $this->semestre_id)
                             ->where('grupo_id', $this->grupo_id)
                             ->where('carrera_id', $this->carrera_id)
+                            ->where('orientador_id', $this->orientador_id)
+                            ->where('ciclo', $this->ciclo)
                             ->where('profesor_id', $this->profesor_id);
                     })
                     ->ignore($Id),
@@ -64,6 +79,10 @@ class SeguimientoRequest extends FormRequest
             'grupo_id.required' => 'El grupo es obligatorio.',
             'carrera_id.required' => 'La carrera es obligatoria.',
             'profesor_id.required' => 'El profesor es obligatorio.',
+            'orientador_id.required' => 'El orientador es obligatorio.',
+            
+            'ciclo.required' => 'El ciclo es obligatorio.',
+
             'ano.required' => 'El año es obligatorio.',
             'ano.digits' => 'El año debe tener 4 dígitos.',
             'ano.unique' => 'Ya existe un seguimiento con los mismos datos.',

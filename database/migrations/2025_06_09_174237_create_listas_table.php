@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('seguimiento_id')->constrained();
             $table->foreignId('alumno_id')->constrained('users'); // también apunta a `users`
             $table->integer('listaNumero')->nullable();
+            $table->string('estatus',14)->default('Alta');
             $table->timestamps();
         });
     }

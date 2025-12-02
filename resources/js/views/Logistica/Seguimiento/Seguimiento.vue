@@ -43,10 +43,9 @@
                                         v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <!-- <router-link :to="`pdf/reportepdf/${id}`" class="btn btn-sm btn-outline-info me-1"
-                                        v-if="hasPermission('ver f1')">
-                                        F1
-                                    </router-link> -->
+                                    <router-link :to="`horasseguimiento/${id}/agregar`" class="btn btn-sm btn-outline-success me-1" >
+                                        Hoarios
+                                    </router-link>
                                     <button class="btn btn-sm btn-outline-info me-1" @click="descargarPDF(id)"
                                         v-if="hasPermission('ver f1')">
                                         F1
@@ -127,6 +126,28 @@
                             {{ errores.ano[0] }}
                         </div>
                     </div>
+
+                    <div class="mb-3 col-sm-4">
+                        <label for="orientador_id" class="form-label">Orientador</label>
+                        <v-select input-id="orientador_id" v-model="selectOrientador" :options="selectOptionsOrientador"
+                            label="text" :filterable="false" :loading="selectLoadingOrientador"
+                            placeholder="Seleccione un orientador" @search="selectOrientadorOptions"
+                            :reduce="option => option" no-options="Seleccione una opción"
+                            no-results="No se encontraron resultados" :selectable="option => !option.disabled" />
+                        <div v-if="errores.orientador_id" class="form-text text-danger">
+                            {{ errores.orientador_id[0] }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col-sm-4">
+                        <label for="ciclo" class="form-label">Ciclo Escolar</label>
+                        <input v-model="Seguimiento.ciclo" type="text" class="form-control" id="ciclo"
+                            aria-describedby="Ciclo Escolar">
+                        <div v-if="errores.ciclo" class="form-text text-danger">
+                            {{ errores.ciclo[0] }}
+                        </div>
+                    </div>
+
                 </div>
             </template>
 
@@ -142,475 +163,13 @@
                 </button>
             </template>
         </Modal>
-
-        <div class="container" ref="pdfContent"
-            style="visibility: hidden; position: absolute; left: -999px; width: 210mm;">
-            <!-- <div class="m-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <img :src="logo" width="120" height="30">
-                            </th>
-                            <th class="px-2">
-                                <h4 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h4>
-                                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
-                                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div> -->
-
-            <div class="m-3">
-                <table style="border: 2px solid #FFFFFF;">
-                    <thead>
-                        <tr>
-                            <th style="border: 2px solid #FFFFFF;">
-                                <img :src="logo" width="120" height="30">
-                            </th>
-                            <th class="px-2" style="border: 2px solid #FFFFFF;">
-                                <h4 class="mb-0">GOBIERNO DEL ESTADO DE MÉXICO</h4>
-                                <h5 class="mb-0">SECRETARÍA DE EDUCACIÓN</h5>
-                                <h5 class="mb-0">SUBSECRETARÍA DE EDUCACIÓN MEDIA SUPERIOR Y SUPERIOR</h5>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-
-
-            <table style="border: 2px solid black;">
-
-                <tr>
-                    <td colspan="2" class="text-center bold"
-                        style="font-size: 12px; border-bottom: 2px solid black; padding: 5px;">
-                        REGISTRO DE FALTAS DE ASISTENCIA , CALIFICACIONES Y PROMEDIO POR ASIGNATURA
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="nested-container" style="width: 60%; border-right: 2px solid black;">
-                        <table class="nested-table">
-                            <tr>
-                                <td colspan="4"><span class="label-tiny">1/ DIRECCIÓN</span>
-                                    <div class="text-center bold">GENERAL DE EDUCACIÓN MEDIA SUPERIOR</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4"><span class="label-tiny">2/ DEPARTAMENTO</span>
-                                    <div class="text-center">DE BACHILLERATO TECNOLÓGICO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" style="height: 35px;"><span class="label-tiny">3/ NOMBRE DE LA
-                                        ESCUELA</span>
-                                    <div class="text-center bold" style="font-size: 11px;">CBT, AMANALCO DE BECERRA
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="width: 40%;"><span class="label-tiny">4/ TURNO</span>
-                                    <div class="text-center bold">DISCONTINUO</div>
-                                </td>
-                                <td colspan="2" style="width: 60%;"><span class="label-tiny">5/ NIVEL</span>
-                                    <div class="text-center bold">MEDIO SUPERIOR TÉCNICO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="label-tiny">8/ CLAVE CENTRO DE TRABAJO</span>
-                                    <div class="text-center bold">15ECT0112M</div>
-                                </td>
-                                <td><span class="label-tiny">9/ No. DE C.R.E.S.E.</span>
-                                    <div class="text-center">NA</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">10/ ZONA ESCOLAR</span>
-                                    <div class="text-center bold text-right">BT009</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><span class="label-tiny">11/ DOMICILIO</span>
-                                    <div class="bold text-center">DOMICILIO CONOCIDO S/N</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">12/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">EL POTRERO</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="label-tiny">13/ MUNICIPIO</span>
-                                    <div class="bold text-center">AMANALCO</div>
-                                </td>
-                                <td><span class="label-tiny">14/ TELÉFONO</span>
-                                    <div class="bold text-center">7228353322</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">15/ CICLO ESCOLAR</span>
-                                    <div class="bold text-center">2024-2025</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"><span class="label-tiny">16/ NOMBRE DEL PROFESOR</span>
-                                    <div class="bold text-center">LÓPEZ SANTANA SEBASTIAN</div>
-                                </td>
-                                <td colspan="2"><span class="label-tiny">17/ TELÉFONO</span>
-                                    <div class="bold text-center">7228353322</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="h-30"><span class="label-tiny">18/ DOMICILIO</span>
-                                    <div class="bold text-left">San Lucas, Amanalco; Méx</div>
-                                </td>
-                                <td colspan="2" class="h-30"><span class="label-tiny">19/ LOCALIDAD O COLONIA</span>
-                                    <div class="bold text-center">San Lucas 2da secc.</div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="2" style="width: 50%; vertical-align: top;">
-                                    <span class="label-tiny">20/ ASIGNATURA</span>
-                                    <div class="bold" style="font-size: 9px; padding-top: 5px;">
-                                        SUBMÓDULO II. DISEÑA Y ADMINISTRA BASES DE DATOS SIMPLES
-                                    </div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">21/ CURSO</span>
-                                    <div class="text-center" style="margin-top: 10px;">ORDINARIO</div>
-                                </td>
-                                <td style="width: 25%;">
-                                    <span class="label-tiny">22/ GRUPO</span>
-                                    <div class="text-center bold" style="margin-top: 10px;">2 1</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <span class="label-tiny">23/ BACHILLERATO O CARRERA</span>
-                                    <div class="text-center bold">TÉCNICO EN INFORMÁTICA</div>
-                                </td>
-                                <td>
-                                    <span class="label-tiny">24/ SEMESTRE</span>
-                                    <div class="text-center bold">2</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-
-                    <td class="nested-container" style="width: 40%;">
-                        <table class="nested-table">
-                            <tr>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">33/</span> MESES
-                                </td>
-                                <td style="width: 50%;" class="text-center"><span class="label-tiny">34/</span> No. DE
-                                    HORAS
-                                    IMPARTIDAS
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>FEBRERO</td>
-                                <td class="text-center">20</td>
-                            </tr>
-                            <tr>
-                                <td>MARZO</td>
-                                <td class="text-center">24</td>
-                            </tr>
-                            <tr>
-                                <td>ABRIL</td>
-                                <td class="text-center">15</td>
-                            </tr>
-                            <tr>
-                                <td>MAYO</td>
-                                <td class="text-center">24</td>
-                            </tr>
-                            <tr>
-                                <td>JUNIO</td>
-                                <td class="text-center">21</td>
-                            </tr>
-                            <tr>
-                                <td>JULIO</td>
-                                <td class="text-center">12</td>
-                            </tr>
-                            <tr>
-                                <td class="bold text-center">TOTAL DE HORAS SEMESTRALES</td>
-                                <td class="text-center bold">116</td>
-                            </tr>
-                        </table>
-
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="width: 55%;  border-right: 1px solid black;" class="bold text-center">
-                                    <span class="label-tiny text-left">35/</span> DATOS ESTADÍSTICOS
-                                </td>
-                                <td style="width: 15%;" class="bold text-center">HOMBRES</td>
-                                <td style="width: 15%;" class="bold text-center">MUJERES</td>
-                                <td style="width: 15%; border-right: none;" class="bold text-center">TOTAL</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. DE ALUMNOS INSCRITOS</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
-                            </tr>
-                            <tr>
-                                <td style="">BAJAS DURANTE EL AÑO</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">0</td>
-                            </tr>
-                            <tr>
-                                <td style="">EXISTENCIA AL FINAL DEL AÑO</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">13</td>
-                                <td class="text-center" style="border-right: none;">23</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. DE APROBADOS</td>
-                                <td class="text-center">4</td>
-                                <td class="text-center">6</td>
-                                <td class="text-center" style="border-right: none;">10</td>
-                            </tr>
-                            <tr>
-                                <td style="">No. REPROBADOS</td>
-                                <td class="text-center">1</td>
-                                <td class="text-center">0</td>
-                                <td class="text-center" style="border-right: none;">1</td>
-                            </tr>
-                            <tr>
-                                <td style="">% DE ALUMNOS APROBADOS</td>
-                                <td class="text-center">40.00</td>
-                                <td class="text-center">46.15</td>
-                                <td class="text-center" style="border-right: none;">43.08</td>
-                            </tr>
-                            <tr>
-                                <td style="">% DE ALUMNOS REPROBADOS</td>
-                                <td class="text-center">60.00</td>
-                                <td class="text-center">53.85</td>
-                                <td class="text-center" style="border-right: none;">56.92</td>
-                            </tr>
-                            <tr>
-                                <td style="">SUMA DE CALIFICACIONES</td>
-                                <td class="text-center">35</td>
-                                <td class="text-center">52</td>
-                                <td class="text-center" style="border-right: none;">87</td>
-                            </tr>
-                            <tr>
-                                <td style="">PROMEDIO DE CALIFICACIONES</td>
-                                <td class="text-center">3.50</td>
-                                <td class="text-center">4.00</td>
-                                <td class="text-center" style="border-right: none;">3.78</td>
-                            </tr>
-                            <tr>
-                                <td style="">METAS INSTITUCIONALES LOGRADAS</td>
-                                <td colspan="3" class="text-center" style="border-right: none;">NO</td>
-                            </tr>
-                        </table>
-
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td colspan="2" style=" border-right: none; border-top: 1px solid black;">
-                                    <span class="label-tiny">38/ HORARIO</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="width: 50%; ">LUNES</td>
-                                <td class="schedule-cell" style="width: 50%; border-right: none;">JUEVES</td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style="">
-                                    MARTES <span style="margin-left: 5px;">7:30-9:10, 12:00-12:50</span>
-                                </td>
-                                <td class="schedule-cell" style="border-right: none;"></td>
-                            </tr>
-                            <tr>
-                                <td class="schedule-cell" style=" border-bottom: none;">MIERCOLES</td>
-                                <td class="schedule-cell" style="border-right: none; border-bottom: none;">
-                                    VIERNES <span style="margin-left: 5px;">12:00-14:30</span>
-                                </td>
-                            </tr>
-                        </table>
-
-                    </td>
-                </tr>
-            </table>
-
-            <table style="border: 1px solid black">
-                <tr>
-                    <td colspan="2" class="nested-container">
-                        <table class="nested-table">
-                            <thead>
-                                <tr style="height: 140px">
-                                    <th class="col-list">
-                                        <div class="vertical-wrapper">
-                                            <div class="">No. DE LISTA</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="col-sex">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SEXO</div>
-                                        </div>
-                                    </th>
-
-                                    <th style="width: 250px" class="text-center">
-                                        NOMBRE DEL ALUMNO (A)
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
-                                            <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="" style="width: 120px">
-                                                            FALTAS DE ASISTENCIA
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
-                                                </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
-                                            </tr>
-                                        </table>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">TOT. DE FALTAS</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="" style="width: 120px">
-                                                % DE INASISTENCIA
-                                            </div>
-                                        </div>
-                                    </th>
-
-                                    <th style="padding: 0; width: 90px">
-                                        <table style="width: 100%; height: 100%; border: none">
-                                            <tr>
-                                                <td colspan="3" style="
-                          border: none;
-                          border-bottom: 1px solid black;
-                          height: 100px;
-                        ">
-                                                    <div class="vertical-wrapper">
-                                                        <div class="">EVALUACIONES</div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="
-                          border: none;
-                          border-right: 1px solid black;
-                          height: 40px;
-                        " class="text-center">
-                                                    1a
-                                                </td>
-                                                <td style="border: none; border-right: 1px solid black"
-                                                    class="text-center">
-                                                    2a
-                                                </td>
-                                                <td style="border: none" class="text-center">3a</td>
-                                            </tr>
-                                        </table>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">SUMA</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="col-grade">
-                                        <div class="vertical-wrapper">
-                                            <div class="">PROMEDIO</div>
-                                        </div>
-                                    </th>
-
-                                    <th class="text-center">OBSERVACIONES</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr style="height: 20px">
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">H</td>
-                                    <td style="padding-left: 5px">EJEMPLO PÉREZ JUAN</td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-
-            <!-- Firmas -->
-            <div class="firmas-container mt-5">
-                <div class="text-center mb-3">
-                    <p>El Potrero, Amanalco, México {{ new Date().toLocaleDateString('es-MX') }}</p>
-                </div>
-                <div class="row mt-4">
-                    <div class="col text-center">
-                        <p class="mb-0"><strong>LÓPEZ SANTANA SEBASTIAN</strong></p>
-                        <p class="mt-0">DOCENTE</p>
-                    </div>
-                    <div class="col text-center">
-                        <p class="mb-0"><strong>REVISÓ</strong></p>
-                        <p class="mb-0"><strong>AMOREA GUADALUPE HERNÁNDEZ HERNÁNDEZ</strong></p>
-                        <p class="mt-0">ORIENTADOR</p>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col text-center">
-                        <p class="mb-0"><strong>AUTORIZÓ</strong></p>
-                        <p class="mb-0"><strong>MAÑA DEL CARMEN ASSENETH VELÁZQUEZ LÓPEZ</strong></p>
-                        <p class="mt-0">SUBDIRECTORA ESCOLAR</p>
-                    </div>
-                    <div class="col text-center">
-                        <p class="mb-0"><strong>GADIEL RECILLAS MIRANDA</strong></p>
-                        <p class="mt-0">DIRECTOR ESCOLAR</p>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col text-center">
-                        <p class="mb-0"><strong>VALIDACIÓN PARA CAPTURA EN SISTEMA</strong></p>
-                        <p class="mb-0"><strong>LUIS GONZÁLEZ CALIXTO</strong></p>
-                        <p class="mt-0">SECRETARIO ESCOLAR</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </template>
 
 
 <script>
-import logo from '@asset/img/Imagen1.png';
 import api from '../../../services/api';
 import Modal from '../../../components/Modal.vue';
-
-import html2pdf from 'html2pdf.js';
 
 import 'vue3-easy-data-table/dist/style.css';
 import EasyDataTable from 'vue3-easy-data-table';
@@ -630,17 +189,32 @@ export default {
     },
     data() {
         return {
-            logo,
             Seguimientos: [],
             cargando: false,
             Seguimiento: {
+                // id: null,
+                // materia_id: null,
+                // semestre_id: null,
+                // grupo_id: null,
+                // carrera_id: null,
+                // profesor_id: null,
+                // orientador_id: null,
+                // ano: null,
                 id: null,
-                materia_id: null,
-                semestre_id: null,
-                grupo_id: null,
                 carrera_id: null,
+                carreras: null,
+                grupo_id: null,
+                grupos: null,
+                materia_id: null,
+                materias: null,
                 profesor_id: null,
+                profesor: null,
+                orientador_id: null,
+                orientador: null,
+                semestre_id: null,
+                semestres: null,
                 ano: null,
+                ciclo:null,
             },
             busqueda: '',
             errores: {},
@@ -648,6 +222,10 @@ export default {
             selectProfesor: null,
             selectOptionsProfesor: [],
             selectLoading: false,
+
+            selectOrientador: null,
+            selectOptionsOrientador: [],
+            selectLoadingOrientador: false,
 
             selectMateria: null,
             selectOptionsMateria: [],
@@ -664,11 +242,6 @@ export default {
             selectCarrera: null,
             selectOptionsCarrera: [],
             selectLoadingCarrera: false,
-            //pdf
-            alumnos: [],
-            parciales: [],
-            estadisticas: {},
-            seguimientoId: 1
         }
     },
     watch: {
@@ -689,7 +262,8 @@ export default {
         headersFiltrados() {
             const base = [
                 { text: 'Id', value: 'id' },
-                { text: 'Profesores', value: 'profesores' },
+                { text: 'Profesor', value: 'profesor' },
+                { text: 'Orientador', value: 'orientador' },
                 { text: 'Materias', value: 'materias' },
                 { text: 'Semestres', value: 'semestres' },
                 { text: 'Grados/Grupos', value: 'grupos' },
@@ -727,7 +301,9 @@ export default {
             this.selectGrupo = null;
             this.selectCarrera = null;
             this.selectProfesor = null;
+            this.selectOrientador = null;
             this.Seguimiento.ano = this.selectedYear;
+            this.ciclo = null;
             this.$refs.modalSeguimiento.abrir();
         },
         async agregar() {
@@ -737,6 +313,8 @@ export default {
                 this.Seguimiento.grupo_id = this.selectGrupo?.id;
                 this.Seguimiento.carrera_id = this.selectCarrera?.id;
                 this.Seguimiento.profesor_id = this.selectProfesor?.id;
+                this.Seguimiento.orientador_id = this.selectOrientador?.id;
+
                 await api.post('/Registro/Seguimiento', this.Seguimiento);
                 this.consultar();
                 this.$refs.modalSeguimiento.cerrar();
@@ -779,7 +357,11 @@ export default {
                 };
                 this.selectProfesor = {
                     id: this.Seguimiento.profesor_id,
-                    text: this.Seguimiento.profesores
+                    text: this.Seguimiento.profesor
+                };
+                this.selectOrientador = {
+                    id: this.Seguimiento.orientador_id,
+                    text: this.Seguimiento.orientador
                 };
                 this.$refs.modalSeguimiento.abrir();
             }
@@ -791,6 +373,8 @@ export default {
                 this.Seguimiento.grupo_id = this.selectGrupo.id;
                 this.Seguimiento.carrera_id = this.selectCarrera.id;
                 this.Seguimiento.profesor_id = this.selectProfesor.id;
+                this.Seguimiento.orientador_id = this.selectOrientador?.id;
+
                 await api.put(`/Registro/Seguimiento/${id}`, this.Seguimiento);
 
                 this.consultar();
@@ -835,10 +419,13 @@ export default {
                 materia_id: null,
                 materias: null,
                 profesor_id: null,
-                profesores: null,
+                profesor: null,
+                orientador_id: null,
+                orientador: null,
                 semestre_id: null,
                 semestres: null,
                 ano: null,
+                ciclo: null,
             };
         },
         selectProfesorOptions(search) {
@@ -866,6 +453,34 @@ export default {
                     this.selectOptionsProfesor = [];
                 } finally {
                     this.selectLoading = false
+                }
+            }, 300)
+        },
+        selectOrientadorOptions(search) {
+            clearTimeout(this.selectSearchTimeout)
+            this.selectSearchTimeout = setTimeout(async () => {
+                this.selectLoadingOrientador = true;
+                try {
+                    const response = await api.get(`/Registro/Seguimiento/Orientador`, {
+                        params: { search }
+                    });
+                    // Agregar la opción deshabilitada al inicio del array
+                    this.selectOptionsOrientador = [
+                        {
+                            id: null,
+                            text: 'Seleccione una opción',
+                            disabled: true
+                        },
+                        ...response.data.map(item => ({
+                            id: item.id,
+                            text: item.name
+                        }))
+                    ];
+                } catch (error) {
+                    console.error('Error al cargar opciones:', error)
+                    this.selectOptionsOrientador = [];
+                } finally {
+                    this.selectLoadingOrientador = false
                 }
             }, 300)
         },
@@ -994,35 +609,6 @@ export default {
                     : item;
             });
         },
-        async formato1(id) {
-            try {
-                const response = await api.get(`/Registro/Seguimiento/${id}/formato1`);
-                this.alumnos = response.data.alumnos;
-                this.estadisticas = response.data.estadisticas;
-                this.parciales = this.parcialesObjeto(response.data.parciales);
-
-                const element = this.$refs.pdfContent;
-                element.style.visibility = 'visible';
-                element.style.position = 'static';
-                element.style.left = '0';
-
-                const options = {
-                    margin: 0.5,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                await html2pdf().set(options).from(element).save();
-
-                element.style.visibility = 'hidden';
-                element.style.position = 'absolute';
-                element.style.left = '-9999px';
-            } catch (error) {
-                console.error('Error al generar Formato 1:', error);
-            }
-        },
-
         async descargarPDF(id) {
             this.loading = true; // Suponiendo que tienes una variable de estado
 
@@ -1062,14 +648,12 @@ export default {
                 // Nota: Tu interceptor en api.js ya maneja el error 401 (Unauthenticated)
                 // y redirige al login, así que aquí solo manejas errores genéricos (500, 404)
                 if (error.response?.status !== 401) {
-                    alert("Hubo un error al generar el documento.");
+                    this.$swal.fire('Error', '❌ Hubo un error al generar el documento.', 'error');
                 }
             } finally {
                 this.loading = false;
             }
         }
-
-
     },
     mounted() {
         this.consultar();
@@ -1077,96 +661,4 @@ export default {
 }
 </script>
 
-<style>
-.pdf-container {
-    font-family: Arial, sans-serif;
-    font-size: 7px;
-    margin: 20px;
-}
-
-/* ESTILOS DE TABLA GENERAL */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-td,
-th {
-    border: 1px solid black;
-    padding: 3px 4px;
-    vertical-align: middle;
-}
-
-/* CLASES DE UTILIDAD */
-.text-center {
-    text-align: center;
-}
-
-.text-left {
-    text-align: left;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.bold {
-    font-weight: bold;
-}
-
-/* Configuración para tablas anidadas (Layout) */
-.nested-container {
-    padding: 0 !important;
-    border: none !important;
-    vertical-align: top;
-}
-
-.nested-table {
-    width: 100%;
-    border: none;
-}
-
-.nested-table td {
-    border: 1px solid black;
-    /* Quitamos bordes laterales externos */
-
-    border-right: none;
-}
-
-/* Eliminar bordes duplicados en la primera y última fila de las anidadas */
-.nested-table tr:first-child td {
-    border-top: none;
-}
-
-.nested-table tr:last-child td {
-    border-bottom: none;
-}
-
-/* ETIQUETAS PEQUEÑAS (Ej: "1/ DIRECCIÓN") */
-.label-tiny {
-    font-size: 6px;
-    color: #444;
-    display: block;
-    line-height: 1;
-    margin-bottom: 2px;
-    text-align: left;
-}
-
-/* Filas con altura mínima específica */
-.h-40 {
-    height: 40px;
-}
-
-.h-30 {
-    height: 30px;
-}
-
-/* Estilo específico para el horario */
-.schedule-cell {
-    font-size: 9px;
-    height: 20px;
-    /* Altura fija para filas de horario */
-    vertical-align: top;
-}
-</style>
+<style></style>

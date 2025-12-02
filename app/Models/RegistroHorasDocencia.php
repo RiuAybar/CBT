@@ -13,7 +13,8 @@ class RegistroHorasDocencia extends Model
     protected $fillable = [
         'mes',
         'horasImpartidas',
-        'carrera_id'
+        'carrera_id',
+        'materia_id'
     ];
 
     public function setMesAttribute($value)
@@ -43,5 +44,9 @@ class RegistroHorasDocencia extends Model
     public function carrera()
     {
         return $this->belongsTo(Carrera::class);
+    }
+    public function materia()
+    {
+        return $this->belongsTo(Materia::class,'materia_id');
     }
 }

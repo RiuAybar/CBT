@@ -25,6 +25,10 @@
                             <i class="align-middle me-1" data-feather="user"></i>
                             Perfil
                         </router-link>
+                        <router-link class="dropdown-item" to="/escuela" @click="toggleUserDropdown">
+                            <i class="align-middle me-1" data-feather="user"></i>
+                            Escuela
+                        </router-link>
                         <div class="dropdown-divider"></div>
                         <button @click="logout" class="dropdown-item"> <i class="bi bi-box-arrow-right"></i> Cerrar
                             sesión</button>
@@ -99,7 +103,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('auth', ['isAuthenticated', 'getUser']),
+        ...mapGetters('auth', ['isAuthenticated', 'getUser','hasPermission']),
         ...mapGetters(['selectedYear'])
     },
 }

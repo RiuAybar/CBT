@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\SeguimientoRequest;
-use App\Models\{Carrera, Grupo, Lista, Materia, User, Seguimiento, Semestre,};
+use App\Models\{Carrera, Escuela, Grupo, Lista, Materia, User, Seguimiento, Semestre,};
 
 class SeguimientoController extends Controller
 {
@@ -23,10 +23,12 @@ class SeguimientoController extends Controller
             ->join('grados', 'grupos.grado_id', '=', 'grados.id')
             ->join('carreras', 'seguimientos.carrera_id', '=', 'carreras.id')
             ->join('users as profesores', 'seguimientos.profesor_id', '=', 'profesores.id')
+            ->join('users as orientador', 'seguimientos.orientador_id', '=', 'orientador.id')
             ->orderBy('seguimientos.id', 'desc')
             ->select([
                 'seguimientos.id',
                 'seguimientos.ano',
+                'seguimientos.ciclo',
                 'materias.id as materia_id',
                 'materias.nombre as materias',
                 'semestres.id as semestre_id',
@@ -37,7 +39,9 @@ class SeguimientoController extends Controller
                 'carreras.id as carrera_id',
                 'carreras.nombre as carreras',
                 'profesores.id as profesor_id',
-                'profesores.name as profesores'
+                'profesores.name as profesor',
+                'orientador.id as orientador_id',
+                'orientador.name as orientador'
             ]);
         if ($request->ano) {
             $query->where('seguimientos.ano', $request->ano);
@@ -55,6 +59,7 @@ class SeguimientoController extends Controller
                     ->orWhere('grados.nombre', 'like', "%$search%")
                     ->orWhere('carreras.nombre', 'like', "%$search%")
                     ->orWhere('profesores.name', 'like', "%$search%")
+                    ->orWhere('orientador.name', 'like', "%$search%")
                     ->orWhereRaw("CONCAT(grados.nombre, ' - ', grupos.nombre) LIKE ?", ["%$search%"]);
             })->limit(5);
         }
@@ -91,15 +96,20 @@ class SeguimientoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Seguimiento $seguimiento)
+    public function show(Seguimiento $Seguimiento)
     {
-        //
+        // Cargar una o varias relaciones
+        $Seguimiento->load([
+            'Carrera',
+            'materia',
+        ]);
+        return response()->json($Seguimiento, 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Seguimiento $seguimiento)
+    public function edit(Seguimiento $Seguimiento)
     {
         //
     }
@@ -137,6 +147,23 @@ class SeguimientoController extends Controller
         if ($search) {
             // usa la relación de Spatie
             $query = User::role('profesor')
+                ->where('name', 'like', '%' . $search . '%')
+                ->orderBy('id', 'desc')
+                ->limit(5)
+                ->get(['id', 'name']);
+        }
+        return response()->json(
+            $query,
+            200
+        );
+    }
+    public function seguimientoOrientador(Request $request)
+    {
+        $search = $request->query('search');
+        $query = [];
+        if ($search) {
+            // usa la relación de Spatie
+            $query = User::role('orientador')
                 ->where('name', 'like', '%' . $search . '%')
                 ->orderBy('id', 'desc')
                 ->limit(5)
@@ -303,11 +330,18 @@ class SeguimientoController extends Controller
 
     public function reporte(Seguimiento $Seguimiento)
     {
-        // dd($Seguimiento);
+        // dd($Seguimiento->Profesor);
         // Obtener parciales
         $parciales = DB::table('parciales')->pluck('id', 'nombre');
 
         $RegistroHorasDocencia = $Seguimiento?->RegistroHorasDocencia ?? [];
+
+        $SeguimientoHorario = $Seguimiento->SeguimientoHorario()
+            ->orderByRaw("FIELD(dia, 'LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO','DOMINGO')")
+            ->orderBy('hora_inicio')
+            ->get();
+
+        // dd($SeguimientoHorario->toArray());
 
         // SELECT base
         $selects = [
@@ -338,7 +372,7 @@ class SeguimientoController extends Controller
                        WHERE e2.lista_id = l.id) AS FALTAS');
 
         $selects[] = DB::raw('ROUND(AVG(ev.calificacion_parcial), 1) as PROMEDIO');
-        // $selects[] = DB::raw('ev.porcentajeAsistencia');
+        $selects[] = DB::raw('l.estatus');
         $selects[] = DB::raw("CASE WHEN ROUND(AVG(ev.calificacion_parcial), 1) < 6 THEN 'E. EXTR.' ELSE '' END as OBSERVACIONES");
 
         // === ALUMNOS (CORREGIDO) ===
@@ -348,7 +382,7 @@ class SeguimientoController extends Controller
             ->leftJoin('evaluaciones as ev', 'l.id', '=', 'ev.lista_id')
             ->leftJoin('asistencias as a', 'l.alumno_id', '=', 'a.estudiante_id')
             ->select($selects)
-            ->groupBy('l.id', 'l.listaNumero', 'u.name', 'u.sexo')
+            ->groupBy('l.id', 'l.listaNumero', 'u.name', 'u.sexo', 'l.estatus')
             ->orderBy('l.listaNumero')
             ->get();
 
@@ -358,6 +392,7 @@ class SeguimientoController extends Controller
             ->where('l.seguimiento_id', $Seguimiento->id)
             ->select(
                 DB::raw('COUNT(DISTINCT l.alumno_id) as total_inscritos'),
+                // DB::raw('l.estatus'), // si luego quieres contar bajas, aquí va
                 DB::raw('0 as bajas'), // si luego quieres contar bajas, aquí va
                 DB::raw('COUNT(DISTINCT l.alumno_id) as existencia_final'),
                 DB::raw('SUM(CASE WHEN ev.calificacion_parcial >= 6 THEN 1 ELSE 0 END) as aprobados'),
@@ -367,6 +402,7 @@ class SeguimientoController extends Controller
                 DB::raw('SUM(ev.calificacion_parcial) as suma_calificaciones'),
                 DB::raw('ROUND(AVG(ev.calificacion_parcial), 2) as promedio_general')
             )
+            ->groupBy('l.estatus')
             ->first();
 
         // return response()->json([
@@ -384,14 +420,44 @@ class SeguimientoController extends Controller
                 return floatval($alumno->PROMEDIO) < 70;
             })
             ->countBy('sexo');
+        $sumaPorSexo = collect($alumnos)
+            ->groupBy('sexo')
+            ->map->sum(
+                fn($a) =>
+                floatval($a->eval_Parcial_1)
+                    + floatval($a->eval_Parcial_2)
+                    + floatval($a->eval_Parcial_3)
+            );
+        $BajasAltasXs = collect($alumnos)
+            ->groupBy('sexo')
+            ->map(function ($grupo) {
+                return collect(['Alta', 'Baja'])
+                    ->mapWithKeys(function ($estatus) use ($grupo) {
+                        return [
+                            $estatus => $grupo->where('estatus', $estatus)->count()
+                        ];
+                    });
+            });
+        // $Reprobados = collect($alumnos)
+        //     ->filter(function ($alumno) {
+        //         return floatval($alumno->PROMEDIO) < 70;
+        //     })
+        //     ->countBy('sexo');
         //     'RegistroHoras' => $RegistroHorasDocencia,
         // ]);
         // dump(
+        //     // $sumaPorSexo
         //     // $Aprobados, 
-        //     $alumnos->toarray()
+        //     // $alumnos->toarray()
+        //     $BajasAltasXs['F']['Alta']
+        //     // $estadisticas->toarray()
         // );
         // $data = ['titulo' => 'Hola Mundo desde Laravel DomPDF'];
-        $pdf = Pdf::loadView('pdf.FormatoF1', compact('alumnos', 'estadisticas', 'parciales', 'RegistroHorasDocencia', 'conteoSexo','Aprobados','Reprobados'));
+        $Escuela = Escuela::first();
+        $pdf = Pdf::loadView(
+            'pdf.FormatoF1',
+            compact('alumnos', 'estadisticas', 'parciales', 'RegistroHorasDocencia', 'conteoSexo', 'Aprobados', 'Reprobados', 'sumaPorSexo', 'BajasAltasXs', 'Seguimiento', 'SeguimientoHorario','Escuela')
+        );
 
         // stream() lo muestra en el navegador, download() lo descarga
         return $pdf->stream('archivo.pdf');

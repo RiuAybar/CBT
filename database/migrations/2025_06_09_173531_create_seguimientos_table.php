@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreignId('grupo_id')->constrained();
             $table->foreignId('carrera_id')->constrained();
             $table->foreignId('profesor_id')->constrained('users'); // ahora apunta a la tabla `users`
-            $table->year('ano');
+            $table->foreignId('orientador_id')->constrained('users'); // ahora apunta a la tabla `users`
+            $table->string('ciclo')->nullable();
+            $table->year('ano')->nullable();
             $table->timestamps();
         });
     }

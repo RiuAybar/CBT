@@ -322,9 +322,9 @@ class ListaController extends Controller
         // 2. Obtener todos los alumnos del seguimiento
         $listas = DB::table('listas as l')
             ->join('users as u', 'u.id', '=', 'l.alumno_id')
-            ->where('l.seguimiento_id', $Seguimiento->id)
             // ,'l.porcentajeAsistencia'
-            ->select('l.id as lista_id', 'u.name as alumno','l.listaNumero')
+            ->where('l.seguimiento_id', $Seguimiento->id)
+            ->select('l.id as lista_id', 'u.name as alumno', 'l.listaNumero', 'l.estatus')
             ->orderBy('l.listaNumero', 'desc')
             ->get();
 
@@ -396,6 +396,7 @@ class ListaController extends Controller
                 'lista_id' => $lista->lista_id,
                 'nombre' => $lista->alumno,
                 'listaNumero' => $lista->listaNumero,
+                'estatus' => $lista->estatus,
                 'porcentajeAsistencia' => $evaluacion->porcentajeAsistencia ?? null,
                 'faltas' => $evaluacion->faltas ?? null,
                 'suma' => $evaluacion->suma ?? null,
@@ -439,7 +440,7 @@ class ListaController extends Controller
             $items = $request->input('items');
             $name = $request->input('name');
             $value = $request->input('value');
-            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial','porcentajeAsistencia']) ? $name : null;
+            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial', 'porcentajeAsistencia']) ? $name : null;
             $columnasDefLista = in_array($name, ['listaNumero']) ? $name : null;
 
             $evaluacion = Evaluacion::firstOrCreate([
@@ -473,6 +474,25 @@ class ListaController extends Controller
             }
             DB::commit();
             return response()->json('Exito', 201);
+        } catch (\Exception $e) {
+            //throw $th;
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function estatus(Request $request, Lista $lista)
+    {
+        // $this->authorize('guardarNotasPorAspecto', $lista);
+        try {
+            DB::beginTransaction();
+            $lista->estatus = $lista->estatus == 'Alta' ? 'Baja' : 'Alta';
+            $lista->save();
+            DB::commit();
+            return response()->json([
+                'message' => 'Éxito',
+                'estatus' => $lista->estatus
+            ], 200);
         } catch (\Exception $e) {
             //throw $th;
             DB::rollBack();
@@ -557,6 +577,6 @@ class ListaController extends Controller
         return response()->json([
             'materias' => array_values($materias),
             'parciales' => $parciales
-        ],200);
+        ], 200);
     }
 }

@@ -107,7 +107,7 @@
             <!-- Reemplaza el EasyDataTable con AG Grid -->
             <div class="ag-theme-alpine" style="height: auto; width: 100%;">
               <AgGridVue class="ag-theme-alpine" :rowData="rowData" :columnDefs="columnDefs"
-                :defaultColDef="defaultColDef" :domLayout="'autoHeight'" :pagination="true"
+                :defaultColDef="defaultColDef" :domLayout="'autoHeight'" :pagination="true" @cellClicked="onCellClicked"
                 @cellValueChanged="onCellValueChanged" />
             </div>
 
@@ -145,7 +145,8 @@
           <EasyDataTable :headers="headersFiltrados" :items="EscalasEvaluativas" :loading="cargando" :rows-per-page="5"
             table-class="table table-hover my-0">
             <!-- 🎯 Columna de acciones personalizada -->
-            <template v-if="hasPermission('puede eliminar materia parcial escala')" #item-action="{ id, nombre, abreviatura, materiaParcialEscalaId }">
+            <template v-if="hasPermission('puede eliminar materia parcial escala')"
+              #item-action="{ id, nombre, abreviatura, materiaParcialEscalaId }">
               <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-outline-danger"
                   @click="eliminarEscalaEvaluativa(materiaParcialEscalaId, nombre)">
@@ -440,11 +441,11 @@ export default {
     async cargarDatos(busqueda = '') {
       try {
         const { data } = await api.get(`/Estudiuante/Lista/${this.$route.params.id}/evaluacion`, {
-         params: {
+          params: {
             parcial_id: this.selectSelected.Parcial?.id,
             busqueda: busqueda,
           },
-        }); 
+        });
         this.columnDefs = [
           { field: 'listaNumero', headerName: 'N.Lista', editable: true },
           { field: 'nombre', headerName: 'Alumno' },
@@ -491,6 +492,18 @@ export default {
         this.columnDefs.push(
           { field: 'suma', headerName: 'Suma', editable: true },
           { field: 'calificacion', headerName: 'Calificación', editable: true },
+        );
+
+        this.columnDefs.push(
+          {
+            field: 'estatus',
+            headerName: 'Estado',
+            cellRenderer: params => {
+              const label = params.value;
+              return `<button class="btn btn-sm btn-outline-danger">${label}</button>`;
+            },
+            width: 120
+          }
         );
 
         this.rowData = data.alumnos;
@@ -545,6 +558,40 @@ export default {
       } catch (error) {
         console.error(error);
         this.$swal.fire('❌ Error', 'No se pudo guardar', 'error');
+      }
+    },
+
+    async onCellClicked(params) {
+      // Validar que el clic fue en el botón (no en la celda vacía)
+      if (!params.event.target.classList.contains('btn')) return;
+
+      // Detectar columna
+      if (params.colDef.field !== 'estatus') return;
+      const id = params.data.lista_id;
+      const valorActual = params.data.estatus;
+      // Cambiar el valor en cliente
+      const nuevoValor = valorActual === 'Alta' ? 'Baja' : 'Alta';
+      params.data.estatus = nuevoValor;
+
+      try {
+        const res = await api.post(`/Estudiuante/Lista/${id}/estatus`, {
+          id: id,
+          estatus: nuevoValor
+        });
+        params.data.estatus = res.data.estatus
+        console.log(params.data.estatus);
+        params.api.applyTransaction({ update: [params.data] });
+
+        this.$swal.fire({
+          title: 'Estado actualizado',
+          icon: 'success',
+          timer: 600,
+          showConfirmButton: false
+        });
+
+      } catch (res) {
+        console.error(res);
+        this.$swal.fire('Error', 'No se pudo actualizar el estado', 'error');
       }
     },
 

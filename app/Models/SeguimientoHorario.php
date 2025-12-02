@@ -4,29 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use PhpParser\Node\Expr\FuncCall;
 
-class Grupo extends Model
+
+class SeguimientoHorario extends Model
 {
+    // protected $table = 'seguimiento_horario';
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'nombre',
-        'grado_id',
+        'seguimiento_id',
+        'dia',
+        'hora_inicio',
+        'hora_fin',
     ];
-
-    public function grados()
-    {
-        return $this->hasMany(Grado::class, 'grado_id');
-    }
-    public function grado()
-    {
-        return $this->belongsTo(Grado::class, 'grado_id');
-    }
+    
 }

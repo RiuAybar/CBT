@@ -17,6 +17,7 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\RegistroHorasDocenciaController;
 use App\Http\Controllers\Auth\RestablecerContraseñaController;
+use App\Http\Controllers\SeguimientoHorariosController;
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/refresh', [LoginController::class, 'refresh']);
@@ -39,6 +40,8 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::resource('user', UsuarioController::class);
         Route::put('user/{User}/Estatus', [UsuarioController::class, 'Estatus']);
         Route::get('/roles', [RolController::class, 'buscarRoles']);
+        Route::get('escuela',[UsuarioController::class, 'escuela']);
+        Route::put('escuela',[UsuarioController::class, 'updateEscuela']);
     });
     Route::prefix('/Estudiuante')->group(function () {
         Route::get('Lista/{lista_id}/User', [ListaController::class, 'UserDisponibles']);
@@ -53,6 +56,7 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::delete('/Lista/{MateriaParcialEscala}/EliminarEscala', [ListaController::class, 'EliminarEscala']);
         // NotasPorAspecto
         Route::post('/Lista/{MateriaParcialEscala}/NotasPorAspecto', [ListaController::class, 'guardarNotasPorAspecto']);
+        Route::post('/Lista/{lista}/estatus', [ListaController::class, 'estatus']);
 
         Route::get('/Lista/VistaCalificaciones', [ListaController::class, 'VistaCalificaciones']);
         Route::resource('Lista', ListaController::class);
@@ -70,12 +74,18 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::resource('RegistroHorasDocencia', RegistroHorasDocenciaController::class)->only(['index', 'store', 'update','show'])
         ->parameters(['RegistroHorasDocencia'=>'RegistroHorasDocencia']);
         Route::resource('Materia', MateriaController::class)->only(['index', 'store', 'update'])->parameters(['Materia'=>'Materia']);
+        Route::get('Materia/searchMateria', [MateriaController::class,'searchMateria']);
         Route::resource('Parcial', ParcialController::class)->only(['index', 'store', 'update']);
+
+        Route::resource('SeguimientoHorario',SeguimientoHorariosController::class)->except(['index','show']);
+        Route::get('seguimientoHorarios/{seguimiento_id}/index',[SeguimientoHorariosController::class,'index']);
+
     });
     
     Route::prefix('/Registro')->group(function () {
-        Route::resource('Seguimiento', SeguimientoController::class)->only(['index', 'store', 'update']);
+        Route::resource('Seguimiento', SeguimientoController::class)->only(['index', 'store','show', 'update']);
         Route::get('Seguimiento/Profesor',[SeguimientoController::class,'seguimientoProfesor']);
+        Route::get('Seguimiento/Orientador',[SeguimientoController::class,'seguimientoOrientador']);
         Route::get('Seguimiento/Materia',[SeguimientoController::class,'seguimientoMateria']);
         Route::get('Seguimiento/Semestre',[SeguimientoController::class,'seguimientoSemestre']);
         Route::get('Seguimiento/Grupo',[SeguimientoController::class,'seguimientoGrupo']);

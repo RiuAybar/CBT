@@ -93,4 +93,20 @@ class MateriaController extends Controller
     {
         //
     }
+
+    public function searchMateria(Request $request)
+    {
+        $search = $request->query('search');
+        // Buscar carreras
+        $query = Materia::query();
+        $data = [];
+        if ($search) {
+            $data = $query->where('nombre', 'like', '%' . $search . '%')
+                ->orderBy('nombre')
+                ->limit(10)
+                ->get(['id', 'nombre']);
+        }
+        return response()->json($data);
+    }
+
 }

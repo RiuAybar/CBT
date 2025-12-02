@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('mes'); // Ej: "FEBRERO"
             $table->unsignedInteger('horasImpartidas'); // Ej: 20
             $table->foreignId('carrera_id')->nullable()->constrained(); // clave foránea a carreras.id
+            $table->foreignId('materia_id')->nullable()->constrained(); // clave foránea a carreras.id
             $table->timestamps();
         });
     }

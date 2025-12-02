@@ -108,6 +108,9 @@
 							:class="{ active: isActive(['/parciales']) }">
 							<router-link to="/parciales" class='sidebar-link'>Parciales</router-link>
 						</li>
+						<!-- <li class="sidebar-item" :class="{ active: isActive(['/escuela']) }">
+							<router-link to="/escuela" class='sidebar-link'>Escuela</router-link>
+						</li> -->
 					</ul>
 				</li>
 				<li class="sidebar-header" v-if="hasPermission('ver seguimiento')">

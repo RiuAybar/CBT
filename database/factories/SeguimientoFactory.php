@@ -30,6 +30,8 @@ class SeguimientoFactory extends Factory
             'grupo_id' => Grupo::inRandomOrder()->first()?->id ?? Grupo::factory(),
             'carrera_id' => Carrera::inRandomOrder()->first()?->id ?? Carrera::factory(),
             'profesor_id' => User::role('profesor')->inRandomOrder()->first()?->id ?? User::factory(),
+            'orientador_id' => User::role('orientador')->inRandomOrder()->first()?->id ?? User::factory(),
+            'ciclo' => now()->year . '-' . (now()->year + 1),
             'ano' => (string) fake()->numberBetween(2020, 2030),
             // 'ano' => fake()->year(),
         ];

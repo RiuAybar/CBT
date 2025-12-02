@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Seguimiento extends Model
 {
@@ -20,6 +21,8 @@ class Seguimiento extends Model
         'grupo_id',
         'carrera_id',
         'profesor_id',
+        'orientador_id',
+        'ciclo',
         'ano',
     ];
 
@@ -29,7 +32,7 @@ class Seguimiento extends Model
     }
     public function Grupos()
     {
-        return $this->belongsTo(Grupo::class);
+        return $this->belongsTo(Grupo::class, 'grupo_id');
     }
     public function Lista()
     {
@@ -37,7 +40,28 @@ class Seguimiento extends Model
     }
     public function RegistroHorasDocencia()
     {
-        return $this->hasMany(RegistroHorasDocencia::class, 'carrera_id','carrera_id');
+        return $this->hasMany(RegistroHorasDocencia::class, 'carrera_id', 'carrera_id')
+            ->where('materia_id', $this->materia_id);
         // ->latest()->limit(5);
+    }
+    public function Profesor()
+    {
+        return $this->belongsTo(User::class, 'profesor_id');
+    }
+    public function Orientador()
+    {
+        return $this->belongsTo(User::class, 'orientador_id');
+    }
+    public function Carrera()
+    {
+        return $this->belongsTo(Carrera::class, 'carrera_id');
+    }
+    public function Semestre()
+    {
+        return $this->belongsTo(Semestre::class, 'semestre_id');
+    }
+    public function SeguimientoHorario()
+    {
+        return $this->hasMany(SeguimientoHorario::class, 'seguimiento_id');
     }
 }

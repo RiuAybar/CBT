@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Escuela;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\BienvenidaCrearPassword;
+use App\Http\Requests\EscuelaRequest;
 use App\Http\Requests\UsuarioRequest;
-use Illuminate\Container\Attributes\Auth;
+use App\Mail\BienvenidaCrearPassword;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Container\Attributes\Auth;
 
 class UsuarioController extends Controller
 {
@@ -176,7 +178,7 @@ class UsuarioController extends Controller
      */
     public function Estatus(User $User)
     {
-         $this->authorize('cambiarEstatus', $User);
+        $this->authorize('cambiarEstatus', $User);
         try {
             DB::beginTransaction();
             $nuevoEstatus = $User->estatus === 'habilitado' ? 'deshabilitado' : 'habilitado';
@@ -188,6 +190,51 @@ class UsuarioController extends Controller
             DB::rollBack();
             // return response()->json($e->getMessage(), 500);
             return response()->json(['error' => 'No se actualizó el registro, consulte al administrador', 'detalle' => $e->getMessage()], 500);
+        }
+    }
+
+    public function escuela()
+    {
+        $Escuela = Escuela::first();
+        return response()->json([
+            'nombre_escuela' => $Escuela?->nombre_escuela ?? null,
+            'direccion' => $Escuela?->direccion ?? null,
+            'departamento' => $Escuela?->departamento ?? null,
+            'turno' => $Escuela?->turno ?? null,
+            'nivel' => $Escuela?->nivel ?? null,
+            'clave_trabajo' => $Escuela?->clave_trabajo ?? null,
+            'numero_cct' => $Escuela?->numero_cct ?? null,
+            'zona_escolar' => $Escuela?->zona_escolar ?? null,
+            'domicilio' => $Escuela?->domicilio ?? null,
+            'localidad_colonia' => $Escuela?->localidad_colonia ?? null,
+            'municipio' => $Escuela?->municipio ?? null,
+            'telefono' => $Escuela?->telefono ?? null,
+            'docente' => $Escuela?->docente ?? null,
+            'subdirector_escolar' => $Escuela?->subdirector_escolar ?? null,
+            'director_escolar' => $Escuela?->director_escolar ?? null,
+            'secretario_escolar' => $Escuela?->secretario_escolar ?? null,
+        ], 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateEscuela(EscuelaRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            // $request ya contiene datos validados
+            $Escuela = Escuela::updateOrCreate(['id' => 1], $request->validated());
+            DB::commit();
+            return response()->json([
+                'message' => 'Escuela guardada correctamente.',
+                'Escuela' => $Escuela
+            ], 201);
+        } catch (\Exception $e) {
+            //Si hay un error / excepción en el código anterior antes de confirmar, se revertirá
+            DB::rollBack();
+            // return response()->json($e->getMessage(), 500);
+            return response()->json("No se modifico el registro, consulte al administrador", 500);
         }
     }
 }

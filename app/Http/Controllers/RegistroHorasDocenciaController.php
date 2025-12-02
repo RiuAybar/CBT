@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\{RegistroHorasDocencia, Carrera};
+use App\Models\{RegistroHorasDocencia, Carrera, Materia};
 use App\Http\Requests\RegistroHoraDocenciaRequest;
 
 class RegistroHorasDocenciaController extends Controller
@@ -16,17 +16,24 @@ class RegistroHorasDocenciaController extends Controller
     {
         $this->authorize('viewAny', RegistroHorasDocencia::class);
         $search = $request->query('search');
-        $query = RegistroHorasDocencia::with(['carrera:id,nombre as text']);
+        $query = RegistroHorasDocencia::with([
+            'carrera:id,nombre as text',
+            'materia:id,nombre as text'
+        ]);
         if ($search) {
-            $query->where('mes', 'like', '%' . $search . '%')
-                ->OrWhere('horasImpartidas', 'like', '%' . $search . '%')
-                ->orWhereHas('carrera', function ($q) use ($search) {
-                    $q->where('nombre', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                    $q->where('mes', 'like', "%$search%")
+                        ->orWhere('horasImpartidas', 'like', "%$search%")
+                        ->orWhereHas('carrera', function ($sub) use ($search) {
+                            $sub->where('nombre', 'like', "%$search%");
+                        })
+                        ->orWhereHas('materia', function ($sub) use ($search) {
+                            $sub->where('nombre', 'like', "%$search%");
+                        });
                 })
                 ->limit(5);
         }
-
-        return response()->json($query->orderBy('id', 'desc')->get(['id', 'mes', 'horasImpartidas', 'carrera_id']), 200);
+        return response()->json($query->orderBy('id', 'desc')->get(['id', 'mes', 'horasImpartidas', 'carrera_id','materia_id']), 200);
     }
 
     /**

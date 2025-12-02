@@ -30,13 +30,28 @@ class RegistroHoraDocenciaRequest extends FormRequest
                 'string',
                 'max:100',
             ],
-            'horasImpartidas' => 'required|integer|max:24|min:1',
+            'horasImpartidas' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
             'carrera_id' => [
                 'required',
                 Rule::unique('registro_horas_docencias')
-                    ->where(function ($query) {
-                        return $query->where('mes', $this->mes);
-                    })
+                    ->where(fn($q) =>
+                        $q->where('mes', $this->mes)
+                          ->where('materia_id', $this->materia_id)
+                    )
+                    ->ignore($Id),
+            ],
+
+            'materia_id' => [
+                'required',
+                Rule::unique('registro_horas_docencias')
+                    ->where(fn($q) =>
+                        $q->where('mes', $this->mes)
+                          ->where('carrera_id', $this->carrera_id)
+                    )
                     ->ignore($Id),
             ],
         ];
@@ -44,16 +59,23 @@ class RegistroHoraDocenciaRequest extends FormRequest
     public function messages(): array
     {
         return [
+            // mes
             'mes.required' => 'El mes es obligatorio.',
-            'mes.max' => 'Excede el número maximo de caracteres.',
-            
-            'horasImpartidas.required' => 'Las horas son obligatorias.',
-            'horasImpartidas.integer' => 'Solo se aceptan números enteros.',
-            'horasImpartidas.max' => 'Máximo 24 horas.',
-            'horasImpartidas.min' => 'Debe haber al menos 1 hora impartida.',
+            'mes.string'   => 'El mes debe ser un texto válido.',
+            'mes.max'      => 'El mes excede el número máximo de caracteres.',
 
+            // horasImpartidas
+            'horasImpartidas.required' => 'Las horas impartidas son obligatorias.',
+            'horasImpartidas.integer'  => 'Las horas impartidas deben ser un número entero.',
+            'horasImpartidas.min'      => 'Debe ingresar al menos 1 hora.',
+            
+            // carrera_id
             'carrera_id.required' => 'La carrera es obligatoria.',
-            'carrera_id.unique' => 'Ya existe un registro para esa carrera en el mes seleccionado.',
+            'carrera_id.unique'   => 'Ya existe un registro con esta carrera, materia y mes.',
+
+            // materia_id
+            'materia_id.required' => 'La materia es obligatoria.',
+            'materia_id.unique'   => 'Ya existe un registro con esta materia, carrera y mes.',
         ];
     }
 }
