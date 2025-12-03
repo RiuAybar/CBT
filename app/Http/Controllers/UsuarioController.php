@@ -195,6 +195,7 @@ class UsuarioController extends Controller
 
     public function escuela()
     {
+        $this->authorize('Escuela', User::class);
         $Escuela = Escuela::first();
         return response()->json([
             'nombre_escuela' => $Escuela?->nombre_escuela ?? null,
@@ -221,6 +222,7 @@ class UsuarioController extends Controller
      */
     public function updateEscuela(EscuelaRequest $request)
     {
+        $this->authorize('EscuelaUpdate', User::class);
         try {
             DB::beginTransaction();
             // $request ya contiene datos validados

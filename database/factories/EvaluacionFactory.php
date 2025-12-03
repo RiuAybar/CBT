@@ -27,7 +27,7 @@ class EvaluacionFactory extends Factory
             'faltas' => $faltas,
             'suma' => $suma,
             'calificacion_parcial' => $calificacionParcial,
-            'porcentajeAsistencia' => $this->faker->randomFloat(2, 0, 100),
+            // 'porcentajeAsistencia' => $this->faker->randomFloat(2, 0, 100),
         ];
     }
 }

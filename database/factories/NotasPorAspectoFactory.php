@@ -23,8 +23,8 @@ class NotasPorAspectoFactory extends Factory
         $puntaje = $this->faker->randomFloat(2, 0, $cantidad);  // No mayor a la cantidad
 
         return [
-            'evaluacion_id' => Evaluacion::factory(),
-            'escala_evaluativa_id' => EscalaEvaluativa::factory(),
+            'evaluacion_id' => Evaluacion::inRandomOrder()->first()?->id ?? Evaluacion::factory(),
+            'escala_evaluativa_id' => EscalaEvaluativa::inRandomOrder()->first()?->id ?? EscalaEvaluativa::factory(),
             'cantidad_obtenida' => $cantidad,
             'puntaje_obtenido' => $puntaje,
         ];

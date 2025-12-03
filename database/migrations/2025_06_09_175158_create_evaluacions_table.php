@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('faltas')->default(0);
             $table->decimal('suma', 8, 2)->nullable();
             $table->decimal('calificacion_parcial', 8, 2)->nullable();
-            $table->decimal('porcentajeAsistencia', 5, 2)->nullable();
+            // $table->decimal('porcentajeAsistencia', 5, 2)->nullable();
             $table->timestamps();
         });
     }

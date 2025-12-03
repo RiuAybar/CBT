@@ -25,7 +25,7 @@
                             <i class="align-middle me-1" data-feather="user"></i>
                             Perfil
                         </router-link>
-                        <router-link class="dropdown-item" to="/escuela" @click="toggleUserDropdown">
+                        <router-link class="dropdown-item" to="/escuela" @click="toggleUserDropdown" v-if="hasPermission('ver datos de mi escuela')">
                             <i class="align-middle me-1" data-feather="user"></i>
                             Escuela
                         </router-link>

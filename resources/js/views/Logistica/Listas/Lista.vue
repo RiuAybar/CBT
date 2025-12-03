@@ -51,6 +51,20 @@
                     placeholder="Seleccione un ano" no-options="Seleccione una opción"
                     no-results="No se encontraron resultados" />
                 </div>
+
+                <div class="mb-3 col-sm-4">
+                  <label for="ciclo" class="form-label">Ciclo</label>
+                  <v-select disabled input-id="ciclo" v-model="selectEncabezado.ciclo" label="text"
+                    placeholder="Seleccione un ano" no-options="Seleccione una opción"
+                    no-results="No se encontraron resultados" />
+                </div>
+                <div class="mb-3 col-sm-4">
+                  <label for="orientador" class="form-label">Orientador</label>
+                  <v-select disabled input-id="orientador" v-model="selectEncabezado.orientador" label="text"
+                    placeholder="Seleccione un ano" no-options="Seleccione una opción"
+                    no-results="No se encontraron resultados" />
+                </div>
+
               </div>
 
               <div class="text-success">
@@ -450,7 +464,7 @@ export default {
           { field: 'listaNumero', headerName: 'N.Lista', editable: true },
           { field: 'nombre', headerName: 'Alumno' },
           { field: 'faltas', headerName: 'Faltas', editable: true },
-          { field: 'porcentajeAsistencia', headerName: '%Asistencia', editable: true },
+          // { field: 'porcentajeAsistencia', headerName: '%Asistencia', editable: true },
         ];
         // Agrega dinámicamente columnas por cada escala evaluativa
         data.escalas.forEach((escala) => {
@@ -493,19 +507,19 @@ export default {
           { field: 'suma', headerName: 'Suma', editable: true },
           { field: 'calificacion', headerName: 'Calificación', editable: true },
         );
-
-        this.columnDefs.push(
-          {
-            field: 'estatus',
-            headerName: 'Estado',
-            cellRenderer: params => {
-              const label = params.value;
-              return `<button class="btn btn-sm btn-outline-danger">${label}</button>`;
-            },
-            width: 120
-          }
-        );
-
+        if (this.hasPermission('puede dar de baja a un estudiante')) {
+          this.columnDefs.push(
+            {
+              field: 'estatus',
+              headerName: 'Estado',
+              cellRenderer: params => {
+                const label = params.value;
+                return `<button class="btn btn-sm btn-outline-danger">${label}</button>`;
+              },
+              width: 120
+            }
+          );
+        }
         this.rowData = data.alumnos;
       } catch (error) {
         console.error('Error al cargar evaluación:', error);

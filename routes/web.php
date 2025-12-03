@@ -11,7 +11,7 @@ use App\Http\Controllers\SeguimientoController;
 //     return view('app');
 // });
 
-Route::get('reporte/{Seguimiento}',[SeguimientoController::class,'reporte']);
+// Route::get('reporte/{Seguimiento}',[SeguimientoController::class,'reporte']);
 
 Route::get('/{any}', function () {
     return view('app');

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container-fluid p-0">
-            <button v-if="Seguimiento?.id && hasPermission('puede agregar grupos')" @click="crear()"
+            <button v-if="Seguimiento?.id && hasPermission('puede agregar horas seguimiento')" @click="crear()"
                 class="btn btn-primary float-end mt-n1 mb-1">
                 <i class="bi bi-plus-circle"></i>
                 Agregar Registro
@@ -31,12 +31,12 @@
                         <EasyDataTable :headers="headersFiltrados" :items="SeguimientoHoras" :loading="cargando"
                             :rows-per-page="5" table-class="table table-hover my-0">
                             <!-- 🎯 Columna de acciones personalizada -->
-                            <template v-if="hasPermission('puede editar grupos')" #item-action="{ id }">
+                            <template v-if="hasPermission('puede editar horas seguimiento') || hasPermission('puede eliminar horas seguimiento') " #item-action="{ id }">
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)">
+                                    <button class="btn btn-sm btn-outline-primary me-1" @click="editar(id)" v-if="hasPermission('puede editar horas seguimiento')">
                                         Editar
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" @click="eliminarPermiso(id)">
+                                    <button class="btn btn-sm btn-outline-danger" @click="eliminarPermiso(id)" v-if="hasPermission('puede eliminar horas seguimiento')">
                                         Eliminar
                                     </button>
                                 </div>
@@ -174,7 +174,7 @@ export default {
                 { text: 'Hora Fin', value: 'hora_fin' },
 
             ];
-            if (this.hasPermission('puede editar grupos')) {
+            if (this.hasPermission('puede editar horas seguimiento') || this.hasPermission('puede eliminar horas seguimiento')) {
                 base.push({ text: 'Acciones', value: 'action' });
             }
             return base;

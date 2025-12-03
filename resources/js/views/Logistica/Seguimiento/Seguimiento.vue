@@ -43,7 +43,8 @@
                                         v-if="hasPermission('ver listas')">
                                         ver lista
                                     </router-link>
-                                    <router-link :to="`horasseguimiento/${id}/agregar`" class="btn btn-sm btn-outline-success me-1" >
+                                    <router-link :to="`horasseguimiento/${id}/agregar`" class="btn btn-sm btn-outline-success me-1" 
+                                        v-if="hasPermission('ver horas seguimiento')">
                                         Hoarios
                                     </router-link>
                                     <button class="btn btn-sm btn-outline-info me-1" @click="descargarPDF(id)"
@@ -192,14 +193,6 @@ export default {
             Seguimientos: [],
             cargando: false,
             Seguimiento: {
-                // id: null,
-                // materia_id: null,
-                // semestre_id: null,
-                // grupo_id: null,
-                // carrera_id: null,
-                // profesor_id: null,
-                // orientador_id: null,
-                // ano: null,
                 id: null,
                 carrera_id: null,
                 carreras: null,
@@ -433,7 +426,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoading = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Profesor`, {
+                    const response = await api.get(`/Registro/Seguimiento/Profesor/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
@@ -461,7 +454,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoadingOrientador = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Orientador`, {
+                    const response = await api.get(`/Registro/Seguimiento/Orientador/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
@@ -490,7 +483,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoadingMateria = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Materia`, {
+                    const response = await api.get(`/Registro/Seguimiento/Materia/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
@@ -519,7 +512,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoadingSemestre = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Semestre`, {
+                    const response = await api.get(`/Registro/Seguimiento/Semestre/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
@@ -548,7 +541,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoadingGrupo = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Grupo`, {
+                    const response = await api.get(`/Registro/Seguimiento/Grupo/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array
@@ -577,7 +570,7 @@ export default {
             this.selectSearchTimeout = setTimeout(async () => {
                 this.selectLoadingCarrera = true;
                 try {
-                    const response = await api.get(`/Registro/Seguimiento/Carrera`, {
+                    const response = await api.get(`/Registro/Seguimiento/Carrera/search`, {
                         params: { search }
                     });
                     // Agregar la opción deshabilitada al inicio del array

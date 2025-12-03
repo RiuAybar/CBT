@@ -2,24 +2,24 @@
 
 namespace App\Policies;
 
-use App\Models\SeguimientoHorarios;
+use App\Models\EscalaEvaluativa;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class SeguimientoHorariosPolicy
+class EscalaEvaluativaPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('ver escalas evaluativas');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SeguimientoHorarios $seguimientoHorarios): bool
+    public function view(User $user, EscalaEvaluativa $escalaEvaluativa): bool
     {
         return false;
     }
@@ -29,21 +29,21 @@ class SeguimientoHorariosPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('puede agregar escalas evaluativas');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SeguimientoHorarios $seguimientoHorarios): bool
+    public function update(User $user, EscalaEvaluativa $escalaEvaluativa): bool
     {
-        return false;
+        return $user->can('puede editar escalas evaluativas');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SeguimientoHorarios $seguimientoHorarios): bool
+    public function delete(User $user, EscalaEvaluativa $escalaEvaluativa): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class SeguimientoHorariosPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, SeguimientoHorarios $seguimientoHorarios): bool
+    public function restore(User $user, EscalaEvaluativa $escalaEvaluativa): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class SeguimientoHorariosPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, SeguimientoHorarios $seguimientoHorarios): bool
+    public function forceDelete(User $user, EscalaEvaluativa $escalaEvaluativa): bool
     {
         return false;
     }

@@ -22,7 +22,7 @@
 
 				<li class="sidebar-header"
 					v-if="hasPermission('ver roles') || hasPermission('ver permisos') || hasPermission('ver usuarios')">
-					Pages
+					Configuración Usuarios
 				</li>
 				<li class="sidebar-item" v-if="hasPermission('ver roles') || hasPermission('ver permisos')"
 					:class="{ active: isActive(['/permisos', '/roles', `/roles/${this.$route.params.id}/edit`]) }">
@@ -67,20 +67,19 @@
 					hasPermission('ver horas docente') ||
 					hasPermission('ver parciales')
 				">
-					conf
+					Configuraciones
 				</li>
 				<li class="sidebar-item" v-if="
 					hasPermission('ver grados') ||
 					hasPermission('ver materias') ||
 					hasPermission('ver semestres') ||
 					hasPermission('ver carreras') ||
-					hasPermission('ver horas docente') ||
 					hasPermission('ver parciales')
 				" :class="{ active: isActive(['/grados', '/grupos', '/materias', '/semestres', '/carreras', '/parciales', `/grupos/${this.$route.params.id}/edit`]) }">
 					<a data-bs-target="#componentes" data-bs-toggle="collapse" class="sidebar-link collapsed">
 						<i class="bi bi-gear-fill me-2"></i>
 						<span class="align-middle">
-							Configuraciones
+							Parciales
 						</span>
 					</a>
 					<ul id="componentes" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
@@ -100,21 +99,42 @@
 							:class="{ active: isActive(['/carreras']) }">
 							<router-link to="/carreras" class='sidebar-link'>Carreras</router-link>
 						</li>
-						<li class="sidebar-item" v-if="hasPermission('ver horas docente')"
+						<!-- <li class="sidebar-item" v-if="hasPermission('ver horas docente')"
 							:class="{ active: isActive(['/horasdocente']) }">
-							<router-link to="/horasdocente" class='sidebar-link'>Registro Horas Docente</router-link>
-						</li>
+							<router-link to="/horasdocente" class='sidebar-link'>Registro Horas</router-link>
+						</li> -->
 						<li class="sidebar-item" v-if="hasPermission('ver parciales')"
 							:class="{ active: isActive(['/parciales']) }">
 							<router-link to="/parciales" class='sidebar-link'>Parciales</router-link>
 						</li>
-						<!-- <li class="sidebar-item" :class="{ active: isActive(['/escuela']) }">
-							<router-link to="/escuela" class='sidebar-link'>Escuela</router-link>
-						</li> -->
 					</ul>
 				</li>
+				<li class="sidebar-item" v-if="
+					hasPermission('ver horas docente') ||
+					hasPermission('ver escalas evaluativas')
+				" :class="{ active: isActive(['/horasdocente', '/grupos']) }">
+					<a data-bs-target="#Seg" data-bs-toggle="collapse" class="sidebar-link collapsed">
+						<i class="bi bi-gear-fill me-2"></i>
+						<span class="align-middle">
+							Seguimiento
+						</span>
+					</a>
+					<ul id="Seg" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
+						
+						<li class="sidebar-item" v-if="hasPermission('ver horas docente')"
+							:class="{ active: isActive(['/horasdocente']) }">
+							<router-link to="/horasdocente" class='sidebar-link'>Registro Horas</router-link>
+						</li>
+						<li class="sidebar-item" v-if="hasPermission('ver escalas evaluativas')"
+							:class="{ active: isActive(['/escalaevaluativa']) }">
+							<router-link to="/escalaevaluativa" class='sidebar-link'>Escalas Evaluativas</router-link>
+						</li>
+					</ul>
+				</li>
+
+
 				<li class="sidebar-header" v-if="hasPermission('ver seguimiento')">
-					Seg
+					Seguimiento
 				</li>
 				<li class="sidebar-item" v-if="hasPermission('ver seguimiento')"
 					:class="{ active: isActive(['/seguimiento']) }">
@@ -122,7 +142,6 @@
 						<i class="bi bi-file-earmark-medical me-2"></i>
 						<span class="align-middle">
 							Seguimiento
-							<!-- {{ getUserRole }} -->
 						</span>
 					</a>
 					<ul id="Seguimiento" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">

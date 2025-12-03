@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\GradoController;
@@ -14,10 +15,11 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\SemestreController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SeguimientoController;
+use App\Http\Controllers\EscalaEvaluativaController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\SeguimientoHorariosController;
 use App\Http\Controllers\RegistroHorasDocenciaController;
 use App\Http\Controllers\Auth\RestablecerContraseñaController;
-use App\Http\Controllers\SeguimientoHorariosController;
 
 Route::get('/user', [LoginController::class, 'user']);
 Route::post('/refresh', [LoginController::class, 'refresh']);
@@ -42,6 +44,7 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
         Route::get('/roles', [RolController::class, 'buscarRoles']);
         Route::get('escuela',[UsuarioController::class, 'escuela']);
         Route::put('escuela',[UsuarioController::class, 'updateEscuela']);
+        Route::resource('/EscalaEvaluativa',EscalaEvaluativaController::class)->only(['index','store','update']);
     });
     Route::prefix('/Estudiuante')->group(function () {
         Route::get('Lista/{lista_id}/User', [ListaController::class, 'UserDisponibles']);
@@ -84,12 +87,12 @@ Route::middleware('auth:api')->prefix('/')->group(function () {
     
     Route::prefix('/Registro')->group(function () {
         Route::resource('Seguimiento', SeguimientoController::class)->only(['index', 'store','show', 'update']);
-        Route::get('Seguimiento/Profesor',[SeguimientoController::class,'seguimientoProfesor']);
-        Route::get('Seguimiento/Orientador',[SeguimientoController::class,'seguimientoOrientador']);
-        Route::get('Seguimiento/Materia',[SeguimientoController::class,'seguimientoMateria']);
-        Route::get('Seguimiento/Semestre',[SeguimientoController::class,'seguimientoSemestre']);
-        Route::get('Seguimiento/Grupo',[SeguimientoController::class,'seguimientoGrupo']);
-        Route::get('Seguimiento/Carrera',[SeguimientoController::class,'seguimientoCarrera']);
+        Route::get('Seguimiento/Profesor/search',[SeguimientoController::class,'seguimientoProfesor']);
+        Route::get('Seguimiento/Orientador/search',[SeguimientoController::class,'seguimientoOrientador']);
+        Route::get('Seguimiento/Materia/search',[SeguimientoController::class,'seguimientoMateria']);
+        Route::get('Seguimiento/Semestre/search',[SeguimientoController::class,'seguimientoSemestre']);
+        Route::get('Seguimiento/Grupo/search',[SeguimientoController::class,'seguimientoGrupo']);
+        Route::get('Seguimiento/Carrera/search',[SeguimientoController::class,'seguimientoCarrera']);
                 // formato1
         Route::get('/Seguimiento/{Seguimiento}/formato1', [SeguimientoController::class, 'formato1']);
         Route::get('/Seguimiento/{Seguimiento}/reporte', [SeguimientoController::class, 'reporte']);

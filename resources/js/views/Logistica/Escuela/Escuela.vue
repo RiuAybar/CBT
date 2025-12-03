@@ -149,7 +149,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-12 text-end">
-                                <button @click="guardar" class="btn btn-primary">
+                                <button @click="guardar" class="btn btn-primary" v-if="hasPermission('puede editar datos de mi escuela')">
                                     <i class="bi bi-floppy2"></i>
                                     Guardar
                                 </button>
@@ -192,25 +192,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('auth', ['getUser']),
-    },
-    watch: {
-        getUser: {
-            handler(newVal) {
-                if (newVal) {
-                    this.avatar_url = newVal.avatar_url;
-                    this.role = { ...newVal.role };
-                    newVal = newVal?.user ?? newVal;
-                    this.user = {
-                        ...newVal,
-                        password_hold: '',
-                        password: '',
-                        password_confirmation: ''
-                    };
-                }
-            },
-            immediate: true
-        }
+        ...mapGetters('auth', ['hasPermission']),
     },
     methods: {
         async consultar() {

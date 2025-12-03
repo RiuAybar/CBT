@@ -79,4 +79,19 @@ class UserPolicy
 
         return $authUser->can($permisos[$rolObjetivo]);
     }
+
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function Escuela(User $user): bool
+    {
+        return $user->can('ver datos de mi escuela');
+    }
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function EscuelaUpdate(User $user): bool
+    {
+        return $user->can('puede editar datos de mi escuela');
+    }
 }

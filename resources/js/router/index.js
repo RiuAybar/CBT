@@ -14,6 +14,8 @@ import RestablecerPassword from '../views/auth/RestablecerPassword.vue';
 import Grados from '../views/Logistica/Grados/Grados.vue';
 import Grupos from '../views/Logistica/Grados/Grupos.vue';
 
+import EscalasEvaluativas from '../views/Logistica/EscalasEvaluativas/EscalasEvaluativas.vue';
+
 import HorasSeguimiento from '../views/Logistica/Horarios/Horarios.vue';
 
 import Materias from '../views/Logistica/Grados/Materias.vue';
@@ -28,7 +30,7 @@ import Escuela from '../views/Logistica/Escuela/Escuela.vue';
 
 import Lista from '../views/Logistica/Listas/Lista.vue';
 import Calificaciones from '../views/Logistica/Calificaciones/Calificaciones.vue';
-import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
+// import ReportePDF from '../views/Reportes/ReporteEjemplo/ReportePDF.vue';
 
 const routes = [
   {
@@ -50,16 +52,16 @@ const routes = [
       }
     ],
   },
-  {
-    path: '/pdf',
-    component: () => import('../views/Layouts/pdf/PDF.vue'),
-    meta: { requiresAuth: true },
-    children: [
-      // { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.' } }
-      { path: 'reportepdf/:id', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
+  // {
+  //   path: '/pdf',
+  //   component: () => import('../views/Layouts/pdf/PDF.vue'),
+  //   meta: { requiresAuth: true },
+  //   children: [
+  //     // { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.' } }
+  //     { path: 'reportepdf/:id', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
 
-    ],
-  },
+  //   ],
+  // },
   {
     path: '/',
     component: () => import('../views/Layouts/Layout.vue'),
@@ -73,7 +75,7 @@ const routes = [
       { path: 'roles/:id/edit', name: 'rolespermisos', component: RolesPermisos, meta: { title: 'Asignar permisos', requiresPermission: 'ver permisos asignados a roles' } },
       { path: 'grados', name: 'grados', component: Grados, meta: { title: 'Lista de Grados.', requiresPermission: 'ver grados' } },
       { path: 'grupos/:id/edit', name: 'grupos', component: Grupos, meta: { title: 'Lista de grupos.', requiresPermission: 'ver grupos' } },
-      { path: 'horasseguimiento/:id/agregar', name: 'horasseguimiento', component: HorasSeguimiento, meta: { title: 'Lista de Horas Seguimiento.' } },
+      { path: 'horasseguimiento/:id/agregar', name: 'horasseguimiento', component: HorasSeguimiento, meta: { title: 'Lista de Horas Seguimiento.',requiresPermission: 'ver horas seguimiento' } },
       { path: 'lista/:id/edit', name: 'lista', component: Lista, meta: { title: 'Lista de lista.', requiresPermission: 'ver listas' } },
       { path: 'semestres', name: 'semestres', component: Semestres, meta: { title: 'Lista de semestres.', requiresPermission: 'ver semestres' } },
       { path: 'materias', name: 'materias', component: Materias, meta: { title: 'Lista de materias.', requiresPermission: 'ver materias' } },
@@ -82,7 +84,8 @@ const routes = [
       { path: 'parciales', name: 'parciales', component: Parciales, meta: { title: 'Lista de parciales.', requiresPermission: 'ver parciales' } },
       { path: 'seguimiento', name: 'seguimiento', component: Seguimiento, meta: { title: 'Lista de seguimiento.', requiresPermission: 'ver seguimiento' } },
       { path: 'perfil', name: 'perfil', component: ConfiguracionUsuarios, meta: { title: 'Configuración de mi perfil.' } },
-      { path: 'escuela', name: 'escuela', component: Escuela, meta: { title: 'Configuración de mi escuela.' } },
+      { path: 'escuela', name: 'escuela', component: Escuela, meta: { title: 'Configuración de mi escuela.', requiresPermission: 'ver datos de mi escuela' } },
+      { path: 'escalaevaluativa', name: 'escalaevaluativa', component: EscalasEvaluativas, meta: { title: 'Lista de Escalas Evaluativas.', requiresPermission: 'ver escalas evaluativas' } },
       // { path: 'reportepdf', name: 'reportepdf', component: ReportePDF, meta: { title: 'Configuración de mi ReportePDF.', requiresPermission: 'ver f1' } },
     ]
   }

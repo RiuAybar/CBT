@@ -156,6 +156,7 @@ class ListaController extends Controller
             ->join('grados', 'grupos.grado_id', '=', 'grados.id')
             ->join('carreras', 'seguimientos.carrera_id', '=', 'carreras.id')
             ->join('users as profesores', 'seguimientos.profesor_id', '=', 'profesores.id')
+            ->join('users as orientador', 'seguimientos.orientador_id', '=', 'orientador.id')
             ->where('seguimientos.id', $seguimiento_id)
             ->select(
                 'seguimientos.id as seguimiento_id',
@@ -168,7 +169,9 @@ class ListaController extends Controller
                 DB::raw("CONCAT(grados.nombre, ' - ', grupos.nombre) as grupo"),
                 'carreras.nombre as carrera',
                 'profesores.name as profesor',
-                'seguimientos.ano as año'
+                'seguimientos.ano as año',
+                'seguimientos.ciclo as ciclo',
+                'orientador.name as orientador'
             )
             ->first();
         return response()->json([
@@ -440,7 +443,7 @@ class ListaController extends Controller
             $items = $request->input('items');
             $name = $request->input('name');
             $value = $request->input('value');
-            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial', 'porcentajeAsistencia']) ? $name : null;
+            $columnasDef = in_array($name, ['faltas', 'suma', 'calificacion_parcial']) ? $name : null;
             $columnasDefLista = in_array($name, ['listaNumero']) ? $name : null;
 
             $evaluacion = Evaluacion::firstOrCreate([
@@ -512,12 +515,11 @@ class ListaController extends Controller
             ->pluck('nombre');
 
         // 2. Traer registros completos
-        $registros = DB::table('evaluaciones')
-            ->leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
+        $registros = Evaluacion::leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
             ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
             ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
             ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
-            // ->where('listas.alumno_id', $estudianteId)
+            ->where('listas.alumno_id', $estudianteId)
 
             // Filtro opcional del año
             ->when($año, function ($q) use ($año) {
@@ -571,9 +573,8 @@ class ListaController extends Controller
                 ? round(array_sum($califs) / count($califs), 2)
                 : 0;
 
-            $materias[$id]['T_E'] = $materias[$id]['promedio'] < 70 ? 'Extra' : '0';
+            $materias[$id]['T_E'] = $materias[$id]['promedio'] < 6 ? 'Extra' : '0';
         }
-        // dd(array_values($materias));
         return response()->json([
             'materias' => array_values($materias),
             'parciales' => $parciales

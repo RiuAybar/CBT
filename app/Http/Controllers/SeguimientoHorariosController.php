@@ -15,6 +15,8 @@ class SeguimientoHorariosController extends Controller
      */
     public function index(Request $request, int $seguimiento_id)
     {
+
+        $this->authorize('viewAny',SeguimientoHorario::class);
         $search = $request->query('search');
 
         $query = SeguimientoHorario::where('seguimiento_id', $seguimiento_id);
@@ -53,7 +55,7 @@ class SeguimientoHorariosController extends Controller
      */
     public function store(SeguimientoHorariosRequest $request)
     {
-        // $this->authorize('create', Grado::class);
+        $this->authorize('create', SeguimientoHorario::class);
         try {
             DB::beginTransaction();
             $SeguimientoHorario = SeguimientoHorario::create($request->validated());
@@ -88,7 +90,7 @@ class SeguimientoHorariosController extends Controller
      */
     public function update(SeguimientoHorariosRequest $request, SeguimientoHorario $SeguimientoHorario)
     {
-        //  $this->authorize('update', $Materia);
+         $this->authorize('update', $SeguimientoHorario);
         try {
             DB::beginTransaction();
             $SeguimientoHorario->update($request->validated());
@@ -106,6 +108,7 @@ class SeguimientoHorariosController extends Controller
      */
     public function destroy(SeguimientoHorario $SeguimientoHorario)
     {
+        $this->authorize('delete', $SeguimientoHorario);
         try {
             DB::beginTransaction();
             // Elimina el permiso del rol sin borrar el permiso como tal
