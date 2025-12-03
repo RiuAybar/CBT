@@ -503,81 +503,313 @@ class ListaController extends Controller
         }
     }
 
+
     public function VistaCalificaciones(Request $request)
     {
         $search = $request->query('search');
         $año = $request->query('ano');
-        // dd(auth('api')->user()->estudiante);
         $estudianteId = auth('api')->user()->id;
-        // 1. Obtener parciales dinámicamente
+
+        // 1. Obtener los parciales
         $parciales = DB::table('parciales')
             ->orderBy('id')
             ->pluck('nombre');
 
-        // 2. Traer registros completos
+        // 2. Traer evaluaciones con joins
         $registros = Evaluacion::leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
             ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
             ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
             ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
             ->where('listas.alumno_id', $estudianteId)
-
-            // Filtro opcional del año
-            ->when($año, function ($q) use ($año) {
-                $q->where('seguimientos.ano', $año);
-            })
-
-            // Filtro opcional de búsqueda
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($q2) use ($search) {
-                    $q2->where('materias.nombre', 'like', "%{$search}%");
-                });
-            })
-
+            ->when($año, fn($q) => $q->where('seguimientos.ano', $año))
+            ->when($search, fn($q) => $q->where('materias.nombre', 'like', "%{$search}%"))
             ->select(
                 'materias.id as materia_id',
                 'materias.nombre as materia',
                 'parciales.nombre as parcial',
-                'evaluaciones.calificacion_parcial'
+                'evaluaciones.calificacion_parcial',
+                'listas.estatus',
+                'seguimientos.id as seguimientos_id',
+                'evaluaciones.faltas'
             )
             ->get();
-        // 3. Armar estructura tipo tabla
+
+        // 3. Construcción del arreglo por materia
         $materias = [];
 
         foreach ($registros as $r) {
 
             if (!isset($materias[$r->materia_id])) {
+
                 $materias[$r->materia_id] = [
-                    'materia' => $r->materia
+                    'materia' => $r->materia,
+                    'estatus' => $r->estatus,
+                    'seguimientos_id' => $r->seguimientos_id,
+                    'faltas' => 0, // ahora se suman
                 ];
 
+                // Inicializar los parciales en null
                 foreach ($parciales as $p) {
                     $materias[$r->materia_id][$p] = null;
                 }
 
+                // Estructura final
                 $materias[$r->materia_id]['promedio'] = 0;
-                $materias[$r->materia_id]['T_E'] = 0;
+                $materias[$r->materia_id]['T_E'] = '';
+                $materias[$r->materia_id]['Ex_Faltas'] = '';
             }
 
+            // Acumular faltas por materia
+            $materias[$r->materia_id]['faltas'] += ($r->faltas ?? 0);
+
+            // Calificación por parcial
             $materias[$r->materia_id][$r->parcial] = $r->calificacion_parcial;
         }
 
-        // 4. Calcular promedios
+        // 4. Calcular promedio, T_E y E. EXTR.
         foreach ($materias as $id => $m) {
+
+            // -----------------------------------------------------
+            // A) HORAS IMPARTIDAS (del seguimiento)
+            // -----------------------------------------------------
+
+            $horasPor = 0;
+
+            $Seguimiento = Seguimiento::where('id', $m['seguimientos_id'])->first(['carrera_id', 'materia_id']);
+            // dd($Seguimiento->RegistroHorasDocencia);
+            if ($Seguimiento?->RegistroHorasDocencia) {
+                $horasPor = $Seguimiento->RegistroHorasDocencia->pluck('horasImpartidas')->sum();
+            }
+            // dd($horasPor);
+            // $Seguimiento = Seguimiento::with('RegistroHorasDocencia')
+            //     ->where('id', $m['seguimientos_id'])
+            //     ->first();
+
+            // if ($Seguimiento?->RegistroHorasDocencia) {
+            //     $horasPor = $Seguimiento->RegistroHorasDocencia
+            //         ->pluck('horasImpartidas')
+            //         ->sum();
+            //     dd($horasPor, $m['seguimientos_id'], $Seguimiento->RegistroHorasDocencia);
+            // }
+
+            // -----------------------------------------------------
+            // B) PROMEDIO
+            // -----------------------------------------------------
 
             $califs = collect($parciales)
                 ->map(fn($p) => $m[$p])
-                ->filter()
+                ->filter(fn($v) => $v !== null) // Permite calificación 0
                 ->toArray();
 
             $materias[$id]['promedio'] = count($califs)
                 ? round(array_sum($califs) / count($califs), 2)
                 : 0;
 
-            $materias[$id]['T_E'] = $materias[$id]['promedio'] < 6 ? 'Extra' : '0';
+            // -----------------------------------------------------
+            // C) T_E (Tu regla original)
+            // -----------------------------------------------------
+
+            $materias[$id]['T_E'] = match (true) {
+                $m['estatus'] !== 'Alta' => 'Baja',
+                $materias[$id]['promedio'] < 6 => 'Extra',
+                default => '0'
+            };
+
+            // -----------------------------------------------------
+            // D) Ex_Faltas (Porcentaje de FALTAS sobre HORAS)
+            // -----------------------------------------------------
+
+            $faltasTotales = $m['faltas'];
+            // if ($horasPor > 0) {
+            //     dd(number_format((100 / $horasPor) * $faltasTotales, 2));
+            // }
+            $materias[$id]['Ex_Faltas'] =
+                ($horasPor > 0 && number_format((100 / $horasPor) * $faltasTotales, 2) >= 20)
+                ? 'Ex_Faltas'
+                : 0;
         }
+
+        // 5. Respuesta final
         return response()->json([
             'materias' => array_values($materias),
             'parciales' => $parciales
         ], 200);
     }
+
+
+    // public function VistaCalificaciones(Request $request)
+    // {
+    //     $search = $request->query('search');
+    //     $año = $request->query('ano');
+    //     $estudianteId = auth('api')->user()->id;
+
+    //     // 1. Obtener parciales
+    //     $parciales = DB::table('parciales')
+    //         ->orderBy('id')
+    //         ->pluck('nombre');
+
+    //     // 2. Traer evaluaciones
+    //     $registros = Evaluacion::leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
+    //         ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
+    //         ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
+    //         ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
+    //         ->where('listas.alumno_id', $estudianteId)
+    //         ->when($año, fn($q) => $q->where('seguimientos.ano', $año))
+    //         ->when($search, fn($q) => $q->where('materias.nombre', 'like', "%{$search}%"))
+    //         ->select(
+    //             'materias.id as materia_id',
+    //             'materias.nombre as materia',
+    //             'parciales.nombre as parcial',
+    //             'evaluaciones.calificacion_parcial',
+    //             'listas.estatus',
+    //             'seguimientos.id as seguimientos_id',
+    //             'evaluaciones.faltas'
+    //         )
+    //         ->get();
+    //     // dd($registros);
+    //     // 3. Construcción del arreglo
+    //     $materias = [];
+
+    //     foreach ($registros as $r) {
+
+    //         if (!isset($materias[$r->materia_id])) {
+
+    //             // Crear estructura base
+    //             $materias[$r->materia_id] = [
+    //                 'materia' => $r->materia,
+    //                 'estatus' => $r->estatus,
+    //                 'seguimientos_id' => $r->seguimientos_id,
+    //                 'faltas' => $r->faltas //suman
+    //             ];
+
+    //             foreach ($parciales as $p) {
+    //                 $materias[$r->materia_id][$p] = null;
+    //             }
+
+    //             $materias[$r->materia_id]['promedio'] = 0;
+    //             $materias[$r->materia_id]['T_E'] = 0;
+    //         }
+
+    //         // Asignar calificaciones
+    //         $materias[$r->materia_id][$r->parcial] = $r->calificacion_parcial;
+    //     }
+    //     dd($materias);
+
+    //     // 4. Calcular promedio y tipo de evaluación
+    //     foreach ($materias as $id => $m) {
+    //         dd($m);
+    //         $horasPor = 0;
+    //         $Seguimiento = Seguimiento::where('id', $m['seguimientos_id'])->first(['carrera_id', 'materia_id']);
+    //         // dd($Seguimiento->RegistroHorasDocencia);
+    //         if ($Seguimiento?->RegistroHorasDocencia) {
+    //             $horasPor = $Seguimiento->RegistroHorasDocencia->pluck('horasImpartidas')->sum();
+    //         }
+    //         // dd($horasPor);
+    //         $califs = collect($parciales)
+    //             ->map(fn($p) => $m[$p])
+    //             ->filter(fn($v) => $v !== null) // corregido para permitir 0
+    //             ->toArray();
+
+    //         $materias[$id]['promedio'] = count($califs)
+    //             ? round(array_sum($califs) / count($califs), 2)
+    //             : 0;
+
+    //         $materias[$id]['T_E'] = match (true) {
+    //             $m['estatus'] !== 'Alta' => 'Baja',
+    //             $materias[$id]['promedio'] < 6 => 'Extra',
+    //             default => '0'
+    //         };
+    //         // $materias[$id]['Ex_Faltas'] = ($horasPor > 0 && ($m->faltas / $horasPor) * 100 >= 20)
+    //         //     ? 'E. EXTR.' : '';
+    //     }
+
+    //     return response()->json([
+    //         'materias' => array_values($materias),
+    //         'parciales' => $parciales
+    //     ], 200);
+    // }
+
+
+    // public function VistaCalificaciones(Request $request)
+    // {
+    //     $search = $request->query('search');
+    //     $año = $request->query('ano');
+    //     // dd(auth('api')->user()->estudiante);
+    //     $estudianteId = auth('api')->user()->id;
+    //     // 1. Obtener parciales dinámicamente
+    //     $parciales = DB::table('parciales')
+    //         ->orderBy('id')
+    //         ->pluck('nombre');
+
+    //     // 2. Traer registros completos
+    //     $registros = Evaluacion::leftjoin('listas', 'listas.id', '=', 'evaluaciones.lista_id')
+    //         ->join('seguimientos', 'seguimientos.id', '=', 'listas.seguimiento_id')
+    //         ->join('materias', 'materias.id', '=', 'seguimientos.materia_id')
+    //         ->join('parciales', 'parciales.id', '=', 'evaluaciones.parcial_id')
+    //         ->where('listas.alumno_id', $estudianteId)
+    //         // Filtro opcional del año
+    //         ->when($año, function ($q) use ($año) {
+    //             $q->where('seguimientos.ano', $año);
+    //         })
+
+    //         // Filtro opcional de búsqueda
+    //         ->when($search, function ($q) use ($search) {
+    //             $q->where(function ($q2) use ($search) {
+    //                 $q2->where('materias.nombre', 'like', "%{$search}%");
+    //             });
+    //         })
+
+    //         ->select(
+    //             'materias.id as materia_id',
+    //             'materias.nombre as materia',
+    //             'parciales.nombre as parcial',
+    //             'evaluaciones.calificacion_parcial',
+    //             'listas.estatus',
+    //             'evaluaciones.id'
+
+    //         )
+    //         ->get();
+    //     // 3. Armar estructura tipo tabla
+    //     $materias = [];
+
+    //     foreach ($registros as $r) {
+
+    //         if (!isset($materias[$r->materia_id])) {
+    //             $materias[$r->materia_id] = [
+    //                 'materia' => $r->materia
+    //             ];
+    //             $materias[$r->materia_id] = [
+    //                 'Estatus' => $r->estatus
+    //             ];
+
+    //             foreach ($parciales as $p) {
+    //                 $materias[$r->materia_id][$p] = null;
+    //             }
+
+    //             $materias[$r->materia_id]['promedio'] = 0;
+    //             $materias[$r->materia_id]['T_E'] = 0;
+    //         }
+
+    //         $materias[$r->materia_id][$r->parcial] = $r->calificacion_parcial;
+    //     }
+
+    //     // 4. Calcular promedios
+    //     foreach ($materias as $id => $m) {
+
+    //         $califs = collect($parciales)
+    //             ->map(fn($p) => $m[$p])
+    //             ->filter()
+    //             ->toArray();
+
+    //         $materias[$id]['promedio'] = count($califs)
+    //             ? round(array_sum($califs) / count($califs), 2)
+    //             : 0;
+
+    //         $materias[$id]['T_E'] = $materias[$id]['Estatus'] == 'Alta' ? ($materias[$id]['promedio'] < 6 ? 'Extra' : '0') : 'Baja';
+    //     }
+    //     return response()->json([
+    //         'materias' => array_values($materias),
+    //         'parciales' => $parciales
+    //     ], 200);
+    // }
 }

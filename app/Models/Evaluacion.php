@@ -28,4 +28,8 @@ class Evaluacion extends Model
     {
         return $this->hasMany(NotasPorAspecto::class);
     }
+    public function lista()
+    {
+        $this->belongsTo(Lista::class,'lista_id');
+    }
 }

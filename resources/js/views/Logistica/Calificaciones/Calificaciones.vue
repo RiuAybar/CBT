@@ -23,6 +23,11 @@
             </div>
             <EasyDataTable :headers="headers" :items="Calificaciones" :loading="cargando" :rows-per-page="5"
               table-class="table table-hover my-0">
+              <template #item-Ex_Faltas="{ Ex_Faltas }">
+                <span :class="{ 'celda-extra': Ex_Faltas == 'Ex_Faltas' }">
+                  {{ Ex_Faltas }}
+                </span>
+              </template>
             </EasyDataTable>
           </div>
         </div>
@@ -80,6 +85,7 @@ export default {
           }
         });
         // === Datos de materias ===
+        // this.Calificaciones = res.data.materias;
         this.Calificaciones = res.data.materias;
         // === Parciales dinámicos ===
         const parciales = res.data.parciales; // ["Parcial 1","Parcial 2",...]
@@ -88,13 +94,21 @@ export default {
           { text: "Materia", value: "materia" },
           ...parciales.map(p => ({ text: p, value: p })),
           { text: "Promedio", value: "promedio" },
-          { text: "T.E.", value: "T_E" }
+          { text: "T.E.", value: "T_E" },
+          { text: "Extra Por Faltas.", value: "Ex_Faltas" },
         ];
       } catch (error) {
         console.error('Error al consultar:', error);
       } finally {
         this.cargando = false;
       }
+    },
+    itemClass(item, rowIndex, column) {
+      // 'column' es el objeto de definición de la columna
+      if (column.value === 'Ex_Faltas' && item.Ex_Faltas > 0) {
+        return 'celda-extra';
+      }
+      return '';
     }
   },
   mounted() {
@@ -103,4 +117,11 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.celda-extra {
+  background-color: #fff3cd !important;
+  font-weight: bold;
+  color: #8a6d3b !important;
+  border-radius: 4px;
+}
+</style>

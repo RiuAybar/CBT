@@ -669,7 +669,7 @@
                         }
                     @endphp
                     <td class="text-center">
-                        {{ $promedio === '' || $promedio === null
+                        {{ $al->estatus == 'Alta' ? ($promedio === '' || $promedio === null
                             ? ''
                             : ($contar5 >= 2
                                 ? 'E. EXTR.'
@@ -677,7 +677,7 @@
                                     ? 'E. EXTR.'
                                     : ($totalHoras > 0 && number_format((100 / $totalHoras) * ($al->FALTAS ?? 0), 2) >= 20
                                         ? 'E. EXTR.'
-                                        : ''))) }}
+                                        : '')))) : 'Baja' }}
                     </td>
                 </tr>
             @endforeach
