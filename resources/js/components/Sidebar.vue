@@ -4,7 +4,10 @@
 			<router-link to="/" class='sidebar-brand'>
 				<span class="sidebar-brand-text align-middle">
 					C B T
-					<sup><small class="badge bg-primary text-uppercase">Instituto de Estudios</small></sup>
+					<sup>
+						<img src="/public/Img/cbt1.png" class="img-fluid mb-2" width="40">
+						<!-- <small class="badge bg-primary text-uppercase">Instituto de Estudios</small> -->
+					</sup>
 				</span>
 			</router-link>
 
