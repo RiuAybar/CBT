@@ -12,7 +12,7 @@
         }
 
         body {
-            font-size: 8px;
+            font-size: 9px;
             /* Fuente base pequeña para que quepa todo */
             line-height: 1.1;
             color: #000;
@@ -438,7 +438,7 @@
                             {{ ($conteoSexo['M'] ?? 0) > 0 ? number_format(($sumaPorSexo['M'] ?? 0) / $conteoSexo['M'], 2) : 0 }}
                         </td>
                         <td class="text-center">
-                            {{ ($conteoSexo['F'] ?? 0) && ($sumaPorSexo['F'] ?? 0) ? ($sumaPorSexo['F'] ?? 0) / ($conteoSexo['F'] ?? 0) : 0 }}
+                            {{ ($conteoSexo['F'] ?? 0) && ($sumaPorSexo['F'] ?? 0) ? number_format(($sumaPorSexo['F'] ?? 0) / ($conteoSexo['F'] ?? 0), 2) : 0 }}
                         </td>
                         <td class="text-center">
                             @php
@@ -469,7 +469,7 @@
 
                                 // Fórmula original pero segura
                                 $resultadoPorc =
-                                    $totalAlumnos > 0 ? ((100 - $porcM + (100 - $porcF)) / $totalAlumnos) * 100 : 0;
+                                    $totalAlumnos > 0 ? ((10 - $porcM + (10 - $porcF)) / $totalAlumnos) * 10 : 0;
 
                                 // Suma segura
                                 $sumaGeneral = $sumaM + $sumaF / ($conteoF > 0 ? $conteoF : 1) + $conteoM;
@@ -659,6 +659,8 @@
                     </td>
 
                     @php
+
+                        $ExtraPorEvaluacion = ($al->eval_Parcial_1 <= 6 ? 1 : 0 ) + ($al->eval_Parcial_2 <= 6 ? 1 : 0) + ($al->eval_Parcial_3 <= 6 ? 1 : 0) ;
                         // 2. Contar cuántos valores iguales a 5 hay entre N36, O36, P36
                         $contar5 = 0;
 
@@ -671,13 +673,15 @@
                     <td class="text-center">
                         {{ $al->estatus == 'Alta' ? ($promedio === '' || $promedio === null
                             ? ''
-                            : ($contar5 >= 2
+                            : ($contar5 >= 2 || $al->FALTAS >= 5 || $ExtraPorEvaluacion >= 2
                                 ? 'E. EXTR.'
                                 : ($promedio < 6
                                     ? 'E. EXTR.'
                                     : ($totalHoras > 0 && number_format((100 / $totalHoras) * ($al->FALTAS ?? 0), 2) >= 20
                                         ? 'E. EXTR.'
                                         : '')))) : 'Baja' }}
+
+                        {{-- @dump( $ExtraPorEvaluacion, ($al->eval_Parcial_1 >= 6 ? 1 : 0 ) , ($al->eval_Parcial_2 >= 6 ? 1 : 0) , ($al->eval_Parcial_3 >= 6 ? 1 : 0) ) --}}
                     </td>
                 </tr>
             @endforeach

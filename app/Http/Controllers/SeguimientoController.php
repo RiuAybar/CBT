@@ -416,6 +416,7 @@ class SeguimientoController extends Controller
                 return floatval($alumno->PROMEDIO) >= 70;
             })
             ->countBy('sexo');
+        // dd($Aprobados);
         $Reprobados = collect($alumnos)
             ->filter(function ($alumno) {
                 return floatval($alumno->PROMEDIO) < 70;
